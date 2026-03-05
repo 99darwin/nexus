@@ -11,6 +11,7 @@ import { timelineRoutes } from "./routes/timeline.js";
 import { searchRoutes } from "./routes/search.js";
 import { liveRoutes } from "./routes/live.js";
 import { dashboardRoutes } from "./routes/admin/dashboard.js";
+import { schemaRoutes } from "./routes/admin/schema.js";
 import { closeDriver } from "./db/neo4j.js";
 import { closePool } from "./db/postgres.js";
 
@@ -38,6 +39,7 @@ await server.register(timelineRoutes);
 await server.register(searchRoutes);
 await server.register(liveRoutes);
 await server.register(dashboardRoutes);
+await server.register(schemaRoutes);
 
 // Graceful shutdown
 const shutdown = async () => {

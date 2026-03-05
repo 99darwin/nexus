@@ -88,6 +88,9 @@ REDIS_URL=${{ Redis.REDIS_URL }}
 # CORS — set after Vercel deploys (step 5)
 CLIENT_ORIGIN=https://your-app.vercel.app
 
+# Admin API key — generate a random secret, used for /api/admin/* endpoints
+API_KEY=your-random-secret
+
 # API server
 API_PORT=3001
 API_HOST=0.0.0.0
@@ -122,30 +125,14 @@ railway run --service Postgres -- psql -f scripts/postgres-schema.sql
 psql "$POSTGRES_CONNECTION_STRING" -f scripts/postgres-schema.sql
 ```
 
-Initialize the Neo4j schema (indexes + full-text search). Open the **Neo4j Browser**:
+Initialize the Neo4j schema (indexes + full-text search). The API has a built-in admin endpoint for this:
 
-1. Go to your Neo4j service in Railway → **Settings** → **Networking**
-2. Expose port **7474** and generate a public domain
-3. Open the generated URL in your browser
-4. Since `NEO4J_AUTH=none`, select **No authentication** in the login screen
-
-Run each statement one at a time:
-
-```cypher
-CREATE CONSTRAINT entity_id_unique IF NOT EXISTS
-FOR (n:Entity) REQUIRE n.id IS UNIQUE;
-
-CREATE INDEX entity_type IF NOT EXISTS FOR (n:Entity) ON (n.type);
-CREATE INDEX entity_vertical IF NOT EXISTS FOR (n:Entity) ON (n.vertical);
-CREATE INDEX entity_status IF NOT EXISTS FOR (n:Entity) ON (n.status);
-CREATE INDEX entity_significance IF NOT EXISTS FOR (n:Entity) ON (n.significance);
-CREATE INDEX entity_updated_at IF NOT EXISTS FOR (n:Entity) ON (n.updated_at);
-
-CREATE FULLTEXT INDEX entity_search IF NOT EXISTS
-FOR (n:Entity) ON EACH [n.name, n.summary];
+```bash
+curl -X POST https://nexus-api.up.railway.app/api/admin/schema \
+  -H "x-api-key: YOUR_API_KEY"
 ```
 
-> **Tip:** The Neo4j Browser only runs one statement at a time. Paste each `CREATE` statement separately, or enable multi-statement mode in the browser settings (`:config { enableMultiStatementMode: true }`).
+This creates all constraints, indexes, and the full-text search index. The response shows the status of each statement. All statements are idempotent (`IF NOT EXISTS`).
 
 ### Seed data (optional)
 
@@ -285,6 +272,7 @@ pnpm backfill
 | `POSTGRES_USER` | Railway API | Yes | `nexus` |
 | `POSTGRES_PASSWORD` | Railway API | Yes | `nexus-dev-password` |
 | `REDIS_URL` | Railway API | Yes | `redis://localhost:6379` |
+| `API_KEY` | Railway API | Yes | — (required for admin endpoints) |
 | `CLIENT_ORIGIN` | Railway API | Recommended | `*` (any origin) |
 | `API_PORT` | Railway API | No | `3001` |
 | `API_HOST` | Railway API | No | `0.0.0.0` |
