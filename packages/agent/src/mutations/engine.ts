@@ -1,4 +1,5 @@
 import type neo4j from "neo4j-driver";
+import type { Pool } from "pg";
 import type { MutationOp, GraphNode, GraphEdge, NodeEvent, NodeStatus } from "@nexus/shared";
 import { detectConflicts } from "./conflict.js";
 import { logMutation } from "./audit.js";
@@ -6,7 +7,7 @@ import { routeToModeration } from "./moderation.js";
 
 export interface MutationEngineConfig {
   neo4jSession: neo4j.Session;
-  pgPool?: any; // pg.Pool - optional for audit logging
+  pgPool?: Pool; // optional for audit logging
   moderationThreshold?: number; // default 0.5
 }
 

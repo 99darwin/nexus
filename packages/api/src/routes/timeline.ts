@@ -13,8 +13,6 @@ export async function timelineRoutes(app: FastifyInstance): Promise<void> {
 
     const session = getSession();
     try {
-      const dateFormat = granularity === "hour" ? "%Y-%m-%dT%H:00:00Z" : "%Y-%m-%dT00:00:00Z";
-
       const conditions: string[] = [];
       const params: Record<string, unknown> = {};
 
