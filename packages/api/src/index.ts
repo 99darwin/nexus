@@ -52,7 +52,7 @@ process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 
 // Start
-const port = parseInt(process.env.API_PORT ?? "3001", 10);
+const port = parseInt(process.env.PORT ?? process.env.API_PORT ?? "3001", 10);
 const host = process.env.API_HOST ?? "0.0.0.0";
 
 try {
