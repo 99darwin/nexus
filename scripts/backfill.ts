@@ -1,0 +1,485 @@
+import type { GraphNode, GraphEdge, Vertical, NodeType, NodeStatus, EventType } from "@nexus/shared";
+import { readFileSync, writeFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Helper to create nodes compactly
+function n(
+  id: string, type: NodeType, name: string, vertical: Vertical,
+  secondary: Vertical[], status: NodeStatus, significance: number,
+  summary: string, discovered: string,
+  eventDate: string, eventType: EventType, eventSummary: string, eventUrl: string,
+  metadata: Record<string, unknown> = {},
+): GraphNode {
+  return {
+    id, type, name, vertical, verticals_secondary: secondary, status, significance, summary,
+    discovered_at: discovered, updated_at: "2026-03-01T00:00:00Z",
+    events: [{ timestamp: eventDate, event_type: eventType, summary: eventSummary, source_url: eventUrl }],
+    metadata,
+  };
+}
+
+// Helper to create edges compactly
+function e(
+  src: string, tgt: string, rel: GraphEdge["relationship"],
+  confidence: number, evidence: string, discovered = "2024-01-01T00:00:00Z",
+): GraphEdge {
+  return { source_id: src, target_id: tgt, relationship: rel, confidence, evidence, discovered_at: discovered };
+}
+
+// ── ADDITIONAL COMPANIES ────────────────────────────────────────────
+const companies = [
+  n("ai21", "company", "AI21 Labs", "foundation_models", ["enterprise_platforms"], "ga", 0.55, "Creator of Jamba and Jurassic models.", "2023-01-01T00:00:00Z", "2024-03-01T00:00:00Z", "launch", "Jamba released", "https://ai21.com"),
+  n("inflection", "company", "Inflection AI", "consumer_products", ["foundation_models"], "ga", 0.55, "Creator of Pi personal AI assistant.", "2023-05-01T00:00:00Z", "2024-03-01T00:00:00Z", "launch", "Pi assistant launched", "https://inflection.ai"),
+  n("character-ai", "company", "Character.AI", "consumer_products", ["agents"], "ga", 0.6, "AI character roleplay and conversation platform.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "funding", "Raised $150M Series A", "https://character.ai"),
+  n("runway-co", "company", "Runway", "creative_tools", ["multimodal"], "ga", 0.65, "AI video generation and creative tools company.", "2023-01-01T00:00:00Z", "2024-06-01T00:00:00Z", "launch", "Gen-3 Alpha released", "https://runway.ml"),
+  n("midjourney-co", "company", "Midjourney Inc", "creative_tools", ["consumer_products"], "ga", 0.65, "AI image generation company.", "2023-01-01T00:00:00Z", "2024-06-01T00:00:00Z", "update", "v6.1 released", "https://midjourney.com"),
+  n("replit-co", "company", "Replit", "code_generation", ["developer_tooling"], "ga", 0.55, "Online IDE with AI coding features.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Replit Agent launched", "https://replit.com"),
+  n("scale-ai", "company", "Scale AI", "data_infrastructure", ["enterprise_platforms"], "ga", 0.65, "Data labeling and AI infrastructure company.", "2023-01-01T00:00:00Z", "2024-05-01T00:00:00Z", "funding", "Raised $1B at $14B valuation", "https://scale.com"),
+  n("databricks", "company", "Databricks", "enterprise_platforms", ["data_infrastructure", "training"], "ga", 0.75, "Unified analytics and AI platform.", "2023-01-01T00:00:00Z", "2024-06-01T00:00:00Z", "update", "DBRX model released", "https://databricks.com"),
+  n("wandb", "company", "Weights & Biases", "developer_tooling", ["training"], "ga", 0.55, "ML experiment tracking and model management.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Weave LLM framework launched", "https://wandb.ai"),
+  n("together-ai", "company", "Together AI", "inference", ["open_source"], "ga", 0.55, "Open-source model inference and fine-tuning platform.", "2023-06-01T00:00:00Z", "2024-01-01T00:00:00Z", "launch", "Together Inference API launched", "https://together.ai"),
+  n("fireworks-ai", "company", "Fireworks AI", "inference", ["developer_tooling"], "ga", 0.5, "Fast inference platform for open-source models.", "2023-06-01T00:00:00Z", "2024-01-01T00:00:00Z", "launch", "Fireworks launched", "https://fireworks.ai"),
+  n("groq-co", "company", "Groq", "hardware", ["inference"], "ga", 0.6, "LPU inference chip company for ultra-fast AI.", "2023-01-01T00:00:00Z", "2024-02-01T00:00:00Z", "launch", "Groq API launched with record inference speed", "https://groq.com"),
+  n("cerebras-co", "company", "Cerebras", "hardware", ["training"], "ga", 0.55, "Wafer-scale chip maker for AI training.", "2023-01-01T00:00:00Z", "2024-03-01T00:00:00Z", "launch", "CS-3 chip announced", "https://cerebras.ai"),
+  n("sambanova", "company", "SambaNova", "hardware", ["inference"], "ga", 0.45, "AI chip company with RDU architecture.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "SN40L chip launched", "https://sambanova.ai"),
+  n("elevenlabs", "company", "ElevenLabs", "creative_tools", ["multimodal"], "ga", 0.6, "AI voice synthesis and cloning company.", "2023-01-01T00:00:00Z", "2024-06-01T00:00:00Z", "funding", "Raised $80M Series B", "https://elevenlabs.io"),
+  n("adept-ai", "company", "Adept AI", "agents", ["enterprise_platforms"], "acquired", 0.45, "AI agent company (acquired by Amazon).", "2023-01-01T00:00:00Z", "2024-06-01T00:00:00Z", "acquisition", "Key team acquired by Amazon", "https://adept.ai"),
+  n("amazon", "company", "Amazon", "enterprise_platforms", ["consumer_products"], "ga", 0.85, "Tech giant with AWS AI services and Alexa.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "launch", "Amazon Bedrock GA", "https://aws.amazon.com"),
+  n("apple", "company", "Apple", "consumer_products", ["hardware"], "ga", 0.8, "Consumer tech company with Apple Intelligence.", "2023-01-01T00:00:00Z", "2024-06-10T00:00:00Z", "launch", "Apple Intelligence announced at WWDC", "https://apple.com"),
+  n("samsung", "company", "Samsung", "consumer_products", ["hardware"], "ga", 0.55, "Electronics company with Galaxy AI features.", "2023-01-01T00:00:00Z", "2024-01-17T00:00:00Z", "launch", "Galaxy AI features announced", "https://samsung.com"),
+  n("baidu", "company", "Baidu", "foundation_models", ["search_retrieval"], "ga", 0.55, "Chinese tech company, creator of ERNIE models.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "ERNIE 4.0 Turbo released", "https://baidu.com"),
+  n("amd", "company", "AMD", "hardware", ["inference"], "ga", 0.65, "GPU and CPU manufacturer with MI300 AI accelerators.", "2023-01-01T00:00:00Z", "2023-12-06T00:00:00Z", "launch", "MI300X GPU launched", "https://amd.com"),
+  n("intel", "company", "Intel", "hardware", ["inference"], "ga", 0.55, "Chip manufacturer with Gaudi AI accelerators.", "2023-01-01T00:00:00Z", "2024-04-09T00:00:00Z", "launch", "Gaudi 3 accelerator announced", "https://intel.com"),
+  n("qualcomm", "company", "Qualcomm", "hardware", ["inference"], "ga", 0.5, "Mobile chip company with on-device AI focus.", "2023-01-01T00:00:00Z", "2024-10-21T00:00:00Z", "launch", "Snapdragon 8 Elite announced", "https://qualcomm.com"),
+  n("deepseek-co", "company", "DeepSeek", "foundation_models", ["open_source", "research"], "ga", 0.75, "Chinese AI lab creating frontier open-weight models.", "2024-01-01T00:00:00Z", "2025-01-20T00:00:00Z", "launch", "DeepSeek R1 released", "https://deepseek.com"),
+  n("figure-ai", "company", "Figure AI", "robotics", [], "ga", 0.55, "Humanoid robot company.", "2024-02-01T00:00:00Z", "2024-02-29T00:00:00Z", "funding", "Raised $675M from Bezos, NVIDIA, OpenAI", "https://figure.ai"),
+  n("boston-dynamics", "company", "Boston Dynamics", "robotics", [], "ga", 0.5, "Advanced robotics company.", "2023-01-01T00:00:00Z", "2024-04-17T00:00:00Z", "launch", "New electric Atlas robot revealed", "https://bostondynamics.com"),
+  n("suno-co", "company", "Suno", "creative_tools", ["multimodal"], "ga", 0.5, "AI music generation company.", "2024-01-01T00:00:00Z", "2024-05-21T00:00:00Z", "launch", "Suno v3 released", "https://suno.ai"),
+  n("cognition-ai", "company", "Cognition AI", "code_generation", ["agents"], "ga", 0.55, "Creator of Devin AI software engineer.", "2024-03-01T00:00:00Z", "2024-03-12T00:00:00Z", "launch", "Devin AI software engineer demo", "https://cognition.ai"),
+  n("modal-co", "company", "Modal", "inference", ["developer_tooling"], "ga", 0.45, "Serverless cloud for AI/ML workloads.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Modal GPU support expanded", "https://modal.com"),
+  n("anyscale-co", "company", "Anyscale", "training", ["inference"], "ga", 0.45, "Ray-based distributed computing company.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Anyscale Endpoints launched", "https://anyscale.com"),
+  n("d-id", "company", "D-ID", "creative_tools", ["multimodal"], "ga", 0.4, "AI video avatar generation company.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Creative Reality Studio V2", "https://d-id.com"),
+  n("synthesia", "company", "Synthesia", "creative_tools", ["enterprise_platforms"], "ga", 0.5, "AI video generation for enterprise.", "2023-01-01T00:00:00Z", "2024-06-01T00:00:00Z", "funding", "Raised $90M Series C", "https://synthesia.io"),
+  n("pika-co", "company", "Pika", "creative_tools", ["multimodal"], "ga", 0.5, "AI video generation startup.", "2023-06-01T00:00:00Z", "2024-01-01T00:00:00Z", "launch", "Pika 1.0 launched", "https://pika.art"),
+];
+
+// ── ADDITIONAL MODELS ───────────────────────────────────────────────
+const models = [
+  // OpenAI
+  n("openai/gpt-3-5-turbo", "model", "GPT-3.5 Turbo", "foundation_models", [], "ga", 0.65, "Fast, affordable OpenAI model.", "2023-01-01T00:00:00Z", "2023-03-01T00:00:00Z", "launch", "GPT-3.5 Turbo released", "https://openai.com"),
+  n("openai/gpt-4-turbo", "model", "GPT-4 Turbo", "foundation_models", [], "ga", 0.78, "Faster GPT-4 with 128k context.", "2023-11-06T00:00:00Z", "2023-11-06T00:00:00Z", "launch", "GPT-4 Turbo announced at DevDay", "https://openai.com"),
+  n("openai/o1-mini", "model", "o1-mini", "foundation_models", [], "ga", 0.7, "Smaller reasoning model optimized for cost.", "2024-09-12T00:00:00Z", "2024-09-12T00:00:00Z", "launch", "o1-mini released alongside o1", "https://openai.com/o1"),
+  n("openai/o3", "model", "o3", "foundation_models", ["agents"], "ga", 0.88, "Advanced reasoning model.", "2025-01-31T00:00:00Z", "2025-01-31T00:00:00Z", "launch", "o3 released", "https://openai.com/o3"),
+  n("openai/o3-mini", "model", "o3-mini", "foundation_models", [], "ga", 0.75, "Efficient reasoning model.", "2025-01-31T00:00:00Z", "2025-01-31T00:00:00Z", "launch", "o3-mini released", "https://openai.com/o3"),
+  n("openai/whisper", "model", "Whisper", "multimodal", ["open_source"], "ga", 0.72, "Open-source speech recognition model.", "2023-01-01T00:00:00Z", "2023-09-01T00:00:00Z", "update", "Whisper v3 released", "https://openai.com/research/whisper"),
+  // Anthropic
+  n("anthropic/claude-3-opus", "model", "Claude 3 Opus", "foundation_models", [], "ga", 0.82, "Anthropic's most capable Claude 3 model.", "2024-03-04T00:00:00Z", "2024-03-04T00:00:00Z", "launch", "Claude 3 Opus launched", "https://anthropic.com/claude-3"),
+  n("anthropic/claude-3-haiku", "model", "Claude 3 Haiku", "foundation_models", ["inference"], "ga", 0.6, "Fastest Claude 3 model.", "2024-03-13T00:00:00Z", "2024-03-13T00:00:00Z", "launch", "Claude 3 Haiku released", "https://anthropic.com/claude-3"),
+  n("anthropic/claude-2", "model", "Claude 2", "foundation_models", [], "deprecated", 0.5, "Second generation Claude model.", "2023-07-11T00:00:00Z", "2023-07-11T00:00:00Z", "launch", "Claude 2 released", "https://anthropic.com/claude-2"),
+  // Google
+  n("google/gemma-2", "model", "Gemma 2", "foundation_models", ["open_source"], "ga", 0.65, "Google's open-weight model family.", "2024-06-27T00:00:00Z", "2024-06-27T00:00:00Z", "launch", "Gemma 2 released", "https://ai.google.dev/gemma"),
+  n("google/palm-2", "model", "PaLM 2", "foundation_models", [], "deprecated", 0.6, "Google's previous flagship LLM.", "2023-05-10T00:00:00Z", "2023-05-10T00:00:00Z", "launch", "PaLM 2 announced at I/O", "https://ai.google/discover/palm2"),
+  n("google/imagen-3", "model", "Imagen 3", "creative_tools", ["multimodal"], "ga", 0.6, "Google's image generation model.", "2024-05-14T00:00:00Z", "2024-05-14T00:00:00Z", "launch", "Imagen 3 announced at I/O", "https://deepmind.google/technologies/imagen-3/"),
+  n("google/veo-2", "model", "Veo 2", "creative_tools", ["multimodal"], "ga", 0.6, "Google's video generation model.", "2024-12-01T00:00:00Z", "2024-12-01T00:00:00Z", "launch", "Veo 2 announced", "https://deepmind.google/technologies/veo/"),
+  // Meta
+  n("meta/llama-2", "model", "Llama 2", "foundation_models", ["open_source"], "ga", 0.7, "Meta's second open-weight model.", "2023-07-18T00:00:00Z", "2023-07-18T00:00:00Z", "launch", "Llama 2 released", "https://ai.meta.com/llama"),
+  n("meta/llama-3-1", "model", "Llama 3.1", "foundation_models", ["open_source"], "ga", 0.82, "Meta's 405B parameter open model.", "2024-07-23T00:00:00Z", "2024-07-23T00:00:00Z", "launch", "Llama 3.1 405B released", "https://ai.meta.com/blog/meta-llama-3-1/"),
+  n("meta/code-llama", "model", "Code Llama", "code_generation", ["open_source"], "ga", 0.6, "Meta's code-specialized Llama.", "2023-08-24T00:00:00Z", "2023-08-24T00:00:00Z", "launch", "Code Llama released", "https://ai.meta.com/blog/code-llama"),
+  n("meta/sam-2", "model", "Segment Anything 2", "multimodal", ["open_source"], "ga", 0.65, "Image and video segmentation model.", "2024-07-29T00:00:00Z", "2024-07-29T00:00:00Z", "launch", "SAM 2 released", "https://ai.meta.com/sam2"),
+  // Mistral
+  n("mistral/mistral-7b", "model", "Mistral 7B", "foundation_models", ["open_source"], "ga", 0.65, "Mistral's efficient 7B open model.", "2023-09-27T00:00:00Z", "2023-09-27T00:00:00Z", "launch", "Mistral 7B released", "https://mistral.ai"),
+  n("mistral/mixtral-8x7b", "model", "Mixtral 8x7B", "foundation_models", ["open_source"], "ga", 0.7, "Mixture-of-experts open model.", "2024-01-08T00:00:00Z", "2024-01-08T00:00:00Z", "launch", "Mixtral released", "https://mistral.ai/news/mixtral-of-experts/"),
+  n("mistral/codestral", "model", "Codestral", "code_generation", ["open_source"], "ga", 0.55, "Mistral's code generation model.", "2024-05-29T00:00:00Z", "2024-05-29T00:00:00Z", "launch", "Codestral released", "https://mistral.ai"),
+  n("mistral/pixtral", "model", "Pixtral", "multimodal", [], "ga", 0.5, "Mistral's multimodal model.", "2024-09-11T00:00:00Z", "2024-09-11T00:00:00Z", "launch", "Pixtral 12B released", "https://mistral.ai"),
+  // DeepSeek
+  n("deepseek/r1", "model", "DeepSeek R1", "foundation_models", ["open_source"], "ga", 0.85, "Open-weight reasoning model rivaling o1.", "2025-01-20T00:00:00Z", "2025-01-20T00:00:00Z", "launch", "DeepSeek R1 released, open weights", "https://deepseek.com"),
+  n("deepseek/v3", "model", "DeepSeek V3", "foundation_models", ["open_source"], "ga", 0.8, "671B MoE model trained for $5.5M.", "2024-12-26T00:00:00Z", "2024-12-26T00:00:00Z", "launch", "DeepSeek V3 released", "https://deepseek.com"),
+  n("deepseek/coder-v2", "model", "DeepSeek Coder V2", "code_generation", ["open_source"], "ga", 0.6, "Code-specialized MoE model.", "2024-06-17T00:00:00Z", "2024-06-17T00:00:00Z", "launch", "DeepSeek Coder V2 released", "https://deepseek.com"),
+  // Qwen
+  n("qwen/qwen-2-5", "model", "Qwen 2.5", "foundation_models", ["open_source"], "ga", 0.7, "Alibaba's multilingual open model.", "2024-09-19T00:00:00Z", "2024-09-19T00:00:00Z", "launch", "Qwen 2.5 family released", "https://qwenlm.github.io"),
+  n("qwen/qwen-2-5-coder", "model", "Qwen 2.5 Coder", "code_generation", ["open_source"], "ga", 0.6, "Code-specialized Qwen model.", "2024-11-12T00:00:00Z", "2024-11-12T00:00:00Z", "launch", "Qwen 2.5 Coder released", "https://qwenlm.github.io"),
+  // Others
+  n("tii/falcon-180b", "model", "Falcon 180B", "foundation_models", ["open_source"], "ga", 0.5, "UAE's open-weight 180B model.", "2023-09-06T00:00:00Z", "2023-09-06T00:00:00Z", "launch", "Falcon 180B released", "https://falconllm.tii.ae"),
+  n("microsoft/phi-3", "model", "Phi-3", "foundation_models", ["open_source"], "ga", 0.6, "Microsoft's small language model.", "2024-04-23T00:00:00Z", "2024-04-23T00:00:00Z", "launch", "Phi-3 family released", "https://azure.microsoft.com/blog/introducing-phi-3"),
+  n("cohere/command-r-plus", "model", "Command R+", "foundation_models", ["search_retrieval"], "ga", 0.55, "Cohere's RAG-optimized model.", "2024-04-04T00:00:00Z", "2024-04-04T00:00:00Z", "launch", "Command R+ released", "https://cohere.com"),
+  n("databricks/dbrx", "model", "DBRX", "foundation_models", ["open_source"], "ga", 0.5, "Databricks' open MoE model.", "2024-03-27T00:00:00Z", "2024-03-27T00:00:00Z", "launch", "DBRX released", "https://databricks.com"),
+  // Image models
+  n("bfl/flux", "model", "FLUX", "creative_tools", ["open_source"], "ga", 0.65, "Black Forest Labs' open image model.", "2024-08-01T00:00:00Z", "2024-08-01T00:00:00Z", "launch", "FLUX.1 released", "https://blackforestlabs.ai"),
+  n("stability-ai/sdxl", "model", "Stable Diffusion XL", "creative_tools", ["open_source"], "ga", 0.6, "Stability AI's XL image model.", "2023-07-26T00:00:00Z", "2023-07-26T00:00:00Z", "launch", "SDXL released", "https://stability.ai"),
+  // Audio
+  n("meta/musicgen", "model", "MusicGen", "creative_tools", ["open_source", "multimodal"], "ga", 0.45, "Meta's music generation model.", "2023-06-12T00:00:00Z", "2023-06-12T00:00:00Z", "launch", "MusicGen released", "https://ai.meta.com/resources/models-and-libraries/musicgen/"),
+  n("suno/v3", "model", "Suno v3", "creative_tools", ["multimodal"], "ga", 0.5, "AI music generation model.", "2024-03-22T00:00:00Z", "2024-03-22T00:00:00Z", "launch", "Suno v3 released", "https://suno.ai"),
+  // Video
+  n("runway/gen-3", "model", "Gen-3 Alpha", "creative_tools", ["multimodal"], "ga", 0.6, "Runway's video generation model.", "2024-06-17T00:00:00Z", "2024-06-17T00:00:00Z", "launch", "Gen-3 Alpha released", "https://runway.ml"),
+  // Code
+  n("bigcode/starcoder-2", "model", "StarCoder 2", "code_generation", ["open_source"], "ga", 0.55, "Open-source code LLM from BigCode.", "2024-02-28T00:00:00Z", "2024-02-28T00:00:00Z", "launch", "StarCoder 2 released", "https://huggingface.co/bigcode"),
+  n("google/codegemma", "model", "CodeGemma", "code_generation", ["open_source"], "ga", 0.5, "Google's code-specialized Gemma.", "2024-04-09T00:00:00Z", "2024-04-09T00:00:00Z", "launch", "CodeGemma released", "https://ai.google.dev/gemma/docs/codegemma"),
+  // Embeddings
+  n("openai/text-embedding-3", "model", "text-embedding-3", "search_retrieval", [], "ga", 0.6, "OpenAI's latest embedding model.", "2024-01-25T00:00:00Z", "2024-01-25T00:00:00Z", "launch", "text-embedding-3 released", "https://openai.com"),
+  n("cohere/embed-v3", "model", "Cohere Embed v3", "search_retrieval", [], "ga", 0.45, "Cohere's embedding model.", "2023-11-02T00:00:00Z", "2023-11-02T00:00:00Z", "launch", "Embed v3 released", "https://cohere.com"),
+  // State space
+  n("mamba", "model", "Mamba", "research", ["foundation_models"], "ga", 0.6, "Selective state space model architecture.", "2023-12-01T00:00:00Z", "2023-12-01T00:00:00Z", "paper", "Mamba paper published", "https://arxiv.org/abs/2312.00752"),
+];
+
+// ── ADDITIONAL PRODUCTS ─────────────────────────────────────────────
+const products = [
+  n("google/gemini-app", "product", "Gemini App", "consumer_products", ["agents"], "ga", 0.75, "Google's consumer AI assistant (formerly Bard).", "2024-02-08T00:00:00Z", "2024-02-08T00:00:00Z", "launch", "Bard rebranded to Gemini", "https://gemini.google.com"),
+  n("microsoft/copilot", "product", "Microsoft Copilot", "consumer_products", ["enterprise_platforms"], "ga", 0.8, "Microsoft's AI assistant across products.", "2023-09-26T00:00:00Z", "2023-09-26T00:00:00Z", "launch", "Microsoft Copilot launched", "https://copilot.microsoft.com"),
+  n("apple/intelligence", "product", "Apple Intelligence", "consumer_products", [], "ga", 0.7, "Apple's on-device AI features.", "2024-06-10T00:00:00Z", "2024-06-10T00:00:00Z", "launch", "Apple Intelligence announced at WWDC24", "https://apple.com/apple-intelligence"),
+  n("cognition/devin", "product", "Devin", "code_generation", ["agents"], "beta", 0.6, "AI software engineer by Cognition.", "2024-03-12T00:00:00Z", "2024-03-12T00:00:00Z", "launch", "Devin demo revealed", "https://cognition.ai"),
+  n("replit/ghostwriter", "product", "Ghostwriter", "code_generation", ["developer_tooling"], "ga", 0.45, "Replit's AI coding assistant.", "2023-01-01T00:00:00Z", "2023-01-01T00:00:00Z", "launch", "Ghostwriter generally available", "https://replit.com"),
+  n("codeium", "product", "Codeium", "code_generation", ["developer_tooling"], "ga", 0.5, "Free AI code completion tool.", "2023-01-01T00:00:00Z", "2024-04-01T00:00:00Z", "update", "Codeium Windsurf IDE launched", "https://codeium.com"),
+  n("tabnine", "product", "Tabnine", "code_generation", ["developer_tooling"], "ga", 0.4, "AI code completion for enterprise.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Protected model launched", "https://tabnine.com"),
+  n("sourcegraph/cody", "product", "Sourcegraph Cody", "code_generation", ["search_retrieval"], "ga", 0.45, "AI coding assistant with codebase context.", "2023-06-01T00:00:00Z", "2024-01-01T00:00:00Z", "launch", "Cody GA released", "https://sourcegraph.com/cody"),
+  n("amazon/codewhisperer", "product", "Amazon CodeWhisperer", "code_generation", ["enterprise_platforms"], "ga", 0.5, "AWS AI coding assistant (now Amazon Q).", "2023-01-01T00:00:00Z", "2024-04-30T00:00:00Z", "update", "Rebranded as Amazon Q Developer", "https://aws.amazon.com/q/developer/"),
+  n("runway-studio", "product", "Runway Studio", "creative_tools", [], "ga", 0.5, "Runway's video generation platform.", "2023-01-01T00:00:00Z", "2024-06-17T00:00:00Z", "update", "Gen-3 Alpha integrated", "https://runway.ml"),
+  n("elevenlabs-studio", "product", "ElevenLabs Studio", "creative_tools", ["multimodal"], "ga", 0.45, "AI voice generation platform.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Multilingual v2 voices launched", "https://elevenlabs.io"),
+  n("aws/bedrock", "product", "Amazon Bedrock", "enterprise_platforms", ["inference"], "ga", 0.7, "AWS managed AI model service.", "2023-09-28T00:00:00Z", "2023-09-28T00:00:00Z", "launch", "Amazon Bedrock GA", "https://aws.amazon.com/bedrock/"),
+  n("google/vertex-ai", "product", "Google Vertex AI", "enterprise_platforms", ["training"], "ga", 0.65, "Google Cloud's ML platform.", "2023-01-01T00:00:00Z", "2024-05-14T00:00:00Z", "update", "Gemini integration added", "https://cloud.google.com/vertex-ai"),
+  n("azure/openai-service", "product", "Azure OpenAI Service", "enterprise_platforms", ["inference"], "ga", 0.75, "Microsoft's managed OpenAI API.", "2023-01-16T00:00:00Z", "2023-01-16T00:00:00Z", "launch", "Azure OpenAI Service GA", "https://azure.microsoft.com/products/cognitive-services/openai-service"),
+];
+
+// ── ADDITIONAL FRAMEWORKS ───────────────────────────────────────────
+const frameworks = [
+  n("crewai", "framework", "CrewAI", "agents", ["developer_tooling"], "ga", 0.5, "Multi-agent orchestration framework.", "2024-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "launch", "CrewAI released", "https://crewai.com"),
+  n("autogen", "framework", "AutoGen", "agents", ["developer_tooling"], "ga", 0.55, "Microsoft's multi-agent framework.", "2023-10-01T00:00:00Z", "2023-10-01T00:00:00Z", "launch", "AutoGen released by MSR", "https://microsoft.github.io/autogen/"),
+  n("dspy", "framework", "DSPy", "developer_tooling", ["agents"], "ga", 0.55, "Programming framework for LMs by Stanford.", "2023-10-01T00:00:00Z", "2023-10-01T00:00:00Z", "launch", "DSPy released", "https://github.com/stanfordnlp/dspy"),
+  n("ollama", "framework", "Ollama", "inference", ["developer_tooling", "open_source"], "ga", 0.7, "Local LLM runner for Mac/Linux/Windows.", "2023-08-01T00:00:00Z", "2023-08-01T00:00:00Z", "launch", "Ollama released", "https://ollama.ai"),
+  n("mlx", "framework", "MLX", "training", ["inference"], "ga", 0.5, "Apple's ML framework for Apple Silicon.", "2023-12-01T00:00:00Z", "2023-12-01T00:00:00Z", "launch", "MLX released by Apple", "https://github.com/ml-explore/mlx"),
+  n("onnxruntime", "framework", "ONNX Runtime", "inference", ["developer_tooling"], "ga", 0.55, "Cross-platform ML inference engine.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "ONNX Runtime 1.17 released", "https://onnxruntime.ai"),
+  n("tensorrt", "framework", "TensorRT", "inference", ["hardware"], "ga", 0.6, "NVIDIA's deep learning inference optimizer.", "2023-01-01T00:00:00Z", "2024-03-01T00:00:00Z", "update", "TensorRT-LLM released", "https://developer.nvidia.com/tensorrt"),
+  n("jax", "framework", "JAX", "training", ["research"], "ga", 0.7, "Google's high-performance numerical computing library.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "JAX 0.4 released", "https://github.com/google/jax"),
+  n("ray", "framework", "Ray", "training", ["inference"], "ga", 0.55, "Distributed computing framework for ML.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Ray 2.9 released", "https://ray.io"),
+  n("weaviate", "framework", "Weaviate", "search_retrieval", ["data_infrastructure"], "ga", 0.5, "Open-source vector database.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Weaviate 1.24 with multitenancy", "https://weaviate.io"),
+  n("pinecone", "framework", "Pinecone", "search_retrieval", ["data_infrastructure"], "ga", 0.55, "Managed vector database.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "Serverless architecture launched", "https://pinecone.io"),
+  n("chromadb", "framework", "ChromaDB", "search_retrieval", ["open_source"], "ga", 0.45, "Open-source embedding database.", "2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "ChromaDB 0.4 released", "https://trychroma.com"),
+];
+
+// ── ADDITIONAL BENCHMARKS ───────────────────────────────────────────
+const benchmarks = [
+  n("gpqa", "benchmark", "GPQA", "evaluation", [], "ga", 0.5, "Graduate-level QA benchmark.", "2023-11-01T00:00:00Z", "2023-11-01T00:00:00Z", "launch", "GPQA benchmark released", "https://arxiv.org/abs/2311.12022"),
+  n("arc-agi", "benchmark", "ARC-AGI", "evaluation", ["agents"], "ga", 0.6, "Abstraction and reasoning benchmark for AGI.", "2024-06-01T00:00:00Z", "2024-06-01T00:00:00Z", "launch", "ARC-AGI Prize announced", "https://arcprize.org"),
+  n("chatbot-arena", "benchmark", "Chatbot Arena", "evaluation", [], "ga", 0.65, "Crowdsourced LLM comparison platform.", "2023-05-01T00:00:00Z", "2024-01-01T00:00:00Z", "update", "LMSYS Arena widely adopted", "https://chat.lmsys.org"),
+  n("math-benchmark", "benchmark", "MATH", "evaluation", [], "ga", 0.5, "Mathematics problem solving benchmark.", "2023-01-01T00:00:00Z", "2023-01-01T00:00:00Z", "launch", "MATH benchmark established", "https://arxiv.org/abs/2103.03874"),
+  n("livebench", "benchmark", "LiveBench", "evaluation", [], "ga", 0.45, "Contamination-free benchmark with live questions.", "2024-06-01T00:00:00Z", "2024-06-01T00:00:00Z", "launch", "LiveBench released", "https://livebench.ai"),
+  n("bigbench", "benchmark", "BIG-Bench", "evaluation", [], "ga", 0.55, "Collaborative benchmark with 200+ tasks.", "2023-01-01T00:00:00Z", "2023-01-01T00:00:00Z", "launch", "BIG-Bench widely used", "https://arxiv.org/abs/2206.04615"),
+];
+
+// ── ADDITIONAL PAPERS ───────────────────────────────────────────────
+const papers = [
+  n("paper/llama-2", "paper", "Llama 2: Open Foundation and Fine-Tuned Chat Models", "research", ["open_source"], "ga", 0.75, "Meta's open model methodology paper.", "2023-07-18T00:00:00Z", "2023-07-18T00:00:00Z", "paper", "Llama 2 paper published", "https://arxiv.org/abs/2307.09288"),
+  n("paper/gpt-4-report", "paper", "GPT-4 Technical Report", "research", ["foundation_models"], "ga", 0.8, "OpenAI's GPT-4 system card.", "2023-03-15T00:00:00Z", "2023-03-15T00:00:00Z", "paper", "GPT-4 technical report", "https://arxiv.org/abs/2303.08774"),
+  n("paper/chain-of-thought", "paper", "Chain-of-Thought Prompting", "research", ["agents"], "ga", 0.75, "Wei et al. chain-of-thought reasoning paper.", "2023-01-01T00:00:00Z", "2022-01-28T00:00:00Z", "paper", "CoT paper published", "https://arxiv.org/abs/2201.11903"),
+  n("paper/flash-attention", "paper", "FlashAttention", "research", ["training", "inference"], "ga", 0.78, "IO-aware exact attention algorithm.", "2023-01-01T00:00:00Z", "2022-06-23T00:00:00Z", "paper", "FlashAttention paper", "https://arxiv.org/abs/2205.14135"),
+  n("paper/lora", "paper", "LoRA: Low-Rank Adaptation", "research", ["training"], "ga", 0.8, "Parameter-efficient fine-tuning method.", "2023-01-01T00:00:00Z", "2021-06-17T00:00:00Z", "paper", "LoRA paper published", "https://arxiv.org/abs/2106.09685"),
+  n("paper/qlora", "paper", "QLoRA", "research", ["training"], "ga", 0.65, "Quantized LoRA for efficient fine-tuning.", "2023-05-23T00:00:00Z", "2023-05-23T00:00:00Z", "paper", "QLoRA paper published", "https://arxiv.org/abs/2305.14314"),
+  n("paper/dpo", "paper", "Direct Preference Optimization", "research", ["safety_alignment"], "ga", 0.72, "Simplified RLHF alternative.", "2023-05-29T00:00:00Z", "2023-05-29T00:00:00Z", "paper", "DPO paper published", "https://arxiv.org/abs/2305.18290"),
+  n("paper/rlhf", "paper", "Training Language Models with Human Feedback", "research", ["safety_alignment"], "ga", 0.78, "Foundational RLHF paper.", "2023-01-01T00:00:00Z", "2022-03-04T00:00:00Z", "paper", "InstructGPT/RLHF paper", "https://arxiv.org/abs/2203.02155"),
+  n("paper/mamba-paper", "paper", "Mamba: Linear-Time Sequence Modeling", "research", ["foundation_models"], "ga", 0.6, "Selective state space model paper.", "2023-12-01T00:00:00Z", "2023-12-01T00:00:00Z", "paper", "Mamba paper published", "https://arxiv.org/abs/2312.00752"),
+  n("paper/mixtral", "paper", "Mixtral of Experts", "research", ["foundation_models"], "ga", 0.6, "Sparse MoE architecture paper.", "2024-01-08T00:00:00Z", "2024-01-08T00:00:00Z", "paper", "Mixtral paper published", "https://arxiv.org/abs/2401.04088"),
+];
+
+// ── ADDITIONAL DATASETS ─────────────────────────────────────────────
+const datasets = [
+  n("dataset/fineweb", "dataset", "FineWeb", "data_infrastructure", ["open_source"], "ga", 0.55, "Hugging Face's 15T token web dataset.", "2024-04-01T00:00:00Z", "2024-04-01T00:00:00Z", "launch", "FineWeb released", "https://huggingface.co/datasets/HuggingFaceFW/fineweb"),
+  n("dataset/redpajama", "dataset", "RedPajama", "data_infrastructure", ["open_source"], "ga", 0.5, "Open reproduction of LLaMA training data.", "2023-04-17T00:00:00Z", "2023-04-17T00:00:00Z", "launch", "RedPajama released", "https://together.ai/blog/redpajama"),
+  n("dataset/laion-5b", "dataset", "LAION-5B", "data_infrastructure", ["creative_tools"], "ga", 0.55, "Large-scale image-text dataset.", "2023-01-01T00:00:00Z", "2022-10-01T00:00:00Z", "launch", "LAION-5B released", "https://laion.ai"),
+  n("dataset/imagenet", "dataset", "ImageNet", "data_infrastructure", ["evaluation"], "ga", 0.6, "Foundational image classification dataset.", "2023-01-01T00:00:00Z", "2009-01-01T00:00:00Z", "launch", "ImageNet established", "https://image-net.org"),
+  n("dataset/openassistant", "dataset", "OpenAssistant", "data_infrastructure", ["open_source"], "ga", 0.4, "Open conversation dataset for RLHF.", "2023-04-15T00:00:00Z", "2023-04-15T00:00:00Z", "launch", "OASST1 released", "https://open-assistant.io"),
+];
+
+// ── ADDITIONAL HARDWARE ─────────────────────────────────────────────
+const hardware = [
+  n("nvidia/a100", "product", "NVIDIA A100", "hardware", ["training"], "ga", 0.8, "NVIDIA's Ampere data center GPU.", "2023-01-01T00:00:00Z", "2020-05-14T00:00:00Z", "launch", "A100 released", "https://nvidia.com/a100"),
+  n("nvidia/h200", "product", "NVIDIA H200", "hardware", ["training", "inference"], "ga", 0.75, "H100 variant with more HBM3e memory.", "2023-11-13T00:00:00Z", "2023-11-13T00:00:00Z", "launch", "H200 announced", "https://nvidia.com"),
+  n("nvidia/gb300", "product", "NVIDIA GB300", "hardware", ["training"], "announced", 0.7, "Next-gen Blackwell Ultra GPU.", "2025-03-01T00:00:00Z", "2025-03-01T00:00:00Z", "launch", "GB300 announced at GTC 2025", "https://nvidia.com"),
+  n("google/tpu-v5e", "product", "Google TPU v5e", "hardware", ["training", "inference"], "ga", 0.55, "Google's efficient TPU for inference.", "2023-08-29T00:00:00Z", "2023-08-29T00:00:00Z", "launch", "TPU v5e announced", "https://cloud.google.com/tpu"),
+  n("amd/mi300x", "product", "AMD MI300X", "hardware", ["training", "inference"], "ga", 0.6, "AMD's AI accelerator with 192GB HBM3.", "2023-12-06T00:00:00Z", "2023-12-06T00:00:00Z", "launch", "MI300X launched", "https://amd.com/mi300"),
+  n("groq/lpu", "product", "Groq LPU", "hardware", ["inference"], "ga", 0.5, "Groq's Language Processing Unit for fast inference.", "2024-02-01T00:00:00Z", "2024-02-01T00:00:00Z", "launch", "Groq LPU API launched", "https://groq.com"),
+  n("cerebras/cs-3", "product", "Cerebras CS-3", "hardware", ["training"], "announced", 0.45, "Third-gen wafer-scale engine.", "2024-03-01T00:00:00Z", "2024-03-01T00:00:00Z", "launch", "CS-3 announced", "https://cerebras.ai"),
+];
+
+// ── ADDITIONAL STANDARDS/INITIATIVES ────────────────────────────────
+const standards = [
+  n("ai-safety-summit", "initiative", "AI Safety Summit", "governance_policy", ["safety_alignment"], "ga", 0.6, "UK-hosted AI safety summit series.", "2023-11-01T00:00:00Z", "2023-11-01T00:00:00Z", "launch", "Bletchley Park AI Safety Summit", "https://aisafetysummit.gov.uk"),
+  n("frontier-model-forum", "initiative", "Frontier Model Forum", "governance_policy", ["safety_alignment"], "ga", 0.5, "Industry consortium for AI safety.", "2023-07-26T00:00:00Z", "2023-07-26T00:00:00Z", "launch", "Forum established by OpenAI, Google, Microsoft, Anthropic", "https://www.frontiermodelforum.org"),
+  n("partnership-on-ai", "initiative", "Partnership on AI", "governance_policy", [], "ga", 0.4, "Multi-stakeholder AI ethics organization.", "2023-01-01T00:00:00Z", "2023-01-01T00:00:00Z", "update", "Continued operations", "https://partnershiponai.org"),
+  n("ca-sb1047", "standard", "California SB 1047", "governance_policy", ["safety_alignment"], "ga", 0.55, "California AI safety bill (vetoed).", "2024-02-08T00:00:00Z", "2024-09-29T00:00:00Z", "update", "SB 1047 vetoed by Governor Newsom", "https://leginfo.legislature.ca.gov"),
+];
+
+// ── Combine all new nodes ───────────────────────────────────────────
+const newNodes: GraphNode[] = [
+  ...companies, ...models, ...products, ...frameworks,
+  ...benchmarks, ...papers, ...datasets, ...hardware, ...standards,
+];
+
+// ── Generate edges for new nodes ────────────────────────────────────
+const newEdges: GraphEdge[] = [];
+
+// authored_by: models → companies
+const authorshipMap: Record<string, string> = {
+  "openai/gpt-3-5-turbo": "openai", "openai/gpt-4-turbo": "openai", "openai/o1-mini": "openai",
+  "openai/o3": "openai", "openai/o3-mini": "openai", "openai/whisper": "openai",
+  "openai/text-embedding-3": "openai",
+  "anthropic/claude-3-opus": "anthropic", "anthropic/claude-3-haiku": "anthropic", "anthropic/claude-2": "anthropic",
+  "google/gemma-2": "google-deepmind", "google/palm-2": "google-deepmind", "google/imagen-3": "google-deepmind",
+  "google/veo-2": "google-deepmind", "google/codegemma": "google-deepmind",
+  "meta/llama-2": "meta-ai", "meta/llama-3-1": "meta-ai", "meta/code-llama": "meta-ai", "meta/sam-2": "meta-ai",
+  "meta/musicgen": "meta-ai",
+  "mistral/mistral-7b": "mistral", "mistral/mixtral-8x7b": "mistral", "mistral/codestral": "mistral",
+  "mistral/pixtral": "mistral",
+  "deepseek/r1": "deepseek-co", "deepseek/v3": "deepseek-co", "deepseek/coder-v2": "deepseek-co",
+  "cohere/command-r-plus": "cohere", "cohere/embed-v3": "cohere",
+  "databricks/dbrx": "databricks", "microsoft/phi-3": "microsoft",
+  "bigcode/starcoder-2": "huggingface",
+  "runway/gen-3": "runway-co", "suno/v3": "suno-co",
+  "bfl/flux": "stability-ai", "stability-ai/sdxl": "stability-ai",
+};
+
+for (const [modelId, companyId] of Object.entries(authorshipMap)) {
+  newEdges.push(e(modelId, companyId, "authored_by", 0.99, `${modelId} created by ${companyId}`));
+}
+
+// Products authored_by
+const productAuthors: Record<string, string> = {
+  "google/gemini-app": "google", "microsoft/copilot": "microsoft", "apple/intelligence": "apple",
+  "cognition/devin": "cognition-ai", "replit/ghostwriter": "replit-co",
+  "sourcegraph/cody": "huggingface", "amazon/codewhisperer": "amazon",
+  "runway-studio": "runway-co", "elevenlabs-studio": "elevenlabs",
+  "aws/bedrock": "amazon", "google/vertex-ai": "google",
+  "azure/openai-service": "microsoft",
+  "nvidia/a100": "nvidia", "nvidia/h200": "nvidia", "nvidia/gb300": "nvidia",
+  "google/tpu-v5e": "google", "amd/mi300x": "amd", "groq/lpu": "groq-co", "cerebras/cs-3": "cerebras-co",
+};
+
+for (const [prodId, companyId] of Object.entries(productAuthors)) {
+  newEdges.push(e(prodId, companyId, "authored_by", 0.99, `${prodId} by ${companyId}`));
+}
+
+// succeeded_by chains
+const successionChains: [string, string][] = [
+  ["openai/gpt-3-5-turbo", "openai/gpt-4-turbo"],
+  ["openai/gpt-4-turbo", "openai/gpt-4o"],
+  ["openai/o1", "openai/o3"],
+  ["openai/o1-mini", "openai/o3-mini"],
+  ["anthropic/claude-2", "anthropic/claude-3-opus"],
+  ["anthropic/claude-3-opus", "anthropic/claude-4-opus"],
+  ["anthropic/claude-3-haiku", "anthropic/claude-4-haiku"],
+  ["google/palm-2", "google/gemini-1-5-pro"],
+  ["meta/llama-2", "meta/llama-3"],
+  ["meta/llama-3", "meta/llama-3-1"],
+  ["meta/llama-3-1", "meta/llama-4"],
+  ["mistral/mistral-7b", "mistral/mixtral-8x7b"],
+  ["mistral/mixtral-8x7b", "mistral/mistral-large"],
+  ["deepseek/v3", "deepseek/r1"],
+  ["stability-ai/sdxl", "stability-ai/sd3"],
+  ["nvidia/a100", "nvidia/h100"],
+  ["nvidia/h100", "nvidia/h200"],
+  ["nvidia/h200", "nvidia/b200"],
+  ["nvidia/b200", "nvidia/gb300"],
+];
+
+for (const [from, to] of successionChains) {
+  newEdges.push(e(from, to, "succeeded_by", 0.95, `${to} succeeds ${from}`));
+}
+
+// competes_with
+const competitors: [string, string][] = [
+  ["deepseek/r1", "openai/o3"], ["deepseek/r1", "anthropic/claude-4-opus"],
+  ["deepseek/v3", "openai/gpt-4o"], ["deepseek/v3", "anthropic/claude-4-sonnet"],
+  ["qwen/qwen-2-5", "meta/llama-4"], ["qwen/qwen-2-5", "mistral/mistral-large"],
+  ["codeium", "github/copilot"], ["codeium", "cursor"],
+  ["tabnine", "github/copilot"], ["cognition/devin", "anthropic/claude-code"],
+  ["google/gemini-app", "openai/chatgpt"],
+  ["microsoft/copilot", "openai/chatgpt"], ["microsoft/copilot", "google/gemini-app"],
+  ["aws/bedrock", "azure/openai-service"], ["aws/bedrock", "google/vertex-ai"],
+  ["azure/openai-service", "google/vertex-ai"],
+  ["weaviate", "pinecone"], ["weaviate", "chromadb"], ["pinecone", "chromadb"],
+  ["amd/mi300x", "nvidia/h100"], ["groq/lpu", "nvidia/h100"],
+  ["bfl/flux", "stability-ai/sd3"], ["bfl/flux", "midjourney"],
+  ["crewai", "autogen"], ["ollama", "together-ai"],
+  ["runway/gen-3", "openai/sora"], ["runway/gen-3", "google/veo-2"],
+  ["suno/v3", "meta/musicgen"],
+  ["bigcode/starcoder-2", "deepseek/coder-v2"], ["bigcode/starcoder-2", "meta/code-llama"],
+  ["mistral/codestral", "deepseek/coder-v2"],
+  ["replit/ghostwriter", "codeium"],
+  ["jax", "pytorch"],
+];
+
+for (const [a, b] of competitors) {
+  newEdges.push(e(a, b, "competes_with", 0.8, `${a} competes with ${b}`));
+}
+
+// built_on
+const builtOn: [string, string][] = [
+  ["google/gemini-app", "google/gemini-2-5-pro"],
+  ["microsoft/copilot", "openai/gpt-4o"],
+  ["aws/bedrock", "anthropic/claude-4-sonnet"],
+  ["azure/openai-service", "openai/gpt-4o"],
+  ["google/vertex-ai", "google/gemini-2-5-pro"],
+  ["ollama", "meta/llama-4"], ["together-ai", "meta/llama-4"],
+  ["tensorrt", "nvidia/h100"],
+  ["deepseek/r1", "deepseek/v3"],
+  ["meta/code-llama", "meta/llama-2"],
+  ["google/codegemma", "google/gemma-2"],
+  ["qwen/qwen-2-5-coder", "qwen/qwen-2-5"],
+  ["deepseek/coder-v2", "deepseek/v3"],
+];
+
+for (const [src, tgt] of builtOn) {
+  newEdges.push(e(src, tgt, "built_on", 0.85, `${src} built on ${tgt}`));
+}
+
+// integrates_with
+const integrations: [string, string][] = [
+  ["langchain", "deepseek/v3"], ["langchain", "mistral/mistral-large"],
+  ["llamaindex", "anthropic/claude-4-sonnet"], ["llamaindex", "google/gemini-2-5-pro"],
+  ["vllm", "deepseek/v3"], ["vllm", "qwen/qwen-2-5"],
+  ["ollama", "mistral/mistral-7b"], ["ollama", "qwen/qwen-2-5"],
+  ["crewai", "openai/gpt-4o"], ["crewai", "anthropic/claude-4-sonnet"],
+  ["autogen", "openai/gpt-4o"],
+  ["dspy", "openai/gpt-4o"], ["dspy", "anthropic/claude-4-sonnet"],
+  ["tensorrt", "meta/llama-4"],
+  ["onnxruntime", "microsoft/phi-3"],
+];
+
+for (const [src, tgt] of integrations) {
+  newEdges.push(e(src, tgt, "integrates_with", 0.85, `${src} integrates with ${tgt}`));
+}
+
+// benchmarked_on
+const benchmarkedOn: [string, string][] = [
+  ["deepseek/r1", "mmlu"], ["deepseek/r1", "gpqa"], ["deepseek/r1", "math-benchmark"],
+  ["deepseek/v3", "mmlu"], ["deepseek/v3", "humaneval"],
+  ["qwen/qwen-2-5", "mmlu"], ["qwen/qwen-2-5", "humaneval"],
+  ["meta/llama-3-1", "mmlu"], ["meta/llama-3-1", "humaneval"],
+  ["microsoft/phi-3", "mmlu"],
+  ["openai/o3", "arc-agi"], ["openai/o3", "gpqa"],
+  ["anthropic/claude-4-opus", "gpqa"],
+  ["openai/gpt-4o", "chatbot-arena"],
+  ["anthropic/claude-4-opus", "chatbot-arena"],
+  ["google/gemini-2-5-pro", "chatbot-arena"],
+  ["deepseek/r1", "chatbot-arena"],
+];
+
+for (const [model, bench] of benchmarkedOn) {
+  newEdges.push(e(model, bench, "benchmarked_on", 0.9, `${model} evaluated on ${bench}`));
+}
+
+// funded_by
+const fundedBy: [string, string][] = [
+  ["inflection", "microsoft"], ["character-ai", "google"],
+  ["figure-ai", "nvidia"], ["figure-ai", "microsoft"],
+  ["adept-ai", "amazon"],
+  ["deepseek-co", "deepseek-co"], // self-funded, skip
+  ["scale-ai", "amazon"],
+  ["databricks", "nvidia"],
+];
+
+for (const [co, investor] of fundedBy) {
+  if (co !== investor) {
+    newEdges.push(e(co, investor, "funded_by", 0.9, `${co} funded by ${investor}`));
+  }
+}
+
+// partners_with
+const partnerships: [string, string][] = [
+  ["nvidia", "microsoft"], ["nvidia", "google"],
+  ["apple", "openai"], // Apple Intelligence uses OpenAI
+  ["samsung", "google"], // Galaxy AI uses Gemini
+];
+
+for (const [a, b] of partnerships) {
+  newEdges.push(e(a, b, "partners_with", 0.85, `${a} partners with ${b}`));
+}
+
+// acquired_by
+newEdges.push(e("adept-ai", "amazon", "acquired_by", 0.95, "Adept team acquired by Amazon in 2024"));
+newEdges.push(e("inflection", "microsoft", "acquired_by", 0.9, "Inflection AI key talent hired by Microsoft"));
+
+// Papers inspired_by / authored_by
+const paperAuthors: Record<string, string> = {
+  "paper/llama-2": "meta-ai", "paper/gpt-4-report": "openai",
+  "paper/flash-attention": "stanford", "paper/lora": "microsoft",
+  "paper/qlora": "huggingface", "paper/dpo": "stanford",
+  "paper/rlhf": "openai", "paper/mamba-paper": "anthropic",
+  "paper/mixtral": "mistral",
+};
+
+// Only add authored_by for existing companies
+for (const [paperId, companyId] of Object.entries(paperAuthors)) {
+  const existingCompanies = ["meta-ai", "openai", "microsoft", "huggingface", "anthropic", "mistral"];
+  if (existingCompanies.includes(companyId)) {
+    newEdges.push(e(paperId, companyId, "authored_by", 0.95, `${paperId} authored at ${companyId}`));
+  }
+}
+
+// Paper inspired_by chains
+const paperInspirations: [string, string][] = [
+  ["paper/lora", "paper/attention-is-all-you-need"],
+  ["paper/qlora", "paper/lora"],
+  ["paper/dpo", "paper/rlhf"],
+  ["paper/flash-attention", "paper/attention-is-all-you-need"],
+  ["paper/chain-of-thought", "paper/scaling-laws"],
+  ["paper/mamba-paper", "paper/attention-is-all-you-need"],
+  ["paper/mixtral", "paper/attention-is-all-you-need"],
+  ["paper/llama-2", "paper/scaling-laws"],
+];
+
+for (const [from, to] of paperInspirations) {
+  newEdges.push(e(from, to, "inspired_by", 0.8, `${from} inspired by ${to}`));
+}
+
+// forked_from
+newEdges.push(e("meta/code-llama", "meta/llama-2", "forked_from", 0.95, "Code Llama derived from Llama 2"));
+newEdges.push(e("google/codegemma", "google/gemma-2", "forked_from", 0.95, "CodeGemma derived from Gemma"));
+newEdges.push(e("qwen/qwen-2-5-coder", "qwen/qwen-2-5", "forked_from", 0.95, "Qwen Coder derived from Qwen 2.5"));
+newEdges.push(e("deepseek/coder-v2", "deepseek/v3", "forked_from", 0.85, "DeepSeek Coder derived from DeepSeek base"));
+newEdges.push(e("stability-ai/sdxl", "stability-ai/sd3", "inspired_by", 0.7, "SD3 builds on SDXL concepts"));
+
+// Part_of
+newEdges.push(e("openai/o1-mini", "openai/o1", "part_of", 0.9, "o1-mini is part of o1 family"));
+newEdges.push(e("openai/o3-mini", "openai/o3", "part_of", 0.9, "o3-mini is part of o3 family"));
+
+// ── Read existing seed data and merge ───────────────────────────────
+const seedPath = join(__dirname, "..", "packages", "client", "public", "seed-data.json");
+let existingData: { nodes: GraphNode[]; edges: GraphEdge[] };
+try {
+  existingData = JSON.parse(readFileSync(seedPath, "utf-8"));
+} catch {
+  existingData = { nodes: [], edges: [] };
+}
+
+const existingIds = new Set(existingData.nodes.map((n) => n.id));
+const uniqueNewNodes = newNodes.filter((n) => !existingIds.has(n.id));
+
+const allNodes = [...existingData.nodes, ...uniqueNewNodes];
+const allNodeIds = new Set(allNodes.map((n) => n.id));
+
+// Filter edges to only include those with both endpoints present
+const allEdges = [...existingData.edges, ...newEdges].filter(
+  (e) => allNodeIds.has(e.source_id) && allNodeIds.has(e.target_id),
+);
+
+// Deduplicate edges
+const edgeKey = (e: GraphEdge) => `${e.source_id}|${e.target_id}|${e.relationship}`;
+const edgeMap = new Map<string, GraphEdge>();
+for (const edge of allEdges) {
+  edgeMap.set(edgeKey(edge), edge);
+}
+const uniqueEdges = [...edgeMap.values()];
+
+const output = { nodes: allNodes, edges: uniqueEdges };
+writeFileSync(seedPath, JSON.stringify(output, null, 2));
+
+console.log(`Backfill complete:`);
+console.log(`  Total nodes: ${allNodes.length}`);
+console.log(`  Total edges: ${uniqueEdges.length}`);
+console.log(`  New nodes added: ${uniqueNewNodes.length}`);
+console.log(`  New edges added: ${uniqueEdges.length - existingData.edges.length}`);
+console.log(`  Verticals: ${new Set(allNodes.map((n) => n.vertical)).size}`);
+console.log(`  Relationship types: ${new Set(uniqueEdges.map((e) => e.relationship)).size}/12`);
+console.log(`  Node types: ${new Set(allNodes.map((n) => n.type)).size}`);

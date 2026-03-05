@@ -1,0 +1,6467 @@
+{
+  "nodes": [
+    {
+      "id": "openai",
+      "type": "company",
+      "name": "OpenAI",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "agents",
+        "consumer_products"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-03-14T00:00:00Z",
+          "event_type": "launch",
+          "summary": "GPT-4 released",
+          "source_url": "https://openai.com/gpt-4"
+        }
+      ],
+      "significance": 0.98,
+      "summary": "AI research lab and creator of GPT models and ChatGPT.",
+      "metadata": {
+        "founded": 2015,
+        "hq": "San Francisco"
+      }
+    },
+    {
+      "id": "anthropic",
+      "type": "company",
+      "name": "Anthropic",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "safety_alignment",
+        "agents"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-04T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude 3 family launched",
+          "source_url": "https://anthropic.com/claude-3"
+        }
+      ],
+      "significance": 0.95,
+      "summary": "AI safety company building the Claude model family.",
+      "metadata": {
+        "founded": 2021,
+        "hq": "San Francisco"
+      }
+    },
+    {
+      "id": "google-deepmind",
+      "type": "company",
+      "name": "Google DeepMind",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "research",
+        "multimodal"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-12-06T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Gemini model family announced",
+          "source_url": "https://deepmind.google/gemini"
+        }
+      ],
+      "significance": 0.95,
+      "summary": "Google's unified AI research lab combining DeepMind and Google Brain.",
+      "metadata": {
+        "founded": 2023,
+        "hq": "London"
+      }
+    },
+    {
+      "id": "meta-ai",
+      "type": "company",
+      "name": "Meta AI",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source",
+        "research"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-18T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Llama 3 released",
+          "source_url": "https://ai.meta.com/llama3"
+        }
+      ],
+      "significance": 0.9,
+      "summary": "Meta's AI research division, creators of Llama open-weight models.",
+      "metadata": {
+        "hq": "Menlo Park"
+      }
+    },
+    {
+      "id": "mistral",
+      "type": "company",
+      "name": "Mistral AI",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source",
+        "inference"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-26T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Mistral Large released",
+          "source_url": "https://mistral.ai/news/mistral-large"
+        }
+      ],
+      "significance": 0.8,
+      "summary": "French AI startup building open and commercial frontier models.",
+      "metadata": {
+        "founded": 2023,
+        "hq": "Paris"
+      }
+    },
+    {
+      "id": "nvidia",
+      "type": "company",
+      "name": "NVIDIA",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training",
+        "inference"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-18T00:00:00Z",
+          "event_type": "launch",
+          "summary": "B200 GPU announced at GTC",
+          "source_url": "https://nvidia.com/gtc"
+        }
+      ],
+      "significance": 0.95,
+      "summary": "Dominant GPU manufacturer powering AI training and inference.",
+      "metadata": {
+        "founded": 1993,
+        "hq": "Santa Clara"
+      }
+    },
+    {
+      "id": "microsoft",
+      "type": "company",
+      "name": "Microsoft",
+      "vertical": "enterprise_platforms",
+      "verticals_secondary": [
+        "code_generation",
+        "consumer_products"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-02-07T00:00:00Z",
+          "event_type": "launch",
+          "summary": "AI-powered Bing and Copilot announced",
+          "source_url": "https://blogs.microsoft.com/blog/2023/02/07/reinventing-search-with-a-new-ai-powered-microsoft-bing-and-edge-your-copilot-for-the-web/"
+        }
+      ],
+      "significance": 0.9,
+      "summary": "Major tech company with deep AI integration across products via OpenAI partnership.",
+      "metadata": {
+        "hq": "Redmond"
+      }
+    },
+    {
+      "id": "google",
+      "type": "company",
+      "name": "Google",
+      "vertical": "enterprise_platforms",
+      "verticals_secondary": [
+        "search_retrieval",
+        "consumer_products"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-05-14T00:00:00Z",
+          "event_type": "launch",
+          "summary": "AI Overviews launched in Search",
+          "source_url": "https://blog.google/products/search/generative-ai-google-search-may-2024/"
+        }
+      ],
+      "significance": 0.9,
+      "summary": "Parent company of DeepMind, integrating AI across search, cloud, and products.",
+      "metadata": {
+        "hq": "Mountain View"
+      }
+    },
+    {
+      "id": "xai",
+      "type": "company",
+      "name": "xAI",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "consumer_products"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-07-12T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-17T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Grok-1.5 released",
+          "source_url": "https://x.ai/blog/grok-1.5"
+        }
+      ],
+      "significance": 0.7,
+      "summary": "Elon Musk's AI company building the Grok model series.",
+      "metadata": {
+        "founded": 2023,
+        "hq": "Austin"
+      }
+    },
+    {
+      "id": "cohere",
+      "type": "company",
+      "name": "Cohere",
+      "vertical": "enterprise_platforms",
+      "verticals_secondary": [
+        "search_retrieval",
+        "foundation_models"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-04T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Command R+ released",
+          "source_url": "https://cohere.com/blog/command-r-plus"
+        }
+      ],
+      "significance": 0.65,
+      "summary": "Enterprise-focused AI company with RAG-optimized models.",
+      "metadata": {
+        "founded": 2019,
+        "hq": "Toronto"
+      }
+    },
+    {
+      "id": "stability-ai",
+      "type": "company",
+      "name": "Stability AI",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "open_source",
+        "multimodal"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-22T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Stable Diffusion 3 announced",
+          "source_url": "https://stability.ai/news/stable-diffusion-3"
+        }
+      ],
+      "significance": 0.65,
+      "summary": "Open-source generative AI company behind Stable Diffusion.",
+      "metadata": {
+        "founded": 2020,
+        "hq": "London"
+      }
+    },
+    {
+      "id": "huggingface",
+      "type": "company",
+      "name": "Hugging Face",
+      "vertical": "open_source",
+      "verticals_secondary": [
+        "developer_tooling",
+        "data_infrastructure"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-08-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Surpassed 1M models on the Hub",
+          "source_url": "https://huggingface.co/blog"
+        }
+      ],
+      "significance": 0.85,
+      "summary": "The GitHub of machine learning — hosts models, datasets, and Spaces.",
+      "metadata": {
+        "founded": 2016,
+        "hq": "New York"
+      }
+    },
+    {
+      "id": "openai/gpt-4o",
+      "type": "model",
+      "name": "GPT-4o",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-05-13T00:00:00Z",
+          "event_type": "launch",
+          "summary": "GPT-4o launched with native multimodal capabilities",
+          "source_url": "https://openai.com/index/hello-gpt-4o/"
+        }
+      ],
+      "significance": 0.92,
+      "summary": "OpenAI's flagship multimodal model with native audio, vision, and text.",
+      "metadata": {
+        "modality": "text,vision,audio",
+        "context_window": 128000
+      }
+    },
+    {
+      "id": "openai/gpt-4",
+      "type": "model",
+      "name": "GPT-4",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "ga",
+      "discovered_at": "2023-03-14T00:00:00Z",
+      "updated_at": "2024-05-13T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-03-14T00:00:00Z",
+          "event_type": "launch",
+          "summary": "GPT-4 released",
+          "source_url": "https://openai.com/research/gpt-4"
+        }
+      ],
+      "significance": 0.85,
+      "summary": "OpenAI's breakthrough large language model.",
+      "metadata": {
+        "context_window": 8192
+      }
+    },
+    {
+      "id": "openai/o1",
+      "type": "model",
+      "name": "o1",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "discovered_at": "2024-09-12T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-09-12T00:00:00Z",
+          "event_type": "launch",
+          "summary": "o1 reasoning model released",
+          "source_url": "https://openai.com/o1"
+        }
+      ],
+      "significance": 0.88,
+      "summary": "OpenAI's reasoning-focused model with chain-of-thought capabilities.",
+      "metadata": {
+        "modality": "text",
+        "reasoning": true
+      }
+    },
+    {
+      "id": "anthropic/claude-4-opus",
+      "type": "model",
+      "name": "Claude 4 Opus",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "agents",
+        "code_generation"
+      ],
+      "status": "ga",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-05-22T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude 4 Opus released as most capable model",
+          "source_url": "https://anthropic.com/claude-4"
+        }
+      ],
+      "significance": 0.93,
+      "summary": "Anthropic's most capable model with deep reasoning and agentic capabilities.",
+      "metadata": {
+        "context_window": 200000
+      }
+    },
+    {
+      "id": "anthropic/claude-4-sonnet",
+      "type": "model",
+      "name": "Claude 4 Sonnet",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "code_generation"
+      ],
+      "status": "ga",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-05-22T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude 4 Sonnet released",
+          "source_url": "https://anthropic.com/claude-4"
+        }
+      ],
+      "significance": 0.88,
+      "summary": "Anthropic's balanced performance/cost model in the Claude 4 family.",
+      "metadata": {
+        "context_window": 200000
+      }
+    },
+    {
+      "id": "anthropic/claude-4-haiku",
+      "type": "model",
+      "name": "Claude 4 Haiku",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "discovered_at": "2025-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-06-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude 4 Haiku released for fast inference",
+          "source_url": "https://anthropic.com/claude-4-haiku"
+        }
+      ],
+      "significance": 0.75,
+      "summary": "Anthropic's fastest and most cost-efficient Claude 4 model.",
+      "metadata": {
+        "context_window": 200000
+      }
+    },
+    {
+      "id": "anthropic/claude-3-5-sonnet",
+      "type": "model",
+      "name": "Claude 3.5 Sonnet",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "code_generation"
+      ],
+      "status": "ga",
+      "discovered_at": "2024-06-20T00:00:00Z",
+      "updated_at": "2025-05-22T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-20T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude 3.5 Sonnet released",
+          "source_url": "https://anthropic.com/claude-3-5-sonnet"
+        }
+      ],
+      "significance": 0.8,
+      "summary": "Highly capable model that set new benchmarks for coding tasks.",
+      "metadata": {
+        "context_window": 200000
+      }
+    },
+    {
+      "id": "google/gemini-2-5-pro",
+      "type": "model",
+      "name": "Gemini 2.5 Pro",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "multimodal",
+        "agents"
+      ],
+      "status": "ga",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-03-25T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Gemini 2.5 Pro released with thinking capabilities",
+          "source_url": "https://deepmind.google/technologies/gemini/2-5-pro/"
+        }
+      ],
+      "significance": 0.9,
+      "summary": "Google DeepMind's thinking model with 1M context window.",
+      "metadata": {
+        "context_window": 1000000,
+        "modality": "text,vision,audio,video"
+      }
+    },
+    {
+      "id": "meta/llama-4",
+      "type": "model",
+      "name": "Llama 4",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "discovered_at": "2025-04-05T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-04-05T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Llama 4 released as open-weight model",
+          "source_url": "https://ai.meta.com/llama4"
+        }
+      ],
+      "significance": 0.88,
+      "summary": "Meta's latest open-weight model family with mixture-of-experts architecture.",
+      "metadata": {
+        "open_weight": true
+      }
+    },
+    {
+      "id": "meta/llama-3",
+      "type": "model",
+      "name": "Llama 3",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "discovered_at": "2024-04-18T00:00:00Z",
+      "updated_at": "2025-04-05T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-18T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Llama 3 released",
+          "source_url": "https://ai.meta.com/blog/meta-llama-3/"
+        }
+      ],
+      "significance": 0.78,
+      "summary": "Meta's open-weight model family with 8B and 70B variants.",
+      "metadata": {
+        "open_weight": true
+      }
+    },
+    {
+      "id": "mistral/mistral-large",
+      "type": "model",
+      "name": "Mistral Large",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "ga",
+      "discovered_at": "2024-02-26T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-26T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Mistral Large released",
+          "source_url": "https://mistral.ai/news/mistral-large"
+        }
+      ],
+      "significance": 0.7,
+      "summary": "Mistral's flagship commercial model.",
+      "metadata": {}
+    },
+    {
+      "id": "google/gemini-1-5-pro",
+      "type": "model",
+      "name": "Gemini 1.5 Pro",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "discovered_at": "2024-02-15T00:00:00Z",
+      "updated_at": "2025-03-25T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-15T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Gemini 1.5 Pro with 1M context",
+          "source_url": "https://deepmind.google/technologies/gemini/"
+        }
+      ],
+      "significance": 0.78,
+      "summary": "Google's million-token context window model.",
+      "metadata": {
+        "context_window": 1000000
+      }
+    },
+    {
+      "id": "xai/grok-2",
+      "type": "model",
+      "name": "Grok-2",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "ga",
+      "discovered_at": "2024-08-13T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-08-13T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Grok-2 released",
+          "source_url": "https://x.ai/blog/grok-2"
+        }
+      ],
+      "significance": 0.6,
+      "summary": "xAI's second-generation language model.",
+      "metadata": {}
+    },
+    {
+      "id": "stability-ai/sd3",
+      "type": "model",
+      "name": "Stable Diffusion 3",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal",
+        "open_source"
+      ],
+      "status": "ga",
+      "discovered_at": "2024-02-22T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-12T00:00:00Z",
+          "event_type": "launch",
+          "summary": "SD3 Medium weights released",
+          "source_url": "https://stability.ai/news/stable-diffusion-3-medium"
+        }
+      ],
+      "significance": 0.7,
+      "summary": "Stability AI's text-to-image diffusion model with MMDiT architecture.",
+      "metadata": {
+        "modality": "text-to-image"
+      }
+    },
+    {
+      "id": "openai/dall-e-3",
+      "type": "model",
+      "name": "DALL-E 3",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-10-03T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-10-03T00:00:00Z",
+          "event_type": "launch",
+          "summary": "DALL-E 3 released integrated with ChatGPT",
+          "source_url": "https://openai.com/dall-e-3"
+        }
+      ],
+      "significance": 0.72,
+      "summary": "OpenAI's text-to-image generation model with superior prompt understanding.",
+      "metadata": {
+        "modality": "text-to-image"
+      }
+    },
+    {
+      "id": "openai/chatgpt",
+      "type": "product",
+      "name": "ChatGPT",
+      "vertical": "consumer_products",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-11-06T00:00:00Z",
+          "event_type": "update",
+          "summary": "GPTs custom chatbot platform launched",
+          "source_url": "https://openai.com/blog/introducing-gpts"
+        }
+      ],
+      "significance": 0.95,
+      "summary": "OpenAI's consumer AI chatbot product, most widely used AI app globally.",
+      "metadata": {
+        "mau": "200M+"
+      }
+    },
+    {
+      "id": "anthropic/claude-code",
+      "type": "product",
+      "name": "Claude Code",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "agents",
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "discovered_at": "2025-02-24T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-02-24T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude Code launched as agentic coding CLI",
+          "source_url": "https://anthropic.com/claude-code"
+        }
+      ],
+      "significance": 0.78,
+      "summary": "Anthropic's agentic coding tool that operates in the terminal.",
+      "metadata": {
+        "open_source": false
+      }
+    },
+    {
+      "id": "github/copilot",
+      "type": "product",
+      "name": "GitHub Copilot",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-09T00:00:00Z",
+          "event_type": "update",
+          "summary": "Copilot Workspace preview announced",
+          "source_url": "https://github.blog/2024-04-29-github-copilot-workspace/"
+        }
+      ],
+      "significance": 0.85,
+      "summary": "GitHub's AI pair programmer integrated into IDEs.",
+      "metadata": {
+        "subscribers": "1.8M+"
+      }
+    },
+    {
+      "id": "cursor",
+      "type": "product",
+      "name": "Cursor",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "developer_tooling",
+        "agents"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-09-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Cursor reached $100M ARR",
+          "source_url": "https://www.cursor.com"
+        }
+      ],
+      "significance": 0.78,
+      "summary": "AI-first code editor built on VS Code with deep model integration.",
+      "metadata": {}
+    },
+    {
+      "id": "perplexity",
+      "type": "product",
+      "name": "Perplexity",
+      "vertical": "search_retrieval",
+      "verticals_secondary": [
+        "consumer_products"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-01T00:00:00Z",
+          "event_type": "funding",
+          "summary": "Series B at $1B valuation",
+          "source_url": "https://www.perplexity.ai"
+        }
+      ],
+      "significance": 0.75,
+      "summary": "AI-powered search engine with cited answers.",
+      "metadata": {}
+    },
+    {
+      "id": "midjourney",
+      "type": "product",
+      "name": "Midjourney",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "consumer_products"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Midjourney v6.1 released with improved coherence",
+          "source_url": "https://www.midjourney.com"
+        }
+      ],
+      "significance": 0.75,
+      "summary": "Leading AI image generation platform accessible via Discord and web.",
+      "metadata": {}
+    },
+    {
+      "id": "openai/sora",
+      "type": "product",
+      "name": "Sora",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "discovered_at": "2024-02-15T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-12-09T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Sora launched for ChatGPT Pro/Plus users",
+          "source_url": "https://openai.com/sora"
+        }
+      ],
+      "significance": 0.8,
+      "summary": "OpenAI's text-to-video generation model.",
+      "metadata": {
+        "modality": "text-to-video"
+      }
+    },
+    {
+      "id": "google/notebooklm",
+      "type": "product",
+      "name": "NotebookLM",
+      "vertical": "consumer_products",
+      "verticals_secondary": [
+        "search_retrieval"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-07-12T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-09-26T00:00:00Z",
+          "event_type": "update",
+          "summary": "Audio Overview feature launched",
+          "source_url": "https://blog.google/technology/ai/notebooklm-audio-overviews/"
+        }
+      ],
+      "significance": 0.6,
+      "summary": "Google's AI research and note-taking assistant powered by Gemini.",
+      "metadata": {}
+    },
+    {
+      "id": "langchain",
+      "type": "framework",
+      "name": "LangChain",
+      "vertical": "developer_tooling",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-08T00:00:00Z",
+          "event_type": "update",
+          "summary": "LangChain v0.1 stable release",
+          "source_url": "https://blog.langchain.dev/langchain-v0-1-0/"
+        }
+      ],
+      "significance": 0.78,
+      "summary": "Popular framework for building LLM-powered applications and agents.",
+      "metadata": {
+        "language": "python,javascript"
+      }
+    },
+    {
+      "id": "huggingface/transformers",
+      "type": "framework",
+      "name": "Transformers",
+      "vertical": "developer_tooling",
+      "verticals_secondary": [
+        "open_source",
+        "training"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Transformers v4.41 with Gemma 2 support",
+          "source_url": "https://github.com/huggingface/transformers"
+        }
+      ],
+      "significance": 0.88,
+      "summary": "The de facto standard library for pretrained transformer models.",
+      "metadata": {
+        "language": "python",
+        "github_stars": "130k+"
+      }
+    },
+    {
+      "id": "vllm",
+      "type": "framework",
+      "name": "vLLM",
+      "vertical": "inference",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-06-20T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "vLLM v0.3 with speculative decoding",
+          "source_url": "https://github.com/vllm-project/vllm"
+        }
+      ],
+      "significance": 0.75,
+      "summary": "High-throughput LLM serving engine with PagedAttention.",
+      "metadata": {
+        "language": "python"
+      }
+    },
+    {
+      "id": "pytorch",
+      "type": "framework",
+      "name": "PyTorch",
+      "vertical": "training",
+      "verticals_secondary": [
+        "developer_tooling",
+        "research"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-07-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "PyTorch 2.4 released with updated torch.compile",
+          "source_url": "https://pytorch.org/blog/"
+        }
+      ],
+      "significance": 0.92,
+      "summary": "Dominant deep learning framework used by most AI research labs.",
+      "metadata": {
+        "language": "python,c++",
+        "github_stars": "82k+"
+      }
+    },
+    {
+      "id": "llamaindex",
+      "type": "framework",
+      "name": "LlamaIndex",
+      "vertical": "search_retrieval",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "LlamaIndex v0.10 with modular architecture",
+          "source_url": "https://www.llamaindex.ai"
+        }
+      ],
+      "significance": 0.68,
+      "summary": "Data framework for connecting LLMs with external data sources.",
+      "metadata": {
+        "language": "python"
+      }
+    },
+    {
+      "id": "mmlu",
+      "type": "benchmark",
+      "name": "MMLU",
+      "vertical": "evaluation",
+      "verticals_secondary": [],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "MMLU widely adopted as LLM benchmark",
+          "source_url": "https://arxiv.org/abs/2009.03300"
+        }
+      ],
+      "significance": 0.7,
+      "summary": "Massive Multitask Language Understanding benchmark covering 57 subjects.",
+      "metadata": {
+        "subjects": 57
+      }
+    },
+    {
+      "id": "humaneval",
+      "type": "benchmark",
+      "name": "HumanEval",
+      "vertical": "evaluation",
+      "verticals_secondary": [
+        "code_generation"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "HumanEval established as code gen benchmark",
+          "source_url": "https://arxiv.org/abs/2107.03374"
+        }
+      ],
+      "significance": 0.65,
+      "summary": "OpenAI benchmark measuring code generation capability with 164 problems.",
+      "metadata": {
+        "problems": 164
+      }
+    },
+    {
+      "id": "swebench",
+      "type": "benchmark",
+      "name": "SWE-bench",
+      "vertical": "evaluation",
+      "verticals_secondary": [
+        "code_generation",
+        "agents"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-10-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "SWE-bench Verified released with human-validated subset",
+          "source_url": "https://www.swebench.com"
+        }
+      ],
+      "significance": 0.72,
+      "summary": "Benchmark evaluating AI agents on real-world software engineering tasks.",
+      "metadata": {}
+    },
+    {
+      "id": "paper/attention-is-all-you-need",
+      "type": "paper",
+      "name": "Attention Is All You Need",
+      "vertical": "research",
+      "verticals_secondary": [
+        "foundation_models"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2017-06-12T00:00:00Z",
+          "event_type": "paper",
+          "summary": "Transformer architecture paper published",
+          "source_url": "https://arxiv.org/abs/1706.03762"
+        }
+      ],
+      "significance": 0.98,
+      "summary": "The foundational paper introducing the Transformer architecture.",
+      "metadata": {
+        "citations": "100k+",
+        "authors": "Vaswani et al."
+      }
+    },
+    {
+      "id": "paper/scaling-laws",
+      "type": "paper",
+      "name": "Scaling Laws for Neural Language Models",
+      "vertical": "research",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2020-01-23T00:00:00Z",
+          "event_type": "paper",
+          "summary": "Kaplan et al. scaling laws paper published",
+          "source_url": "https://arxiv.org/abs/2001.08361"
+        }
+      ],
+      "significance": 0.85,
+      "summary": "Seminal paper establishing power-law relationships between model size, data, and performance.",
+      "metadata": {
+        "authors": "Kaplan et al."
+      }
+    },
+    {
+      "id": "paper/constitutional-ai",
+      "type": "paper",
+      "name": "Constitutional AI",
+      "vertical": "safety_alignment",
+      "verticals_secondary": [
+        "research"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2022-12-15T00:00:00Z",
+          "event_type": "paper",
+          "summary": "Constitutional AI paper published by Anthropic",
+          "source_url": "https://arxiv.org/abs/2212.08073"
+        }
+      ],
+      "significance": 0.78,
+      "summary": "Anthropic's approach to training harmless AI assistants through self-supervision.",
+      "metadata": {
+        "authors": "Bai et al."
+      }
+    },
+    {
+      "id": "dataset/the-pile",
+      "type": "dataset",
+      "name": "The Pile",
+      "vertical": "data_infrastructure",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2020-12-31T00:00:00Z",
+          "event_type": "launch",
+          "summary": "The Pile 825GB open dataset released",
+          "source_url": "https://pile.eleuther.ai"
+        }
+      ],
+      "significance": 0.6,
+      "summary": "Large open-source language modeling dataset by EleutherAI.",
+      "metadata": {
+        "size": "825GB"
+      }
+    },
+    {
+      "id": "dataset/common-crawl",
+      "type": "dataset",
+      "name": "Common Crawl",
+      "vertical": "data_infrastructure",
+      "verticals_secondary": [],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Ongoing monthly web crawl dataset",
+          "source_url": "https://commoncrawl.org"
+        }
+      ],
+      "significance": 0.7,
+      "summary": "Massive open web crawl dataset used for training many LLMs.",
+      "metadata": {
+        "size": "petabytes"
+      }
+    },
+    {
+      "id": "eu-ai-act",
+      "type": "standard",
+      "name": "EU AI Act",
+      "vertical": "governance_policy",
+      "verticals_secondary": [],
+      "status": "ga",
+      "discovered_at": "2023-06-14T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-13T00:00:00Z",
+          "event_type": "update",
+          "summary": "EU AI Act formally approved by European Parliament",
+          "source_url": "https://www.europarl.europa.eu/topics/en/article/20230601STO93804/eu-ai-act-first-regulation-on-artificial-intelligence"
+        }
+      ],
+      "significance": 0.8,
+      "summary": "First comprehensive legal framework for AI regulation worldwide.",
+      "metadata": {
+        "jurisdiction": "EU"
+      }
+    },
+    {
+      "id": "nist-ai-rmf",
+      "type": "initiative",
+      "name": "NIST AI Risk Management Framework",
+      "vertical": "governance_policy",
+      "verticals_secondary": [
+        "safety_alignment"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-26T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-26T00:00:00Z",
+          "event_type": "launch",
+          "summary": "NIST AI RMF 1.0 published",
+          "source_url": "https://www.nist.gov/artificial-intelligence/executive-order-safe-secure-and-trustworthy-artificial-intelligence"
+        }
+      ],
+      "significance": 0.6,
+      "summary": "US voluntary AI risk management guidelines by NIST.",
+      "metadata": {
+        "jurisdiction": "US"
+      }
+    },
+    {
+      "id": "nvidia/h100",
+      "type": "product",
+      "name": "NVIDIA H100",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training",
+        "inference"
+      ],
+      "status": "ga",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-03-21T00:00:00Z",
+          "event_type": "launch",
+          "summary": "H100 became widely available",
+          "source_url": "https://nvidia.com/h100"
+        }
+      ],
+      "significance": 0.9,
+      "summary": "NVIDIA's flagship data center GPU powering most AI training in 2023-2024.",
+      "metadata": {
+        "architecture": "Hopper",
+        "memory": "80GB HBM3"
+      }
+    },
+    {
+      "id": "nvidia/b200",
+      "type": "product",
+      "name": "NVIDIA B200",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training",
+        "inference"
+      ],
+      "status": "announced",
+      "discovered_at": "2024-03-18T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-18T00:00:00Z",
+          "event_type": "launch",
+          "summary": "B200 GPU announced at GTC 2024",
+          "source_url": "https://nvidia.com/gtc"
+        }
+      ],
+      "significance": 0.85,
+      "summary": "NVIDIA's next-gen Blackwell architecture GPU for AI workloads.",
+      "metadata": {
+        "architecture": "Blackwell",
+        "memory": "192GB HBM3e"
+      }
+    },
+    {
+      "id": "ai21",
+      "type": "company",
+      "name": "AI21 Labs",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "enterprise_platforms"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Creator of Jamba and Jurassic models.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Jamba released",
+          "source_url": "https://ai21.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "inflection",
+      "type": "company",
+      "name": "Inflection AI",
+      "vertical": "consumer_products",
+      "verticals_secondary": [
+        "foundation_models"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Creator of Pi personal AI assistant.",
+      "discovered_at": "2023-05-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Pi assistant launched",
+          "source_url": "https://inflection.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "character-ai",
+      "type": "company",
+      "name": "Character.AI",
+      "vertical": "consumer_products",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "AI character roleplay and conversation platform.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "funding",
+          "summary": "Raised $150M Series A",
+          "source_url": "https://character.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "runway-co",
+      "type": "company",
+      "name": "Runway",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "AI video generation and creative tools company.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Gen-3 Alpha released",
+          "source_url": "https://runway.ml"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "midjourney-co",
+      "type": "company",
+      "name": "Midjourney Inc",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "consumer_products"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "AI image generation company.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "v6.1 released",
+          "source_url": "https://midjourney.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "replit-co",
+      "type": "company",
+      "name": "Replit",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Online IDE with AI coding features.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Replit Agent launched",
+          "source_url": "https://replit.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "scale-ai",
+      "type": "company",
+      "name": "Scale AI",
+      "vertical": "data_infrastructure",
+      "verticals_secondary": [
+        "enterprise_platforms"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Data labeling and AI infrastructure company.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-05-01T00:00:00Z",
+          "event_type": "funding",
+          "summary": "Raised $1B at $14B valuation",
+          "source_url": "https://scale.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "databricks",
+      "type": "company",
+      "name": "Databricks",
+      "vertical": "enterprise_platforms",
+      "verticals_secondary": [
+        "data_infrastructure",
+        "training"
+      ],
+      "status": "ga",
+      "significance": 0.75,
+      "summary": "Unified analytics and AI platform.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "DBRX model released",
+          "source_url": "https://databricks.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "wandb",
+      "type": "company",
+      "name": "Weights & Biases",
+      "vertical": "developer_tooling",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "ML experiment tracking and model management.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Weave LLM framework launched",
+          "source_url": "https://wandb.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "together-ai",
+      "type": "company",
+      "name": "Together AI",
+      "vertical": "inference",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Open-source model inference and fine-tuning platform.",
+      "discovered_at": "2023-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Together Inference API launched",
+          "source_url": "https://together.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "fireworks-ai",
+      "type": "company",
+      "name": "Fireworks AI",
+      "vertical": "inference",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Fast inference platform for open-source models.",
+      "discovered_at": "2023-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Fireworks launched",
+          "source_url": "https://fireworks.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "groq-co",
+      "type": "company",
+      "name": "Groq",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "LPU inference chip company for ultra-fast AI.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Groq API launched with record inference speed",
+          "source_url": "https://groq.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "cerebras-co",
+      "type": "company",
+      "name": "Cerebras",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Wafer-scale chip maker for AI training.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "CS-3 chip announced",
+          "source_url": "https://cerebras.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "sambanova",
+      "type": "company",
+      "name": "SambaNova",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "AI chip company with RDU architecture.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "SN40L chip launched",
+          "source_url": "https://sambanova.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "elevenlabs",
+      "type": "company",
+      "name": "ElevenLabs",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "AI voice synthesis and cloning company.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "funding",
+          "summary": "Raised $80M Series B",
+          "source_url": "https://elevenlabs.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "adept-ai",
+      "type": "company",
+      "name": "Adept AI",
+      "vertical": "agents",
+      "verticals_secondary": [
+        "enterprise_platforms"
+      ],
+      "status": "acquired",
+      "significance": 0.45,
+      "summary": "AI agent company (acquired by Amazon).",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "acquisition",
+          "summary": "Key team acquired by Amazon",
+          "source_url": "https://adept.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "amazon",
+      "type": "company",
+      "name": "Amazon",
+      "vertical": "enterprise_platforms",
+      "verticals_secondary": [
+        "consumer_products"
+      ],
+      "status": "ga",
+      "significance": 0.85,
+      "summary": "Tech giant with AWS AI services and Alexa.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Amazon Bedrock GA",
+          "source_url": "https://aws.amazon.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "apple",
+      "type": "company",
+      "name": "Apple",
+      "vertical": "consumer_products",
+      "verticals_secondary": [
+        "hardware"
+      ],
+      "status": "ga",
+      "significance": 0.8,
+      "summary": "Consumer tech company with Apple Intelligence.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-10T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Apple Intelligence announced at WWDC",
+          "source_url": "https://apple.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "samsung",
+      "type": "company",
+      "name": "Samsung",
+      "vertical": "consumer_products",
+      "verticals_secondary": [
+        "hardware"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Electronics company with Galaxy AI features.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-17T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Galaxy AI features announced",
+          "source_url": "https://samsung.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "baidu",
+      "type": "company",
+      "name": "Baidu",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "search_retrieval"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Chinese tech company, creator of ERNIE models.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "ERNIE 4.0 Turbo released",
+          "source_url": "https://baidu.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "amd",
+      "type": "company",
+      "name": "AMD",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "GPU and CPU manufacturer with MI300 AI accelerators.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-12-06T00:00:00Z",
+          "event_type": "launch",
+          "summary": "MI300X GPU launched",
+          "source_url": "https://amd.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "intel",
+      "type": "company",
+      "name": "Intel",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Chip manufacturer with Gaudi AI accelerators.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-09T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Gaudi 3 accelerator announced",
+          "source_url": "https://intel.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "qualcomm",
+      "type": "company",
+      "name": "Qualcomm",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Mobile chip company with on-device AI focus.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-10-21T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Snapdragon 8 Elite announced",
+          "source_url": "https://qualcomm.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "deepseek-co",
+      "type": "company",
+      "name": "DeepSeek",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source",
+        "research"
+      ],
+      "status": "ga",
+      "significance": 0.75,
+      "summary": "Chinese AI lab creating frontier open-weight models.",
+      "discovered_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-01-20T00:00:00Z",
+          "event_type": "launch",
+          "summary": "DeepSeek R1 released",
+          "source_url": "https://deepseek.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "figure-ai",
+      "type": "company",
+      "name": "Figure AI",
+      "vertical": "robotics",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Humanoid robot company.",
+      "discovered_at": "2024-02-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-29T00:00:00Z",
+          "event_type": "funding",
+          "summary": "Raised $675M from Bezos, NVIDIA, OpenAI",
+          "source_url": "https://figure.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "boston-dynamics",
+      "type": "company",
+      "name": "Boston Dynamics",
+      "vertical": "robotics",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Advanced robotics company.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-17T00:00:00Z",
+          "event_type": "launch",
+          "summary": "New electric Atlas robot revealed",
+          "source_url": "https://bostondynamics.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "suno-co",
+      "type": "company",
+      "name": "Suno",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "AI music generation company.",
+      "discovered_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-05-21T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Suno v3 released",
+          "source_url": "https://suno.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "cognition-ai",
+      "type": "company",
+      "name": "Cognition AI",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Creator of Devin AI software engineer.",
+      "discovered_at": "2024-03-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-12T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Devin AI software engineer demo",
+          "source_url": "https://cognition.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "modal-co",
+      "type": "company",
+      "name": "Modal",
+      "vertical": "inference",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "Serverless cloud for AI/ML workloads.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Modal GPU support expanded",
+          "source_url": "https://modal.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "anyscale-co",
+      "type": "company",
+      "name": "Anyscale",
+      "vertical": "training",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "Ray-based distributed computing company.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Anyscale Endpoints launched",
+          "source_url": "https://anyscale.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "d-id",
+      "type": "company",
+      "name": "D-ID",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.4,
+      "summary": "AI video avatar generation company.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Creative Reality Studio V2",
+          "source_url": "https://d-id.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "synthesia",
+      "type": "company",
+      "name": "Synthesia",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "enterprise_platforms"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "AI video generation for enterprise.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "funding",
+          "summary": "Raised $90M Series C",
+          "source_url": "https://synthesia.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "pika-co",
+      "type": "company",
+      "name": "Pika",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "AI video generation startup.",
+      "discovered_at": "2023-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Pika 1.0 launched",
+          "source_url": "https://pika.art"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "openai/gpt-3-5-turbo",
+      "type": "model",
+      "name": "GPT-3.5 Turbo",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Fast, affordable OpenAI model.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-03-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "GPT-3.5 Turbo released",
+          "source_url": "https://openai.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "openai/gpt-4-turbo",
+      "type": "model",
+      "name": "GPT-4 Turbo",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.78,
+      "summary": "Faster GPT-4 with 128k context.",
+      "discovered_at": "2023-11-06T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-11-06T00:00:00Z",
+          "event_type": "launch",
+          "summary": "GPT-4 Turbo announced at DevDay",
+          "source_url": "https://openai.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "openai/o1-mini",
+      "type": "model",
+      "name": "o1-mini",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.7,
+      "summary": "Smaller reasoning model optimized for cost.",
+      "discovered_at": "2024-09-12T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-09-12T00:00:00Z",
+          "event_type": "launch",
+          "summary": "o1-mini released alongside o1",
+          "source_url": "https://openai.com/o1"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "openai/o3",
+      "type": "model",
+      "name": "o3",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "significance": 0.88,
+      "summary": "Advanced reasoning model.",
+      "discovered_at": "2025-01-31T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-01-31T00:00:00Z",
+          "event_type": "launch",
+          "summary": "o3 released",
+          "source_url": "https://openai.com/o3"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "openai/o3-mini",
+      "type": "model",
+      "name": "o3-mini",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.75,
+      "summary": "Efficient reasoning model.",
+      "discovered_at": "2025-01-31T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-01-31T00:00:00Z",
+          "event_type": "launch",
+          "summary": "o3-mini released",
+          "source_url": "https://openai.com/o3"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "openai/whisper",
+      "type": "model",
+      "name": "Whisper",
+      "vertical": "multimodal",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.72,
+      "summary": "Open-source speech recognition model.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-09-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Whisper v3 released",
+          "source_url": "https://openai.com/research/whisper"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "anthropic/claude-3-opus",
+      "type": "model",
+      "name": "Claude 3 Opus",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.82,
+      "summary": "Anthropic's most capable Claude 3 model.",
+      "discovered_at": "2024-03-04T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-04T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude 3 Opus launched",
+          "source_url": "https://anthropic.com/claude-3"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "anthropic/claude-3-haiku",
+      "type": "model",
+      "name": "Claude 3 Haiku",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Fastest Claude 3 model.",
+      "discovered_at": "2024-03-13T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-13T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude 3 Haiku released",
+          "source_url": "https://anthropic.com/claude-3"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "anthropic/claude-2",
+      "type": "model",
+      "name": "Claude 2",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "deprecated",
+      "significance": 0.5,
+      "summary": "Second generation Claude model.",
+      "discovered_at": "2023-07-11T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-07-11T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Claude 2 released",
+          "source_url": "https://anthropic.com/claude-2"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "google/gemma-2",
+      "type": "model",
+      "name": "Gemma 2",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Google's open-weight model family.",
+      "discovered_at": "2024-06-27T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-27T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Gemma 2 released",
+          "source_url": "https://ai.google.dev/gemma"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "google/palm-2",
+      "type": "model",
+      "name": "PaLM 2",
+      "vertical": "foundation_models",
+      "verticals_secondary": [],
+      "status": "deprecated",
+      "significance": 0.6,
+      "summary": "Google's previous flagship LLM.",
+      "discovered_at": "2023-05-10T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-05-10T00:00:00Z",
+          "event_type": "launch",
+          "summary": "PaLM 2 announced at I/O",
+          "source_url": "https://ai.google/discover/palm2"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "google/imagen-3",
+      "type": "model",
+      "name": "Imagen 3",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Google's image generation model.",
+      "discovered_at": "2024-05-14T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-05-14T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Imagen 3 announced at I/O",
+          "source_url": "https://deepmind.google/technologies/imagen-3/"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "google/veo-2",
+      "type": "model",
+      "name": "Veo 2",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Google's video generation model.",
+      "discovered_at": "2024-12-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-12-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Veo 2 announced",
+          "source_url": "https://deepmind.google/technologies/veo/"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "meta/llama-2",
+      "type": "model",
+      "name": "Llama 2",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.7,
+      "summary": "Meta's second open-weight model.",
+      "discovered_at": "2023-07-18T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-07-18T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Llama 2 released",
+          "source_url": "https://ai.meta.com/llama"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "meta/llama-3-1",
+      "type": "model",
+      "name": "Llama 3.1",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.82,
+      "summary": "Meta's 405B parameter open model.",
+      "discovered_at": "2024-07-23T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-07-23T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Llama 3.1 405B released",
+          "source_url": "https://ai.meta.com/blog/meta-llama-3-1/"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "meta/code-llama",
+      "type": "model",
+      "name": "Code Llama",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Meta's code-specialized Llama.",
+      "discovered_at": "2023-08-24T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-08-24T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Code Llama released",
+          "source_url": "https://ai.meta.com/blog/code-llama"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "meta/sam-2",
+      "type": "model",
+      "name": "Segment Anything 2",
+      "vertical": "multimodal",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Image and video segmentation model.",
+      "discovered_at": "2024-07-29T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-07-29T00:00:00Z",
+          "event_type": "launch",
+          "summary": "SAM 2 released",
+          "source_url": "https://ai.meta.com/sam2"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "mistral/mistral-7b",
+      "type": "model",
+      "name": "Mistral 7B",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Mistral's efficient 7B open model.",
+      "discovered_at": "2023-09-27T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-09-27T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Mistral 7B released",
+          "source_url": "https://mistral.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "mistral/mixtral-8x7b",
+      "type": "model",
+      "name": "Mixtral 8x7B",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.7,
+      "summary": "Mixture-of-experts open model.",
+      "discovered_at": "2024-01-08T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-08T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Mixtral released",
+          "source_url": "https://mistral.ai/news/mixtral-of-experts/"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "mistral/codestral",
+      "type": "model",
+      "name": "Codestral",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Mistral's code generation model.",
+      "discovered_at": "2024-05-29T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-05-29T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Codestral released",
+          "source_url": "https://mistral.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "mistral/pixtral",
+      "type": "model",
+      "name": "Pixtral",
+      "vertical": "multimodal",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Mistral's multimodal model.",
+      "discovered_at": "2024-09-11T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-09-11T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Pixtral 12B released",
+          "source_url": "https://mistral.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "deepseek/r1",
+      "type": "model",
+      "name": "DeepSeek R1",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.85,
+      "summary": "Open-weight reasoning model rivaling o1.",
+      "discovered_at": "2025-01-20T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-01-20T00:00:00Z",
+          "event_type": "launch",
+          "summary": "DeepSeek R1 released, open weights",
+          "source_url": "https://deepseek.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "deepseek/v3",
+      "type": "model",
+      "name": "DeepSeek V3",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.8,
+      "summary": "671B MoE model trained for $5.5M.",
+      "discovered_at": "2024-12-26T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-12-26T00:00:00Z",
+          "event_type": "launch",
+          "summary": "DeepSeek V3 released",
+          "source_url": "https://deepseek.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "deepseek/coder-v2",
+      "type": "model",
+      "name": "DeepSeek Coder V2",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Code-specialized MoE model.",
+      "discovered_at": "2024-06-17T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-17T00:00:00Z",
+          "event_type": "launch",
+          "summary": "DeepSeek Coder V2 released",
+          "source_url": "https://deepseek.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "qwen/qwen-2-5",
+      "type": "model",
+      "name": "Qwen 2.5",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.7,
+      "summary": "Alibaba's multilingual open model.",
+      "discovered_at": "2024-09-19T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-09-19T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Qwen 2.5 family released",
+          "source_url": "https://qwenlm.github.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "qwen/qwen-2-5-coder",
+      "type": "model",
+      "name": "Qwen 2.5 Coder",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Code-specialized Qwen model.",
+      "discovered_at": "2024-11-12T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-11-12T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Qwen 2.5 Coder released",
+          "source_url": "https://qwenlm.github.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "tii/falcon-180b",
+      "type": "model",
+      "name": "Falcon 180B",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "UAE's open-weight 180B model.",
+      "discovered_at": "2023-09-06T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-09-06T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Falcon 180B released",
+          "source_url": "https://falconllm.tii.ae"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "microsoft/phi-3",
+      "type": "model",
+      "name": "Phi-3",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Microsoft's small language model.",
+      "discovered_at": "2024-04-23T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-23T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Phi-3 family released",
+          "source_url": "https://azure.microsoft.com/blog/introducing-phi-3"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "cohere/command-r-plus",
+      "type": "model",
+      "name": "Command R+",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "search_retrieval"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Cohere's RAG-optimized model.",
+      "discovered_at": "2024-04-04T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-04T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Command R+ released",
+          "source_url": "https://cohere.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "databricks/dbrx",
+      "type": "model",
+      "name": "DBRX",
+      "vertical": "foundation_models",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Databricks' open MoE model.",
+      "discovered_at": "2024-03-27T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-27T00:00:00Z",
+          "event_type": "launch",
+          "summary": "DBRX released",
+          "source_url": "https://databricks.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "bfl/flux",
+      "type": "model",
+      "name": "FLUX",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Black Forest Labs' open image model.",
+      "discovered_at": "2024-08-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-08-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "FLUX.1 released",
+          "source_url": "https://blackforestlabs.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "stability-ai/sdxl",
+      "type": "model",
+      "name": "Stable Diffusion XL",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Stability AI's XL image model.",
+      "discovered_at": "2023-07-26T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-07-26T00:00:00Z",
+          "event_type": "launch",
+          "summary": "SDXL released",
+          "source_url": "https://stability.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "meta/musicgen",
+      "type": "model",
+      "name": "MusicGen",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "open_source",
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "Meta's music generation model.",
+      "discovered_at": "2023-06-12T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-06-12T00:00:00Z",
+          "event_type": "launch",
+          "summary": "MusicGen released",
+          "source_url": "https://ai.meta.com/resources/models-and-libraries/musicgen/"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "suno/v3",
+      "type": "model",
+      "name": "Suno v3",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "AI music generation model.",
+      "discovered_at": "2024-03-22T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-22T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Suno v3 released",
+          "source_url": "https://suno.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "runway/gen-3",
+      "type": "model",
+      "name": "Gen-3 Alpha",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Runway's video generation model.",
+      "discovered_at": "2024-06-17T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-17T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Gen-3 Alpha released",
+          "source_url": "https://runway.ml"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "bigcode/starcoder-2",
+      "type": "model",
+      "name": "StarCoder 2",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Open-source code LLM from BigCode.",
+      "discovered_at": "2024-02-28T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-28T00:00:00Z",
+          "event_type": "launch",
+          "summary": "StarCoder 2 released",
+          "source_url": "https://huggingface.co/bigcode"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "google/codegemma",
+      "type": "model",
+      "name": "CodeGemma",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Google's code-specialized Gemma.",
+      "discovered_at": "2024-04-09T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-09T00:00:00Z",
+          "event_type": "launch",
+          "summary": "CodeGemma released",
+          "source_url": "https://ai.google.dev/gemma/docs/codegemma"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "openai/text-embedding-3",
+      "type": "model",
+      "name": "text-embedding-3",
+      "vertical": "search_retrieval",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "OpenAI's latest embedding model.",
+      "discovered_at": "2024-01-25T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-25T00:00:00Z",
+          "event_type": "launch",
+          "summary": "text-embedding-3 released",
+          "source_url": "https://openai.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "cohere/embed-v3",
+      "type": "model",
+      "name": "Cohere Embed v3",
+      "vertical": "search_retrieval",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "Cohere's embedding model.",
+      "discovered_at": "2023-11-02T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-11-02T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Embed v3 released",
+          "source_url": "https://cohere.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "mamba",
+      "type": "model",
+      "name": "Mamba",
+      "vertical": "research",
+      "verticals_secondary": [
+        "foundation_models"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Selective state space model architecture.",
+      "discovered_at": "2023-12-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-12-01T00:00:00Z",
+          "event_type": "paper",
+          "summary": "Mamba paper published",
+          "source_url": "https://arxiv.org/abs/2312.00752"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "google/gemini-app",
+      "type": "product",
+      "name": "Gemini App",
+      "vertical": "consumer_products",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "significance": 0.75,
+      "summary": "Google's consumer AI assistant (formerly Bard).",
+      "discovered_at": "2024-02-08T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-08T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Bard rebranded to Gemini",
+          "source_url": "https://gemini.google.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "microsoft/copilot",
+      "type": "product",
+      "name": "Microsoft Copilot",
+      "vertical": "consumer_products",
+      "verticals_secondary": [
+        "enterprise_platforms"
+      ],
+      "status": "ga",
+      "significance": 0.8,
+      "summary": "Microsoft's AI assistant across products.",
+      "discovered_at": "2023-09-26T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-09-26T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Microsoft Copilot launched",
+          "source_url": "https://copilot.microsoft.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "apple/intelligence",
+      "type": "product",
+      "name": "Apple Intelligence",
+      "vertical": "consumer_products",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.7,
+      "summary": "Apple's on-device AI features.",
+      "discovered_at": "2024-06-10T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-10T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Apple Intelligence announced at WWDC24",
+          "source_url": "https://apple.com/apple-intelligence"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "cognition/devin",
+      "type": "product",
+      "name": "Devin",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "beta",
+      "significance": 0.6,
+      "summary": "AI software engineer by Cognition.",
+      "discovered_at": "2024-03-12T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-12T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Devin demo revealed",
+          "source_url": "https://cognition.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "replit/ghostwriter",
+      "type": "product",
+      "name": "Ghostwriter",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "Replit's AI coding assistant.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Ghostwriter generally available",
+          "source_url": "https://replit.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "codeium",
+      "type": "product",
+      "name": "Codeium",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Free AI code completion tool.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Codeium Windsurf IDE launched",
+          "source_url": "https://codeium.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "tabnine",
+      "type": "product",
+      "name": "Tabnine",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.4,
+      "summary": "AI code completion for enterprise.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Protected model launched",
+          "source_url": "https://tabnine.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "sourcegraph/cody",
+      "type": "product",
+      "name": "Sourcegraph Cody",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "search_retrieval"
+      ],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "AI coding assistant with codebase context.",
+      "discovered_at": "2023-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Cody GA released",
+          "source_url": "https://sourcegraph.com/cody"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "amazon/codewhisperer",
+      "type": "product",
+      "name": "Amazon CodeWhisperer",
+      "vertical": "code_generation",
+      "verticals_secondary": [
+        "enterprise_platforms"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "AWS AI coding assistant (now Amazon Q).",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-30T00:00:00Z",
+          "event_type": "update",
+          "summary": "Rebranded as Amazon Q Developer",
+          "source_url": "https://aws.amazon.com/q/developer/"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "runway-studio",
+      "type": "product",
+      "name": "Runway Studio",
+      "vertical": "creative_tools",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Runway's video generation platform.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-17T00:00:00Z",
+          "event_type": "update",
+          "summary": "Gen-3 Alpha integrated",
+          "source_url": "https://runway.ml"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "elevenlabs-studio",
+      "type": "product",
+      "name": "ElevenLabs Studio",
+      "vertical": "creative_tools",
+      "verticals_secondary": [
+        "multimodal"
+      ],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "AI voice generation platform.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Multilingual v2 voices launched",
+          "source_url": "https://elevenlabs.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "aws/bedrock",
+      "type": "product",
+      "name": "Amazon Bedrock",
+      "vertical": "enterprise_platforms",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.7,
+      "summary": "AWS managed AI model service.",
+      "discovered_at": "2023-09-28T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-09-28T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Amazon Bedrock GA",
+          "source_url": "https://aws.amazon.com/bedrock/"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "google/vertex-ai",
+      "type": "product",
+      "name": "Google Vertex AI",
+      "vertical": "enterprise_platforms",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Google Cloud's ML platform.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-05-14T00:00:00Z",
+          "event_type": "update",
+          "summary": "Gemini integration added",
+          "source_url": "https://cloud.google.com/vertex-ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "azure/openai-service",
+      "type": "product",
+      "name": "Azure OpenAI Service",
+      "vertical": "enterprise_platforms",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.75,
+      "summary": "Microsoft's managed OpenAI API.",
+      "discovered_at": "2023-01-16T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-16T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Azure OpenAI Service GA",
+          "source_url": "https://azure.microsoft.com/products/cognitive-services/openai-service"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "crewai",
+      "type": "framework",
+      "name": "CrewAI",
+      "vertical": "agents",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Multi-agent orchestration framework.",
+      "discovered_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "CrewAI released",
+          "source_url": "https://crewai.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "autogen",
+      "type": "framework",
+      "name": "AutoGen",
+      "vertical": "agents",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Microsoft's multi-agent framework.",
+      "discovered_at": "2023-10-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-10-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "AutoGen released by MSR",
+          "source_url": "https://microsoft.github.io/autogen/"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "dspy",
+      "type": "framework",
+      "name": "DSPy",
+      "vertical": "developer_tooling",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Programming framework for LMs by Stanford.",
+      "discovered_at": "2023-10-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-10-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "DSPy released",
+          "source_url": "https://github.com/stanfordnlp/dspy"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "ollama",
+      "type": "framework",
+      "name": "Ollama",
+      "vertical": "inference",
+      "verticals_secondary": [
+        "developer_tooling",
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.7,
+      "summary": "Local LLM runner for Mac/Linux/Windows.",
+      "discovered_at": "2023-08-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-08-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Ollama released",
+          "source_url": "https://ollama.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "mlx",
+      "type": "framework",
+      "name": "MLX",
+      "vertical": "training",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Apple's ML framework for Apple Silicon.",
+      "discovered_at": "2023-12-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-12-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "MLX released by Apple",
+          "source_url": "https://github.com/ml-explore/mlx"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "onnxruntime",
+      "type": "framework",
+      "name": "ONNX Runtime",
+      "vertical": "inference",
+      "verticals_secondary": [
+        "developer_tooling"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Cross-platform ML inference engine.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "ONNX Runtime 1.17 released",
+          "source_url": "https://onnxruntime.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "tensorrt",
+      "type": "framework",
+      "name": "TensorRT",
+      "vertical": "inference",
+      "verticals_secondary": [
+        "hardware"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "NVIDIA's deep learning inference optimizer.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "TensorRT-LLM released",
+          "source_url": "https://developer.nvidia.com/tensorrt"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "jax",
+      "type": "framework",
+      "name": "JAX",
+      "vertical": "training",
+      "verticals_secondary": [
+        "research"
+      ],
+      "status": "ga",
+      "significance": 0.7,
+      "summary": "Google's high-performance numerical computing library.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "JAX 0.4 released",
+          "source_url": "https://github.com/google/jax"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "ray",
+      "type": "framework",
+      "name": "Ray",
+      "vertical": "training",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Distributed computing framework for ML.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Ray 2.9 released",
+          "source_url": "https://ray.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "weaviate",
+      "type": "framework",
+      "name": "Weaviate",
+      "vertical": "search_retrieval",
+      "verticals_secondary": [
+        "data_infrastructure"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Open-source vector database.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Weaviate 1.24 with multitenancy",
+          "source_url": "https://weaviate.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "pinecone",
+      "type": "framework",
+      "name": "Pinecone",
+      "vertical": "search_retrieval",
+      "verticals_secondary": [
+        "data_infrastructure"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Managed vector database.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Serverless architecture launched",
+          "source_url": "https://pinecone.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "chromadb",
+      "type": "framework",
+      "name": "ChromaDB",
+      "vertical": "search_retrieval",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "Open-source embedding database.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "ChromaDB 0.4 released",
+          "source_url": "https://trychroma.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "gpqa",
+      "type": "benchmark",
+      "name": "GPQA",
+      "vertical": "evaluation",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Graduate-level QA benchmark.",
+      "discovered_at": "2023-11-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-11-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "GPQA benchmark released",
+          "source_url": "https://arxiv.org/abs/2311.12022"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "arc-agi",
+      "type": "benchmark",
+      "name": "ARC-AGI",
+      "vertical": "evaluation",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Abstraction and reasoning benchmark for AGI.",
+      "discovered_at": "2024-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "ARC-AGI Prize announced",
+          "source_url": "https://arcprize.org"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "chatbot-arena",
+      "type": "benchmark",
+      "name": "Chatbot Arena",
+      "vertical": "evaluation",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Crowdsourced LLM comparison platform.",
+      "discovered_at": "2023-05-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "LMSYS Arena widely adopted",
+          "source_url": "https://chat.lmsys.org"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "math-benchmark",
+      "type": "benchmark",
+      "name": "MATH",
+      "vertical": "evaluation",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Mathematics problem solving benchmark.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "MATH benchmark established",
+          "source_url": "https://arxiv.org/abs/2103.03874"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "livebench",
+      "type": "benchmark",
+      "name": "LiveBench",
+      "vertical": "evaluation",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.45,
+      "summary": "Contamination-free benchmark with live questions.",
+      "discovered_at": "2024-06-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-06-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "LiveBench released",
+          "source_url": "https://livebench.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "bigbench",
+      "type": "benchmark",
+      "name": "BIG-Bench",
+      "vertical": "evaluation",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Collaborative benchmark with 200+ tasks.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "BIG-Bench widely used",
+          "source_url": "https://arxiv.org/abs/2206.04615"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/llama-2",
+      "type": "paper",
+      "name": "Llama 2: Open Foundation and Fine-Tuned Chat Models",
+      "vertical": "research",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.75,
+      "summary": "Meta's open model methodology paper.",
+      "discovered_at": "2023-07-18T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-07-18T00:00:00Z",
+          "event_type": "paper",
+          "summary": "Llama 2 paper published",
+          "source_url": "https://arxiv.org/abs/2307.09288"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/gpt-4-report",
+      "type": "paper",
+      "name": "GPT-4 Technical Report",
+      "vertical": "research",
+      "verticals_secondary": [
+        "foundation_models"
+      ],
+      "status": "ga",
+      "significance": 0.8,
+      "summary": "OpenAI's GPT-4 system card.",
+      "discovered_at": "2023-03-15T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-03-15T00:00:00Z",
+          "event_type": "paper",
+          "summary": "GPT-4 technical report",
+          "source_url": "https://arxiv.org/abs/2303.08774"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/chain-of-thought",
+      "type": "paper",
+      "name": "Chain-of-Thought Prompting",
+      "vertical": "research",
+      "verticals_secondary": [
+        "agents"
+      ],
+      "status": "ga",
+      "significance": 0.75,
+      "summary": "Wei et al. chain-of-thought reasoning paper.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2022-01-28T00:00:00Z",
+          "event_type": "paper",
+          "summary": "CoT paper published",
+          "source_url": "https://arxiv.org/abs/2201.11903"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/flash-attention",
+      "type": "paper",
+      "name": "FlashAttention",
+      "vertical": "research",
+      "verticals_secondary": [
+        "training",
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.78,
+      "summary": "IO-aware exact attention algorithm.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2022-06-23T00:00:00Z",
+          "event_type": "paper",
+          "summary": "FlashAttention paper",
+          "source_url": "https://arxiv.org/abs/2205.14135"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/lora",
+      "type": "paper",
+      "name": "LoRA: Low-Rank Adaptation",
+      "vertical": "research",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "ga",
+      "significance": 0.8,
+      "summary": "Parameter-efficient fine-tuning method.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2021-06-17T00:00:00Z",
+          "event_type": "paper",
+          "summary": "LoRA paper published",
+          "source_url": "https://arxiv.org/abs/2106.09685"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/qlora",
+      "type": "paper",
+      "name": "QLoRA",
+      "vertical": "research",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "ga",
+      "significance": 0.65,
+      "summary": "Quantized LoRA for efficient fine-tuning.",
+      "discovered_at": "2023-05-23T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-05-23T00:00:00Z",
+          "event_type": "paper",
+          "summary": "QLoRA paper published",
+          "source_url": "https://arxiv.org/abs/2305.14314"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/dpo",
+      "type": "paper",
+      "name": "Direct Preference Optimization",
+      "vertical": "research",
+      "verticals_secondary": [
+        "safety_alignment"
+      ],
+      "status": "ga",
+      "significance": 0.72,
+      "summary": "Simplified RLHF alternative.",
+      "discovered_at": "2023-05-29T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-05-29T00:00:00Z",
+          "event_type": "paper",
+          "summary": "DPO paper published",
+          "source_url": "https://arxiv.org/abs/2305.18290"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/rlhf",
+      "type": "paper",
+      "name": "Training Language Models with Human Feedback",
+      "vertical": "research",
+      "verticals_secondary": [
+        "safety_alignment"
+      ],
+      "status": "ga",
+      "significance": 0.78,
+      "summary": "Foundational RLHF paper.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2022-03-04T00:00:00Z",
+          "event_type": "paper",
+          "summary": "InstructGPT/RLHF paper",
+          "source_url": "https://arxiv.org/abs/2203.02155"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/mamba-paper",
+      "type": "paper",
+      "name": "Mamba: Linear-Time Sequence Modeling",
+      "vertical": "research",
+      "verticals_secondary": [
+        "foundation_models"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Selective state space model paper.",
+      "discovered_at": "2023-12-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-12-01T00:00:00Z",
+          "event_type": "paper",
+          "summary": "Mamba paper published",
+          "source_url": "https://arxiv.org/abs/2312.00752"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "paper/mixtral",
+      "type": "paper",
+      "name": "Mixtral of Experts",
+      "vertical": "research",
+      "verticals_secondary": [
+        "foundation_models"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Sparse MoE architecture paper.",
+      "discovered_at": "2024-01-08T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-01-08T00:00:00Z",
+          "event_type": "paper",
+          "summary": "Mixtral paper published",
+          "source_url": "https://arxiv.org/abs/2401.04088"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "dataset/fineweb",
+      "type": "dataset",
+      "name": "FineWeb",
+      "vertical": "data_infrastructure",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Hugging Face's 15T token web dataset.",
+      "discovered_at": "2024-04-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-04-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "FineWeb released",
+          "source_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "dataset/redpajama",
+      "type": "dataset",
+      "name": "RedPajama",
+      "vertical": "data_infrastructure",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Open reproduction of LLaMA training data.",
+      "discovered_at": "2023-04-17T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-04-17T00:00:00Z",
+          "event_type": "launch",
+          "summary": "RedPajama released",
+          "source_url": "https://together.ai/blog/redpajama"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "dataset/laion-5b",
+      "type": "dataset",
+      "name": "LAION-5B",
+      "vertical": "data_infrastructure",
+      "verticals_secondary": [
+        "creative_tools"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Large-scale image-text dataset.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2022-10-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "LAION-5B released",
+          "source_url": "https://laion.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "dataset/imagenet",
+      "type": "dataset",
+      "name": "ImageNet",
+      "vertical": "data_infrastructure",
+      "verticals_secondary": [
+        "evaluation"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "Foundational image classification dataset.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2009-01-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "ImageNet established",
+          "source_url": "https://image-net.org"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "dataset/openassistant",
+      "type": "dataset",
+      "name": "OpenAssistant",
+      "vertical": "data_infrastructure",
+      "verticals_secondary": [
+        "open_source"
+      ],
+      "status": "ga",
+      "significance": 0.4,
+      "summary": "Open conversation dataset for RLHF.",
+      "discovered_at": "2023-04-15T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-04-15T00:00:00Z",
+          "event_type": "launch",
+          "summary": "OASST1 released",
+          "source_url": "https://open-assistant.io"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "nvidia/a100",
+      "type": "product",
+      "name": "NVIDIA A100",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "ga",
+      "significance": 0.8,
+      "summary": "NVIDIA's Ampere data center GPU.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2020-05-14T00:00:00Z",
+          "event_type": "launch",
+          "summary": "A100 released",
+          "source_url": "https://nvidia.com/a100"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "nvidia/h200",
+      "type": "product",
+      "name": "NVIDIA H200",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training",
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.75,
+      "summary": "H100 variant with more HBM3e memory.",
+      "discovered_at": "2023-11-13T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-11-13T00:00:00Z",
+          "event_type": "launch",
+          "summary": "H200 announced",
+          "source_url": "https://nvidia.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "nvidia/gb300",
+      "type": "product",
+      "name": "NVIDIA GB300",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "announced",
+      "significance": 0.7,
+      "summary": "Next-gen Blackwell Ultra GPU.",
+      "discovered_at": "2025-03-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2025-03-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "GB300 announced at GTC 2025",
+          "source_url": "https://nvidia.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "google/tpu-v5e",
+      "type": "product",
+      "name": "Google TPU v5e",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training",
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "Google's efficient TPU for inference.",
+      "discovered_at": "2023-08-29T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-08-29T00:00:00Z",
+          "event_type": "launch",
+          "summary": "TPU v5e announced",
+          "source_url": "https://cloud.google.com/tpu"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "amd/mi300x",
+      "type": "product",
+      "name": "AMD MI300X",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training",
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "AMD's AI accelerator with 192GB HBM3.",
+      "discovered_at": "2023-12-06T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-12-06T00:00:00Z",
+          "event_type": "launch",
+          "summary": "MI300X launched",
+          "source_url": "https://amd.com/mi300"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "groq/lpu",
+      "type": "product",
+      "name": "Groq LPU",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "inference"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Groq's Language Processing Unit for fast inference.",
+      "discovered_at": "2024-02-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-02-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Groq LPU API launched",
+          "source_url": "https://groq.com"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "cerebras/cs-3",
+      "type": "product",
+      "name": "Cerebras CS-3",
+      "vertical": "hardware",
+      "verticals_secondary": [
+        "training"
+      ],
+      "status": "announced",
+      "significance": 0.45,
+      "summary": "Third-gen wafer-scale engine.",
+      "discovered_at": "2024-03-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-03-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "CS-3 announced",
+          "source_url": "https://cerebras.ai"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "ai-safety-summit",
+      "type": "initiative",
+      "name": "AI Safety Summit",
+      "vertical": "governance_policy",
+      "verticals_secondary": [
+        "safety_alignment"
+      ],
+      "status": "ga",
+      "significance": 0.6,
+      "summary": "UK-hosted AI safety summit series.",
+      "discovered_at": "2023-11-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-11-01T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Bletchley Park AI Safety Summit",
+          "source_url": "https://aisafetysummit.gov.uk"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "frontier-model-forum",
+      "type": "initiative",
+      "name": "Frontier Model Forum",
+      "vertical": "governance_policy",
+      "verticals_secondary": [
+        "safety_alignment"
+      ],
+      "status": "ga",
+      "significance": 0.5,
+      "summary": "Industry consortium for AI safety.",
+      "discovered_at": "2023-07-26T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-07-26T00:00:00Z",
+          "event_type": "launch",
+          "summary": "Forum established by OpenAI, Google, Microsoft, Anthropic",
+          "source_url": "https://www.frontiermodelforum.org"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "partnership-on-ai",
+      "type": "initiative",
+      "name": "Partnership on AI",
+      "vertical": "governance_policy",
+      "verticals_secondary": [],
+      "status": "ga",
+      "significance": 0.4,
+      "summary": "Multi-stakeholder AI ethics organization.",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2023-01-01T00:00:00Z",
+          "event_type": "update",
+          "summary": "Continued operations",
+          "source_url": "https://partnershiponai.org"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "ca-sb1047",
+      "type": "standard",
+      "name": "California SB 1047",
+      "vertical": "governance_policy",
+      "verticals_secondary": [
+        "safety_alignment"
+      ],
+      "status": "ga",
+      "significance": 0.55,
+      "summary": "California AI safety bill (vetoed).",
+      "discovered_at": "2024-02-08T00:00:00Z",
+      "updated_at": "2026-03-01T00:00:00Z",
+      "events": [
+        {
+          "timestamp": "2024-09-29T00:00:00Z",
+          "event_type": "update",
+          "summary": "SB 1047 vetoed by Governor Newsom",
+          "source_url": "https://leginfo.legislature.ca.gov"
+        }
+      ],
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    {
+      "source_id": "openai/gpt-4o",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "GPT-4o created by OpenAI"
+    },
+    {
+      "source_id": "openai/gpt-4",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "discovered_at": "2023-03-14T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "GPT-4 created by OpenAI"
+    },
+    {
+      "source_id": "openai/o1",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "discovered_at": "2024-09-12T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "o1 created by OpenAI"
+    },
+    {
+      "source_id": "openai/chatgpt",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "ChatGPT is an OpenAI product"
+    },
+    {
+      "source_id": "openai/dall-e-3",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "discovered_at": "2023-10-03T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "DALL-E 3 created by OpenAI"
+    },
+    {
+      "source_id": "openai/sora",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "discovered_at": "2024-02-15T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Sora created by OpenAI"
+    },
+    {
+      "source_id": "anthropic/claude-4-opus",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Claude 4 Opus by Anthropic"
+    },
+    {
+      "source_id": "anthropic/claude-4-sonnet",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Claude 4 Sonnet by Anthropic"
+    },
+    {
+      "source_id": "anthropic/claude-4-haiku",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "discovered_at": "2025-06-01T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Claude 4 Haiku by Anthropic"
+    },
+    {
+      "source_id": "anthropic/claude-3-5-sonnet",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "discovered_at": "2024-06-20T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Claude 3.5 Sonnet by Anthropic"
+    },
+    {
+      "source_id": "anthropic/claude-code",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "discovered_at": "2025-02-24T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Claude Code by Anthropic"
+    },
+    {
+      "source_id": "google/gemini-2-5-pro",
+      "target_id": "google-deepmind",
+      "relationship": "authored_by",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Gemini 2.5 Pro by Google DeepMind"
+    },
+    {
+      "source_id": "google/gemini-1-5-pro",
+      "target_id": "google-deepmind",
+      "relationship": "authored_by",
+      "discovered_at": "2024-02-15T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Gemini 1.5 Pro by Google DeepMind"
+    },
+    {
+      "source_id": "google/notebooklm",
+      "target_id": "google",
+      "relationship": "authored_by",
+      "discovered_at": "2023-07-12T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "NotebookLM is a Google product"
+    },
+    {
+      "source_id": "meta/llama-4",
+      "target_id": "meta-ai",
+      "relationship": "authored_by",
+      "discovered_at": "2025-04-05T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Llama 4 by Meta AI"
+    },
+    {
+      "source_id": "meta/llama-3",
+      "target_id": "meta-ai",
+      "relationship": "authored_by",
+      "discovered_at": "2024-04-18T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Llama 3 by Meta AI"
+    },
+    {
+      "source_id": "mistral/mistral-large",
+      "target_id": "mistral",
+      "relationship": "authored_by",
+      "discovered_at": "2024-02-26T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Mistral Large by Mistral AI"
+    },
+    {
+      "source_id": "xai/grok-2",
+      "target_id": "xai",
+      "relationship": "authored_by",
+      "discovered_at": "2024-08-13T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Grok-2 by xAI"
+    },
+    {
+      "source_id": "stability-ai/sd3",
+      "target_id": "stability-ai",
+      "relationship": "authored_by",
+      "discovered_at": "2024-02-22T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "SD3 by Stability AI"
+    },
+    {
+      "source_id": "huggingface/transformers",
+      "target_id": "huggingface",
+      "relationship": "authored_by",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Transformers library by Hugging Face"
+    },
+    {
+      "source_id": "paper/constitutional-ai",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "discovered_at": "2022-12-15T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Constitutional AI paper by Anthropic researchers"
+    },
+    {
+      "source_id": "nvidia/h100",
+      "target_id": "nvidia",
+      "relationship": "authored_by",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "H100 manufactured by NVIDIA"
+    },
+    {
+      "source_id": "nvidia/b200",
+      "target_id": "nvidia",
+      "relationship": "authored_by",
+      "discovered_at": "2024-03-18T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "B200 manufactured by NVIDIA"
+    },
+    {
+      "source_id": "openai/gpt-4",
+      "target_id": "openai/gpt-4o",
+      "relationship": "succeeded_by",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "GPT-4o succeeds GPT-4 as flagship model"
+    },
+    {
+      "source_id": "anthropic/claude-3-5-sonnet",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "succeeded_by",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Claude 4 Sonnet succeeds Claude 3.5 Sonnet"
+    },
+    {
+      "source_id": "google/gemini-1-5-pro",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "succeeded_by",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Gemini 2.5 Pro succeeds 1.5 Pro"
+    },
+    {
+      "source_id": "meta/llama-3",
+      "target_id": "meta/llama-4",
+      "relationship": "succeeded_by",
+      "discovered_at": "2025-04-05T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Llama 4 succeeds Llama 3"
+    },
+    {
+      "source_id": "nvidia/h100",
+      "target_id": "nvidia/b200",
+      "relationship": "succeeded_by",
+      "discovered_at": "2024-03-18T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "B200 is the next-gen GPU after H100"
+    },
+    {
+      "source_id": "openai/chatgpt",
+      "target_id": "openai/gpt-4o",
+      "relationship": "built_on",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "ChatGPT uses GPT-4o as default model"
+    },
+    {
+      "source_id": "anthropic/claude-code",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "built_on",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Claude Code uses Sonnet as default model"
+    },
+    {
+      "source_id": "google/notebooklm",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "built_on",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.85,
+      "evidence": "NotebookLM powered by Gemini"
+    },
+    {
+      "source_id": "perplexity",
+      "target_id": "openai/gpt-4o",
+      "relationship": "built_on",
+      "discovered_at": "2024-05-01T00:00:00Z",
+      "confidence": 0.7,
+      "evidence": "Perplexity uses multiple models including GPT-4o"
+    },
+    {
+      "source_id": "cursor",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "built_on",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.8,
+      "evidence": "Cursor integrates Claude Sonnet for coding"
+    },
+    {
+      "source_id": "cursor",
+      "target_id": "openai/gpt-4o",
+      "relationship": "built_on",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.8,
+      "evidence": "Cursor also integrates GPT-4o"
+    },
+    {
+      "source_id": "openai/gpt-4o",
+      "target_id": "anthropic/claude-4-opus",
+      "relationship": "competes_with",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Direct frontier model competitors"
+    },
+    {
+      "source_id": "openai/gpt-4o",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "competes_with",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Direct frontier model competitors"
+    },
+    {
+      "source_id": "anthropic/claude-4-opus",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "competes_with",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Competing frontier models"
+    },
+    {
+      "source_id": "openai/chatgpt",
+      "target_id": "perplexity",
+      "relationship": "competes_with",
+      "discovered_at": "2024-01-01T00:00:00Z",
+      "confidence": 0.7,
+      "evidence": "ChatGPT and Perplexity compete in AI-assisted search"
+    },
+    {
+      "source_id": "github/copilot",
+      "target_id": "cursor",
+      "relationship": "competes_with",
+      "discovered_at": "2024-01-01T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Both are AI-powered coding tools"
+    },
+    {
+      "source_id": "github/copilot",
+      "target_id": "anthropic/claude-code",
+      "relationship": "competes_with",
+      "discovered_at": "2025-02-24T00:00:00Z",
+      "confidence": 0.8,
+      "evidence": "Both are AI coding assistants"
+    },
+    {
+      "source_id": "stability-ai/sd3",
+      "target_id": "openai/dall-e-3",
+      "relationship": "competes_with",
+      "discovered_at": "2024-02-22T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Competing image generation models"
+    },
+    {
+      "source_id": "stability-ai/sd3",
+      "target_id": "midjourney",
+      "relationship": "competes_with",
+      "discovered_at": "2024-02-22T00:00:00Z",
+      "confidence": 0.85,
+      "evidence": "Competing image generation platforms"
+    },
+    {
+      "source_id": "meta/llama-4",
+      "target_id": "mistral/mistral-large",
+      "relationship": "competes_with",
+      "discovered_at": "2025-04-05T00:00:00Z",
+      "confidence": 0.8,
+      "evidence": "Competing in open-weight model space"
+    },
+    {
+      "source_id": "google-deepmind",
+      "target_id": "google",
+      "relationship": "part_of",
+      "discovered_at": "2023-04-20T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "DeepMind is a division of Google/Alphabet"
+    },
+    {
+      "source_id": "anthropic/claude-4-opus",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "part_of",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.85,
+      "evidence": "Both part of Claude 4 model family"
+    },
+    {
+      "source_id": "anthropic/claude-4-haiku",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "part_of",
+      "discovered_at": "2025-06-01T00:00:00Z",
+      "confidence": 0.85,
+      "evidence": "Both part of Claude 4 model family"
+    },
+    {
+      "source_id": "github/copilot",
+      "target_id": "microsoft",
+      "relationship": "part_of",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "GitHub Copilot is a Microsoft/GitHub product"
+    },
+    {
+      "source_id": "anthropic",
+      "target_id": "google",
+      "relationship": "funded_by",
+      "discovered_at": "2023-10-27T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Google committed $2B investment in Anthropic"
+    },
+    {
+      "source_id": "openai",
+      "target_id": "microsoft",
+      "relationship": "funded_by",
+      "discovered_at": "2023-01-23T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Microsoft invested $10B+ in OpenAI"
+    },
+    {
+      "source_id": "mistral",
+      "target_id": "microsoft",
+      "relationship": "funded_by",
+      "discovered_at": "2024-02-26T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Microsoft invested in Mistral AI"
+    },
+    {
+      "source_id": "openai",
+      "target_id": "microsoft",
+      "relationship": "partners_with",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "Deep strategic partnership for Azure OpenAI Service"
+    },
+    {
+      "source_id": "anthropic",
+      "target_id": "google",
+      "relationship": "partners_with",
+      "discovered_at": "2023-10-27T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Anthropic models available on Google Cloud"
+    },
+    {
+      "source_id": "langchain",
+      "target_id": "openai/gpt-4o",
+      "relationship": "integrates_with",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "LangChain has official OpenAI integration"
+    },
+    {
+      "source_id": "langchain",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "integrates_with",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "LangChain has official Anthropic integration"
+    },
+    {
+      "source_id": "llamaindex",
+      "target_id": "openai/gpt-4o",
+      "relationship": "integrates_with",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "LlamaIndex supports OpenAI models"
+    },
+    {
+      "source_id": "vllm",
+      "target_id": "meta/llama-4",
+      "relationship": "integrates_with",
+      "discovered_at": "2025-04-05T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "vLLM supports serving Llama models"
+    },
+    {
+      "source_id": "vllm",
+      "target_id": "mistral/mistral-large",
+      "relationship": "integrates_with",
+      "discovered_at": "2024-02-26T00:00:00Z",
+      "confidence": 0.85,
+      "evidence": "vLLM supports serving Mistral models"
+    },
+    {
+      "source_id": "openai/gpt-4o",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "GPT-4o evaluated on MMLU"
+    },
+    {
+      "source_id": "anthropic/claude-4-opus",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Claude 4 Opus evaluated on MMLU"
+    },
+    {
+      "source_id": "google/gemini-2-5-pro",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Gemini 2.5 Pro evaluated on MMLU"
+    },
+    {
+      "source_id": "openai/gpt-4o",
+      "target_id": "humaneval",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "GPT-4o evaluated on HumanEval"
+    },
+    {
+      "source_id": "anthropic/claude-code",
+      "target_id": "swebench",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2025-02-24T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Claude Code evaluated on SWE-bench"
+    },
+    {
+      "source_id": "anthropic/claude-4-opus",
+      "target_id": "swebench",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Claude 4 Opus evaluated on SWE-bench"
+    },
+    {
+      "source_id": "paper/constitutional-ai",
+      "target_id": "paper/scaling-laws",
+      "relationship": "inspired_by",
+      "discovered_at": "2022-12-15T00:00:00Z",
+      "confidence": 0.6,
+      "evidence": "Constitutional AI builds on insights from scaling research"
+    },
+    {
+      "source_id": "meta/llama-3",
+      "target_id": "paper/attention-is-all-you-need",
+      "relationship": "inspired_by",
+      "discovered_at": "2024-04-18T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Llama uses transformer architecture"
+    },
+    {
+      "source_id": "openai/gpt-4",
+      "target_id": "paper/attention-is-all-you-need",
+      "relationship": "inspired_by",
+      "discovered_at": "2023-03-14T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "GPT-4 is a transformer model"
+    },
+    {
+      "source_id": "cursor",
+      "target_id": "github/copilot",
+      "relationship": "inspired_by",
+      "discovered_at": "2023-06-01T00:00:00Z",
+      "confidence": 0.7,
+      "evidence": "Cursor drew inspiration from Copilot's AI coding paradigm"
+    },
+    {
+      "source_id": "vllm",
+      "target_id": "huggingface/transformers",
+      "relationship": "built_on",
+      "discovered_at": "2023-06-20T00:00:00Z",
+      "confidence": 0.8,
+      "evidence": "vLLM builds on HuggingFace model loading"
+    },
+    {
+      "source_id": "openai/gpt-4o",
+      "target_id": "nvidia/h100",
+      "relationship": "built_on",
+      "discovered_at": "2024-05-13T00:00:00Z",
+      "confidence": 0.85,
+      "evidence": "GPT-4o trained on NVIDIA GPU clusters"
+    },
+    {
+      "source_id": "anthropic/claude-4-opus",
+      "target_id": "nvidia/h100",
+      "relationship": "built_on",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.8,
+      "evidence": "Claude models trained on NVIDIA GPUs"
+    },
+    {
+      "source_id": "meta/llama-4",
+      "target_id": "nvidia/h100",
+      "relationship": "built_on",
+      "discovered_at": "2025-04-05T00:00:00Z",
+      "confidence": 0.85,
+      "evidence": "Llama 4 trained on NVIDIA GPU clusters"
+    },
+    {
+      "source_id": "meta/llama-4",
+      "target_id": "pytorch",
+      "relationship": "built_on",
+      "discovered_at": "2025-04-05T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Llama models built with PyTorch"
+    },
+    {
+      "source_id": "huggingface/transformers",
+      "target_id": "pytorch",
+      "relationship": "built_on",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Transformers library uses PyTorch as primary backend"
+    },
+    {
+      "source_id": "meta/llama-3",
+      "target_id": "dataset/common-crawl",
+      "relationship": "built_on",
+      "discovered_at": "2024-04-18T00:00:00Z",
+      "confidence": 0.85,
+      "evidence": "Llama 3 pre-training data includes Common Crawl"
+    },
+    {
+      "source_id": "google-deepmind",
+      "target_id": "google",
+      "relationship": "acquired_by",
+      "discovered_at": "2023-04-20T00:00:00Z",
+      "confidence": 0.99,
+      "evidence": "DeepMind acquired by Google in 2014, merged with Brain in 2023"
+    },
+    {
+      "source_id": "vllm",
+      "target_id": "huggingface/transformers",
+      "relationship": "forked_from",
+      "discovered_at": "2023-06-20T00:00:00Z",
+      "confidence": 0.7,
+      "evidence": "vLLM originally forked model loading code from Transformers"
+    },
+    {
+      "source_id": "mistral/mistral-large",
+      "target_id": "meta/llama-3",
+      "relationship": "inspired_by",
+      "discovered_at": "2024-02-26T00:00:00Z",
+      "confidence": 0.5,
+      "evidence": "Mistral founders from Meta, influenced by Llama architecture"
+    },
+    {
+      "source_id": "llamaindex",
+      "target_id": "langchain",
+      "relationship": "inspired_by",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "confidence": 0.6,
+      "evidence": "LlamaIndex emerged in similar space as LangChain"
+    },
+    {
+      "source_id": "meta/llama-4",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2025-04-05T00:00:00Z",
+      "confidence": 0.95,
+      "evidence": "Llama 4 evaluated on MMLU"
+    },
+    {
+      "source_id": "anthropic/claude-4-sonnet",
+      "target_id": "humaneval",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2025-05-22T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Claude 4 Sonnet evaluated on HumanEval"
+    },
+    {
+      "source_id": "google/gemini-2-5-pro",
+      "target_id": "humaneval",
+      "relationship": "benchmarked_on",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "Gemini 2.5 Pro evaluated on HumanEval"
+    },
+    {
+      "source_id": "langchain",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "integrates_with",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.9,
+      "evidence": "LangChain has Google GenAI integration"
+    },
+    {
+      "source_id": "cursor",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "integrates_with",
+      "discovered_at": "2025-03-25T00:00:00Z",
+      "confidence": 0.75,
+      "evidence": "Cursor supports Gemini models"
+    },
+    {
+      "source_id": "langchain",
+      "target_id": "llamaindex",
+      "relationship": "competes_with",
+      "discovered_at": "2023-01-01T00:00:00Z",
+      "confidence": 0.75,
+      "evidence": "Both are LLM application frameworks"
+    },
+    {
+      "source_id": "openai/gpt-3-5-turbo",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "openai/gpt-3-5-turbo created by openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/gpt-4-turbo",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "openai/gpt-4-turbo created by openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o1-mini",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "openai/o1-mini created by openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o3",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "openai/o3 created by openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o3-mini",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "openai/o3-mini created by openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/whisper",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "openai/whisper created by openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/text-embedding-3",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "openai/text-embedding-3 created by openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "anthropic/claude-3-opus",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "anthropic/claude-3-opus created by anthropic",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "anthropic/claude-3-haiku",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "anthropic/claude-3-haiku created by anthropic",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "anthropic/claude-2",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "anthropic/claude-2 created by anthropic",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/gemma-2",
+      "target_id": "google-deepmind",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "google/gemma-2 created by google-deepmind",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/palm-2",
+      "target_id": "google-deepmind",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "google/palm-2 created by google-deepmind",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/imagen-3",
+      "target_id": "google-deepmind",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "google/imagen-3 created by google-deepmind",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/veo-2",
+      "target_id": "google-deepmind",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "google/veo-2 created by google-deepmind",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/codegemma",
+      "target_id": "google-deepmind",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "google/codegemma created by google-deepmind",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/llama-2",
+      "target_id": "meta-ai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "meta/llama-2 created by meta-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/llama-3-1",
+      "target_id": "meta-ai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "meta/llama-3-1 created by meta-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/code-llama",
+      "target_id": "meta-ai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "meta/code-llama created by meta-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/sam-2",
+      "target_id": "meta-ai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "meta/sam-2 created by meta-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/musicgen",
+      "target_id": "meta-ai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "meta/musicgen created by meta-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "mistral/mistral-7b",
+      "target_id": "mistral",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "mistral/mistral-7b created by mistral",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "mistral/mixtral-8x7b",
+      "target_id": "mistral",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "mistral/mixtral-8x7b created by mistral",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "mistral/codestral",
+      "target_id": "mistral",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "mistral/codestral created by mistral",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "mistral/pixtral",
+      "target_id": "mistral",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "mistral/pixtral created by mistral",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/r1",
+      "target_id": "deepseek-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "deepseek/r1 created by deepseek-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/v3",
+      "target_id": "deepseek-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "deepseek/v3 created by deepseek-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/coder-v2",
+      "target_id": "deepseek-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "deepseek/coder-v2 created by deepseek-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "cohere/command-r-plus",
+      "target_id": "cohere",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "cohere/command-r-plus created by cohere",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "cohere/embed-v3",
+      "target_id": "cohere",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "cohere/embed-v3 created by cohere",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "databricks/dbrx",
+      "target_id": "databricks",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "databricks/dbrx created by databricks",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "microsoft/phi-3",
+      "target_id": "microsoft",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "microsoft/phi-3 created by microsoft",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "bigcode/starcoder-2",
+      "target_id": "huggingface",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "bigcode/starcoder-2 created by huggingface",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "runway/gen-3",
+      "target_id": "runway-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "runway/gen-3 created by runway-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "suno/v3",
+      "target_id": "suno-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "suno/v3 created by suno-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "bfl/flux",
+      "target_id": "stability-ai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "bfl/flux created by stability-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "stability-ai/sdxl",
+      "target_id": "stability-ai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "stability-ai/sdxl created by stability-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/gemini-app",
+      "target_id": "google",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "google/gemini-app by google",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "microsoft/copilot",
+      "target_id": "microsoft",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "microsoft/copilot by microsoft",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "apple/intelligence",
+      "target_id": "apple",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "apple/intelligence by apple",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "cognition/devin",
+      "target_id": "cognition-ai",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "cognition/devin by cognition-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "replit/ghostwriter",
+      "target_id": "replit-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "replit/ghostwriter by replit-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "sourcegraph/cody",
+      "target_id": "huggingface",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "sourcegraph/cody by huggingface",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "amazon/codewhisperer",
+      "target_id": "amazon",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "amazon/codewhisperer by amazon",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "runway-studio",
+      "target_id": "runway-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "runway-studio by runway-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "elevenlabs-studio",
+      "target_id": "elevenlabs",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "elevenlabs-studio by elevenlabs",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "aws/bedrock",
+      "target_id": "amazon",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "aws/bedrock by amazon",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/vertex-ai",
+      "target_id": "google",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "google/vertex-ai by google",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "azure/openai-service",
+      "target_id": "microsoft",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "azure/openai-service by microsoft",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia/a100",
+      "target_id": "nvidia",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "nvidia/a100 by nvidia",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia/h200",
+      "target_id": "nvidia",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "nvidia/h200 by nvidia",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia/gb300",
+      "target_id": "nvidia",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "nvidia/gb300 by nvidia",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/tpu-v5e",
+      "target_id": "google",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "google/tpu-v5e by google",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "amd/mi300x",
+      "target_id": "amd",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "amd/mi300x by amd",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "groq/lpu",
+      "target_id": "groq-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "groq/lpu by groq-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "cerebras/cs-3",
+      "target_id": "cerebras-co",
+      "relationship": "authored_by",
+      "confidence": 0.99,
+      "evidence": "cerebras/cs-3 by cerebras-co",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/gpt-3-5-turbo",
+      "target_id": "openai/gpt-4-turbo",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "openai/gpt-4-turbo succeeds openai/gpt-3-5-turbo",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/gpt-4-turbo",
+      "target_id": "openai/gpt-4o",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "openai/gpt-4o succeeds openai/gpt-4-turbo",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o1",
+      "target_id": "openai/o3",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "openai/o3 succeeds openai/o1",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o1-mini",
+      "target_id": "openai/o3-mini",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "openai/o3-mini succeeds openai/o1-mini",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "anthropic/claude-2",
+      "target_id": "anthropic/claude-3-opus",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "anthropic/claude-3-opus succeeds anthropic/claude-2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "anthropic/claude-3-opus",
+      "target_id": "anthropic/claude-4-opus",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "anthropic/claude-4-opus succeeds anthropic/claude-3-opus",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "anthropic/claude-3-haiku",
+      "target_id": "anthropic/claude-4-haiku",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "anthropic/claude-4-haiku succeeds anthropic/claude-3-haiku",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/palm-2",
+      "target_id": "google/gemini-1-5-pro",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "google/gemini-1-5-pro succeeds google/palm-2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/llama-2",
+      "target_id": "meta/llama-3",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "meta/llama-3 succeeds meta/llama-2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/llama-3",
+      "target_id": "meta/llama-3-1",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "meta/llama-3-1 succeeds meta/llama-3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/llama-3-1",
+      "target_id": "meta/llama-4",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "meta/llama-4 succeeds meta/llama-3-1",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "mistral/mistral-7b",
+      "target_id": "mistral/mixtral-8x7b",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "mistral/mixtral-8x7b succeeds mistral/mistral-7b",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "mistral/mixtral-8x7b",
+      "target_id": "mistral/mistral-large",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "mistral/mistral-large succeeds mistral/mixtral-8x7b",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/v3",
+      "target_id": "deepseek/r1",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "deepseek/r1 succeeds deepseek/v3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "stability-ai/sdxl",
+      "target_id": "stability-ai/sd3",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "stability-ai/sd3 succeeds stability-ai/sdxl",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia/a100",
+      "target_id": "nvidia/h100",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "nvidia/h100 succeeds nvidia/a100",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia/h100",
+      "target_id": "nvidia/h200",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "nvidia/h200 succeeds nvidia/h100",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia/h200",
+      "target_id": "nvidia/b200",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "nvidia/b200 succeeds nvidia/h200",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia/b200",
+      "target_id": "nvidia/gb300",
+      "relationship": "succeeded_by",
+      "confidence": 0.95,
+      "evidence": "nvidia/gb300 succeeds nvidia/b200",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/r1",
+      "target_id": "openai/o3",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "deepseek/r1 competes with openai/o3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/r1",
+      "target_id": "anthropic/claude-4-opus",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "deepseek/r1 competes with anthropic/claude-4-opus",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/v3",
+      "target_id": "openai/gpt-4o",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "deepseek/v3 competes with openai/gpt-4o",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/v3",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "deepseek/v3 competes with anthropic/claude-4-sonnet",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "qwen/qwen-2-5",
+      "target_id": "meta/llama-4",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "qwen/qwen-2-5 competes with meta/llama-4",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "qwen/qwen-2-5",
+      "target_id": "mistral/mistral-large",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "qwen/qwen-2-5 competes with mistral/mistral-large",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "codeium",
+      "target_id": "github/copilot",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "codeium competes with github/copilot",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "codeium",
+      "target_id": "cursor",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "codeium competes with cursor",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "tabnine",
+      "target_id": "github/copilot",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "tabnine competes with github/copilot",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "cognition/devin",
+      "target_id": "anthropic/claude-code",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "cognition/devin competes with anthropic/claude-code",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/gemini-app",
+      "target_id": "openai/chatgpt",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "google/gemini-app competes with openai/chatgpt",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "microsoft/copilot",
+      "target_id": "openai/chatgpt",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "microsoft/copilot competes with openai/chatgpt",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "microsoft/copilot",
+      "target_id": "google/gemini-app",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "microsoft/copilot competes with google/gemini-app",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "aws/bedrock",
+      "target_id": "azure/openai-service",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "aws/bedrock competes with azure/openai-service",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "aws/bedrock",
+      "target_id": "google/vertex-ai",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "aws/bedrock competes with google/vertex-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "azure/openai-service",
+      "target_id": "google/vertex-ai",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "azure/openai-service competes with google/vertex-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "weaviate",
+      "target_id": "pinecone",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "weaviate competes with pinecone",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "weaviate",
+      "target_id": "chromadb",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "weaviate competes with chromadb",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "pinecone",
+      "target_id": "chromadb",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "pinecone competes with chromadb",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "amd/mi300x",
+      "target_id": "nvidia/h100",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "amd/mi300x competes with nvidia/h100",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "groq/lpu",
+      "target_id": "nvidia/h100",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "groq/lpu competes with nvidia/h100",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "bfl/flux",
+      "target_id": "stability-ai/sd3",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "bfl/flux competes with stability-ai/sd3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "bfl/flux",
+      "target_id": "midjourney",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "bfl/flux competes with midjourney",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "crewai",
+      "target_id": "autogen",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "crewai competes with autogen",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "ollama",
+      "target_id": "together-ai",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "ollama competes with together-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "runway/gen-3",
+      "target_id": "openai/sora",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "runway/gen-3 competes with openai/sora",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "runway/gen-3",
+      "target_id": "google/veo-2",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "runway/gen-3 competes with google/veo-2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "suno/v3",
+      "target_id": "meta/musicgen",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "suno/v3 competes with meta/musicgen",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "bigcode/starcoder-2",
+      "target_id": "deepseek/coder-v2",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "bigcode/starcoder-2 competes with deepseek/coder-v2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "bigcode/starcoder-2",
+      "target_id": "meta/code-llama",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "bigcode/starcoder-2 competes with meta/code-llama",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "mistral/codestral",
+      "target_id": "deepseek/coder-v2",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "mistral/codestral competes with deepseek/coder-v2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "replit/ghostwriter",
+      "target_id": "codeium",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "replit/ghostwriter competes with codeium",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "jax",
+      "target_id": "pytorch",
+      "relationship": "competes_with",
+      "confidence": 0.8,
+      "evidence": "jax competes with pytorch",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/gemini-app",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "google/gemini-app built on google/gemini-2-5-pro",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "microsoft/copilot",
+      "target_id": "openai/gpt-4o",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "microsoft/copilot built on openai/gpt-4o",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "aws/bedrock",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "aws/bedrock built on anthropic/claude-4-sonnet",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "azure/openai-service",
+      "target_id": "openai/gpt-4o",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "azure/openai-service built on openai/gpt-4o",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/vertex-ai",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "google/vertex-ai built on google/gemini-2-5-pro",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "ollama",
+      "target_id": "meta/llama-4",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "ollama built on meta/llama-4",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "together-ai",
+      "target_id": "meta/llama-4",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "together-ai built on meta/llama-4",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "tensorrt",
+      "target_id": "nvidia/h100",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "tensorrt built on nvidia/h100",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/r1",
+      "target_id": "deepseek/v3",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "deepseek/r1 built on deepseek/v3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/code-llama",
+      "target_id": "meta/llama-2",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "meta/code-llama built on meta/llama-2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/codegemma",
+      "target_id": "google/gemma-2",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "google/codegemma built on google/gemma-2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "qwen/qwen-2-5-coder",
+      "target_id": "qwen/qwen-2-5",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "qwen/qwen-2-5-coder built on qwen/qwen-2-5",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/coder-v2",
+      "target_id": "deepseek/v3",
+      "relationship": "built_on",
+      "confidence": 0.85,
+      "evidence": "deepseek/coder-v2 built on deepseek/v3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "langchain",
+      "target_id": "deepseek/v3",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "langchain integrates with deepseek/v3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "langchain",
+      "target_id": "mistral/mistral-large",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "langchain integrates with mistral/mistral-large",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "llamaindex",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "llamaindex integrates with anthropic/claude-4-sonnet",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "llamaindex",
+      "target_id": "google/gemini-2-5-pro",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "llamaindex integrates with google/gemini-2-5-pro",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "vllm",
+      "target_id": "deepseek/v3",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "vllm integrates with deepseek/v3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "vllm",
+      "target_id": "qwen/qwen-2-5",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "vllm integrates with qwen/qwen-2-5",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "ollama",
+      "target_id": "mistral/mistral-7b",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "ollama integrates with mistral/mistral-7b",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "ollama",
+      "target_id": "qwen/qwen-2-5",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "ollama integrates with qwen/qwen-2-5",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "crewai",
+      "target_id": "openai/gpt-4o",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "crewai integrates with openai/gpt-4o",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "crewai",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "crewai integrates with anthropic/claude-4-sonnet",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "autogen",
+      "target_id": "openai/gpt-4o",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "autogen integrates with openai/gpt-4o",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "dspy",
+      "target_id": "openai/gpt-4o",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "dspy integrates with openai/gpt-4o",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "dspy",
+      "target_id": "anthropic/claude-4-sonnet",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "dspy integrates with anthropic/claude-4-sonnet",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "tensorrt",
+      "target_id": "meta/llama-4",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "tensorrt integrates with meta/llama-4",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "onnxruntime",
+      "target_id": "microsoft/phi-3",
+      "relationship": "integrates_with",
+      "confidence": 0.85,
+      "evidence": "onnxruntime integrates with microsoft/phi-3",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/r1",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "deepseek/r1 evaluated on mmlu",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/r1",
+      "target_id": "gpqa",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "deepseek/r1 evaluated on gpqa",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/r1",
+      "target_id": "math-benchmark",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "deepseek/r1 evaluated on math-benchmark",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/v3",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "deepseek/v3 evaluated on mmlu",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/v3",
+      "target_id": "humaneval",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "deepseek/v3 evaluated on humaneval",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "qwen/qwen-2-5",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "qwen/qwen-2-5 evaluated on mmlu",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "qwen/qwen-2-5",
+      "target_id": "humaneval",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "qwen/qwen-2-5 evaluated on humaneval",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/llama-3-1",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "meta/llama-3-1 evaluated on mmlu",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/llama-3-1",
+      "target_id": "humaneval",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "meta/llama-3-1 evaluated on humaneval",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "microsoft/phi-3",
+      "target_id": "mmlu",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "microsoft/phi-3 evaluated on mmlu",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o3",
+      "target_id": "arc-agi",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "openai/o3 evaluated on arc-agi",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o3",
+      "target_id": "gpqa",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "openai/o3 evaluated on gpqa",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "anthropic/claude-4-opus",
+      "target_id": "gpqa",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "anthropic/claude-4-opus evaluated on gpqa",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/gpt-4o",
+      "target_id": "chatbot-arena",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "openai/gpt-4o evaluated on chatbot-arena",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "anthropic/claude-4-opus",
+      "target_id": "chatbot-arena",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "anthropic/claude-4-opus evaluated on chatbot-arena",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/gemini-2-5-pro",
+      "target_id": "chatbot-arena",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "google/gemini-2-5-pro evaluated on chatbot-arena",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/r1",
+      "target_id": "chatbot-arena",
+      "relationship": "benchmarked_on",
+      "confidence": 0.9,
+      "evidence": "deepseek/r1 evaluated on chatbot-arena",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "inflection",
+      "target_id": "microsoft",
+      "relationship": "funded_by",
+      "confidence": 0.9,
+      "evidence": "inflection funded by microsoft",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "character-ai",
+      "target_id": "google",
+      "relationship": "funded_by",
+      "confidence": 0.9,
+      "evidence": "character-ai funded by google",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "figure-ai",
+      "target_id": "nvidia",
+      "relationship": "funded_by",
+      "confidence": 0.9,
+      "evidence": "figure-ai funded by nvidia",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "figure-ai",
+      "target_id": "microsoft",
+      "relationship": "funded_by",
+      "confidence": 0.9,
+      "evidence": "figure-ai funded by microsoft",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "adept-ai",
+      "target_id": "amazon",
+      "relationship": "funded_by",
+      "confidence": 0.9,
+      "evidence": "adept-ai funded by amazon",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "scale-ai",
+      "target_id": "amazon",
+      "relationship": "funded_by",
+      "confidence": 0.9,
+      "evidence": "scale-ai funded by amazon",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "databricks",
+      "target_id": "nvidia",
+      "relationship": "funded_by",
+      "confidence": 0.9,
+      "evidence": "databricks funded by nvidia",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia",
+      "target_id": "microsoft",
+      "relationship": "partners_with",
+      "confidence": 0.85,
+      "evidence": "nvidia partners with microsoft",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "nvidia",
+      "target_id": "google",
+      "relationship": "partners_with",
+      "confidence": 0.85,
+      "evidence": "nvidia partners with google",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "apple",
+      "target_id": "openai",
+      "relationship": "partners_with",
+      "confidence": 0.85,
+      "evidence": "apple partners with openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "samsung",
+      "target_id": "google",
+      "relationship": "partners_with",
+      "confidence": 0.85,
+      "evidence": "samsung partners with google",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "adept-ai",
+      "target_id": "amazon",
+      "relationship": "acquired_by",
+      "confidence": 0.95,
+      "evidence": "Adept team acquired by Amazon in 2024",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "inflection",
+      "target_id": "microsoft",
+      "relationship": "acquired_by",
+      "confidence": 0.9,
+      "evidence": "Inflection AI key talent hired by Microsoft",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/llama-2",
+      "target_id": "meta-ai",
+      "relationship": "authored_by",
+      "confidence": 0.95,
+      "evidence": "paper/llama-2 authored at meta-ai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/gpt-4-report",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.95,
+      "evidence": "paper/gpt-4-report authored at openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/lora",
+      "target_id": "microsoft",
+      "relationship": "authored_by",
+      "confidence": 0.95,
+      "evidence": "paper/lora authored at microsoft",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/qlora",
+      "target_id": "huggingface",
+      "relationship": "authored_by",
+      "confidence": 0.95,
+      "evidence": "paper/qlora authored at huggingface",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/rlhf",
+      "target_id": "openai",
+      "relationship": "authored_by",
+      "confidence": 0.95,
+      "evidence": "paper/rlhf authored at openai",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/mamba-paper",
+      "target_id": "anthropic",
+      "relationship": "authored_by",
+      "confidence": 0.95,
+      "evidence": "paper/mamba-paper authored at anthropic",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/mixtral",
+      "target_id": "mistral",
+      "relationship": "authored_by",
+      "confidence": 0.95,
+      "evidence": "paper/mixtral authored at mistral",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/lora",
+      "target_id": "paper/attention-is-all-you-need",
+      "relationship": "inspired_by",
+      "confidence": 0.8,
+      "evidence": "paper/lora inspired by paper/attention-is-all-you-need",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/qlora",
+      "target_id": "paper/lora",
+      "relationship": "inspired_by",
+      "confidence": 0.8,
+      "evidence": "paper/qlora inspired by paper/lora",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/dpo",
+      "target_id": "paper/rlhf",
+      "relationship": "inspired_by",
+      "confidence": 0.8,
+      "evidence": "paper/dpo inspired by paper/rlhf",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/flash-attention",
+      "target_id": "paper/attention-is-all-you-need",
+      "relationship": "inspired_by",
+      "confidence": 0.8,
+      "evidence": "paper/flash-attention inspired by paper/attention-is-all-you-need",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/chain-of-thought",
+      "target_id": "paper/scaling-laws",
+      "relationship": "inspired_by",
+      "confidence": 0.8,
+      "evidence": "paper/chain-of-thought inspired by paper/scaling-laws",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/mamba-paper",
+      "target_id": "paper/attention-is-all-you-need",
+      "relationship": "inspired_by",
+      "confidence": 0.8,
+      "evidence": "paper/mamba-paper inspired by paper/attention-is-all-you-need",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/mixtral",
+      "target_id": "paper/attention-is-all-you-need",
+      "relationship": "inspired_by",
+      "confidence": 0.8,
+      "evidence": "paper/mixtral inspired by paper/attention-is-all-you-need",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "paper/llama-2",
+      "target_id": "paper/scaling-laws",
+      "relationship": "inspired_by",
+      "confidence": 0.8,
+      "evidence": "paper/llama-2 inspired by paper/scaling-laws",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "meta/code-llama",
+      "target_id": "meta/llama-2",
+      "relationship": "forked_from",
+      "confidence": 0.95,
+      "evidence": "Code Llama derived from Llama 2",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "google/codegemma",
+      "target_id": "google/gemma-2",
+      "relationship": "forked_from",
+      "confidence": 0.95,
+      "evidence": "CodeGemma derived from Gemma",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "qwen/qwen-2-5-coder",
+      "target_id": "qwen/qwen-2-5",
+      "relationship": "forked_from",
+      "confidence": 0.95,
+      "evidence": "Qwen Coder derived from Qwen 2.5",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "deepseek/coder-v2",
+      "target_id": "deepseek/v3",
+      "relationship": "forked_from",
+      "confidence": 0.85,
+      "evidence": "DeepSeek Coder derived from DeepSeek base",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "stability-ai/sdxl",
+      "target_id": "stability-ai/sd3",
+      "relationship": "inspired_by",
+      "confidence": 0.7,
+      "evidence": "SD3 builds on SDXL concepts",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o1-mini",
+      "target_id": "openai/o1",
+      "relationship": "part_of",
+      "confidence": 0.9,
+      "evidence": "o1-mini is part of o1 family",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "source_id": "openai/o3-mini",
+      "target_id": "openai/o3",
+      "relationship": "part_of",
+      "confidence": 0.9,
+      "evidence": "o3-mini is part of o3 family",
+      "discovered_at": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

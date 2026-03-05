@@ -1,0 +1,29 @@
+{
+  "name": "@nexus/api",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.0.0",
+    "@fastify/rate-limit": "^10.2.0",
+    "@fastify/websocket": "^11.0.0",
+    "@nexus/shared": "workspace:*",
+    "fastify": "^5.2.0",
+    "neo4j-driver": "^5.27.0",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.0"
+  }
+}

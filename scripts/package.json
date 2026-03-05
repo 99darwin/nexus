@@ -1,0 +1,10 @@
+{
+  "name": "@nexus/scripts",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@nexus/shared": "workspace:*",
+    "neo4j-driver": "^5.27.0"
+  }
+}

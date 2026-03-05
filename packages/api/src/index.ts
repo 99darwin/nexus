@@ -1,0 +1,63 @@
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import rateLimit from "@fastify/rate-limit";
+import websocket from "@fastify/websocket";
+import { healthRoutes } from "./routes/health.js";
+import { graphRoutes } from "./routes/graph.js";
+import { nodeRoutes } from "./routes/nodes.js";
+import { edgeRoutes } from "./routes/edges.js";
+import { verticalRoutes } from "./routes/verticals.js";
+import { timelineRoutes } from "./routes/timeline.js";
+import { searchRoutes } from "./routes/search.js";
+import { liveRoutes } from "./routes/live.js";
+import { dashboardRoutes } from "./routes/admin/dashboard.js";
+import { closeDriver } from "./db/neo4j.js";
+import { closePool } from "./db/postgres.js";
+
+const server = Fastify({ logger: true });
+
+// Plugins
+await server.register(cors, {
+  origin: process.env.CLIENT_ORIGIN ?? "*",
+});
+
+await server.register(rateLimit, {
+  max: 100,
+  timeWindow: "1 minute",
+});
+
+await server.register(websocket);
+
+// Routes
+await server.register(healthRoutes);
+await server.register(graphRoutes);
+await server.register(nodeRoutes);
+await server.register(edgeRoutes);
+await server.register(verticalRoutes);
+await server.register(timelineRoutes);
+await server.register(searchRoutes);
+await server.register(liveRoutes);
+await server.register(dashboardRoutes);
+
+// Graceful shutdown
+const shutdown = async () => {
+  await server.close();
+  await closeDriver();
+  await closePool();
+};
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
+
+// Start
+const port = parseInt(process.env.API_PORT ?? "3001", 10);
+const host = process.env.API_HOST ?? "0.0.0.0";
+
+try {
+  await server.listen({ port, host });
+} catch (err) {
+  server.log.error(err);
+  process.exit(1);
+}
+
+export { broadcastMutation } from "./routes/live.js";

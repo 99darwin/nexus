@@ -1,0 +1,27 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Docker volumes
+neo4j-data/
+postgres-data/
+redis-data/
+
+# Coverage
+coverage/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Build artifacts
+*.js.map
+*.d.ts.map

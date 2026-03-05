@@ -1,0 +1,25 @@
+{
+  "name": "@nexus/agent",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@nexus/shared": "workspace:*",
+    "bullmq": "^5.34.0",
+    "ioredis": "^5.4.0",
+    "neo4j-driver": "^5.27.0",
+    "pg": "^8.13.0"
+  }
+}
