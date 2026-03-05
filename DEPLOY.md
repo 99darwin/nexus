@@ -53,11 +53,11 @@ The client is a static Vite SPA. At build time, `VITE_API_URL` is baked in so th
 
 1. Click **+ New** → **Database** → **Neo4j**
 2. Railway provisions it with a persistent volume and exposes these variables:
-   - `NEO4J_AUTH` — auth string in `neo4j/password` format (e.g. `neo4j/abc123`)
+   - `NEO4J_AUTH` — defaults to `none` (auth disabled). This is safe because Neo4j is only reachable via Railway's private network.
    - `PORT` — internal Bolt port
    - `RAILWAY_PRIVATE_DOMAIN` — internal hostname for service-to-service communication
    - `RAILWAY_TCP_PROXY_DOMAIN` / `RAILWAY_TCP_PROXY_PORT` — for external access (schema init, seeding)
-3. Note: there are no separate username/password variables. `NEO4J_AUTH` contains both, separated by `/`. The username is always `neo4j`.
+3. **Leave `NEO4J_AUTH=none`** — don't change it. The API code detects this and connects without credentials. If you later want auth, set it to `neo4j/your-password` format and the API will parse it automatically.
 
 ---
 
@@ -72,10 +72,8 @@ The client is a static Vite SPA. At build time, `VITE_API_URL` is baked in so th
 NODE_ENV=production
 
 # Neo4j — reference variables from Railway's managed Neo4j service
-# NEO4J_AUTH is "neo4j/password" format — username is always "neo4j"
 NEO4J_URI=bolt://${{ neo4j.RAILWAY_PRIVATE_DOMAIN }}:${{ neo4j.PORT }}
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=${{ neo4j.NEO4J_AUTH }}
+NEO4J_AUTH=${{ neo4j.NEO4J_AUTH }}
 
 # PostgreSQL — reference Railway's managed Postgres variables
 POSTGRES_HOST=${{ Postgres.PGHOST }}
@@ -94,10 +92,6 @@ CLIENT_ORIGIN=https://your-app.vercel.app
 API_PORT=3001
 API_HOST=0.0.0.0
 ```
-
-> **Important — `NEO4J_PASSWORD`:** Railway's `NEO4J_AUTH` is in `neo4j/password` format (e.g. `neo4j/abc123`). The API code expects just the password. You have two options:
-> 1. **Manually extract it:** Copy the password portion from `NEO4J_AUTH` in the Railway dashboard and paste it as a raw string for `NEO4J_PASSWORD`
-> 2. **Update the API code** to parse `NEO4J_AUTH` directly (split on first `/`)
 
 5. Under **Settings** → **Networking**, expose port `3001` and generate a public domain (e.g. `nexus-api.up.railway.app`)
 6. Deploy and verify health: `curl https://nexus-api.up.railway.app/health`
@@ -128,25 +122,39 @@ railway run --service Postgres -- psql -f scripts/postgres-schema.sql
 psql "$POSTGRES_CONNECTION_STRING" -f scripts/postgres-schema.sql
 ```
 
-Connect to Neo4j and run the schema (indexes + constraints). Use the **TCP proxy** from Railway's Neo4j dashboard for external access:
+Initialize the Neo4j schema (indexes + full-text search). Open the **Neo4j Browser**:
 
-```bash
-# RAILWAY_TCP_PROXY_DOMAIN and RAILWAY_TCP_PROXY_PORT are in the Neo4j service variables
-cat scripts/neo4j-schema.cypher | cypher-shell \
-  -u neo4j \
-  -p '<password-from-NEO4J_AUTH>' \
-  -a bolt://<RAILWAY_TCP_PROXY_DOMAIN>:<RAILWAY_TCP_PROXY_PORT>
+1. Go to your Neo4j service in Railway → **Settings** → **Networking**
+2. Expose port **7474** and generate a public domain
+3. Open the generated URL in your browser
+4. Since `NEO4J_AUTH=none`, select **No authentication** in the login screen
+
+Run each statement one at a time:
+
+```cypher
+CREATE CONSTRAINT entity_id_unique IF NOT EXISTS
+FOR (n:Entity) REQUIRE n.id IS UNIQUE;
+
+CREATE INDEX entity_type IF NOT EXISTS FOR (n:Entity) ON (n.type);
+CREATE INDEX entity_vertical IF NOT EXISTS FOR (n:Entity) ON (n.vertical);
+CREATE INDEX entity_status IF NOT EXISTS FOR (n:Entity) ON (n.status);
+CREATE INDEX entity_significance IF NOT EXISTS FOR (n:Entity) ON (n.significance);
+CREATE INDEX entity_updated_at IF NOT EXISTS FOR (n:Entity) ON (n.updated_at);
+
+CREATE FULLTEXT INDEX entity_search IF NOT EXISTS
+FOR (n:Entity) ON EACH [n.name, n.summary];
 ```
+
+> **Tip:** The Neo4j Browser only runs one statement at a time. Paste each `CREATE` statement separately, or enable multi-statement mode in the browser settings (`:config { enableMultiStatementMode: true }`).
 
 ### Seed data (optional)
 
-Populate Neo4j with the 50 curated starter nodes:
+Populate Neo4j with the 50 curated starter nodes. The seed script uses the Node.js `neo4j-driver`, so connect via the TCP proxy:
 
 ```bash
-# Use the TCP proxy for external access
+# Get RAILWAY_TCP_PROXY_DOMAIN and RAILWAY_TCP_PROXY_PORT from Railway's Neo4j service variables
 export NEO4J_URI=bolt://<RAILWAY_TCP_PROXY_DOMAIN>:<RAILWAY_TCP_PROXY_PORT>
-export NEO4J_USER=neo4j
-export NEO4J_PASSWORD='<password-from-NEO4J_AUTH>'
+export NEO4J_AUTH=none
 
 pnpm seed
 ```
@@ -225,8 +233,7 @@ The agent pipeline (`packages/agent`) ingests live data from sources (HackerNews
    ```
    ANTHROPIC_API_KEY=sk-ant-...
    NEO4J_URI=bolt://${{ neo4j.RAILWAY_PRIVATE_DOMAIN }}:${{ neo4j.PORT }}
-   NEO4J_USER=neo4j
-   NEO4J_PASSWORD=<password-from-NEO4J_AUTH>
+   NEO4J_AUTH=${{ neo4j.NEO4J_AUTH }}
    POSTGRES_HOST=${{ Postgres.PGHOST }}
    POSTGRES_PORT=${{ Postgres.PGPORT }}
    POSTGRES_DB=${{ Postgres.PGDATABASE }}
@@ -242,8 +249,7 @@ The agent pipeline (`packages/agent`) ingests live data from sources (HackerNews
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 export NEO4J_URI=bolt://<RAILWAY_TCP_PROXY_DOMAIN>:<RAILWAY_TCP_PROXY_PORT>
-export NEO4J_USER=neo4j
-export NEO4J_PASSWORD='<password-from-NEO4J_AUTH>'
+export NEO4J_AUTH=none
 pnpm backfill
 ```
 
@@ -272,8 +278,7 @@ pnpm backfill
 | Variable | Where | Required | Default |
 |---|---|---|---|
 | `NEO4J_URI` | Railway API | Yes | `bolt://localhost:7687` |
-| `NEO4J_USER` | Railway API | Yes | `neo4j` |
-| `NEO4J_PASSWORD` | Railway API | Yes | `nexus-dev-password` |
+| `NEO4J_AUTH` | Railway API | Yes | `none` (Railway default) or `neo4j/password` |
 | `POSTGRES_HOST` | Railway API | Yes | `localhost` |
 | `POSTGRES_PORT` | Railway API | Yes | `5432` |
 | `POSTGRES_DB` | Railway API | Yes | `nexus` |

@@ -939,10 +939,21 @@ async function seedNeo4j() {
   }
 
   const uri = process.env.NEO4J_URI ?? "bolt://localhost:7687";
-  const user = process.env.NEO4J_USER ?? "neo4j";
-  const password = process.env.NEO4J_PASSWORD ?? "nexus-dev-password";
+  const neo4jAuth = process.env.NEO4J_AUTH;
 
-  const driver = neo4j.default.driver(uri, neo4j.default.auth.basic(user, password));
+  let auth;
+  if (neo4jAuth === "none" || neo4jAuth === "") {
+    auth = undefined;
+  } else if (neo4jAuth && neo4jAuth.includes("/")) {
+    const [user, ...rest] = neo4jAuth.split("/");
+    auth = neo4j.default.auth.basic(user, rest.join("/"));
+  } else {
+    const user = process.env.NEO4J_USER ?? "neo4j";
+    const password = process.env.NEO4J_PASSWORD ?? "nexus-dev-password";
+    auth = neo4j.default.auth.basic(user, password);
+  }
+
+  const driver = neo4j.default.driver(uri, auth);
   const session = driver.session();
 
   try {

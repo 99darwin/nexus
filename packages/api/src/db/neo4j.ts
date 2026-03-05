@@ -5,9 +5,21 @@ let driver: Driver | null = null;
 export function getDriver(): Driver {
   if (!driver) {
     const uri = process.env.NEO4J_URI ?? "bolt://localhost:7687";
-    const user = process.env.NEO4J_USER ?? "neo4j";
-    const password = process.env.NEO4J_PASSWORD ?? "nexus-dev-password";
-    driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
+    const neo4jAuth = process.env.NEO4J_AUTH;
+
+    let auth;
+    if (neo4jAuth === "none" || neo4jAuth === "") {
+      auth = undefined;
+    } else if (neo4jAuth && neo4jAuth.includes("/")) {
+      const [user, ...rest] = neo4jAuth.split("/");
+      auth = neo4j.auth.basic(user, rest.join("/"));
+    } else {
+      const user = process.env.NEO4J_USER ?? "neo4j";
+      const password = process.env.NEO4J_PASSWORD ?? "nexus-dev-password";
+      auth = neo4j.auth.basic(user, password);
+    }
+
+    driver = neo4j.driver(uri, auth);
   }
   return driver;
 }
