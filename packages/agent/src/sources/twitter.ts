@@ -78,9 +78,9 @@ export class TwitterAdapter extends BaseAdapter {
       });
 
       if (!response.ok) {
-        const msg = `X API request failed: ${response.status} ${response.statusText}`;
+        const body = await response.text().catch(() => "");
+        const msg = `X API ${response.status}: ${body || response.statusText}`;
         if (NON_RETRYABLE_STATUSES.has(response.status)) {
-          // Wrap in a non-retryable error to prevent BaseAdapter from retrying auth failures
           const err = new Error(msg);
           err.name = "NonRetryableError";
           throw err;
