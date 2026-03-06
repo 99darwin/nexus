@@ -1,9 +1,12 @@
-import { useMemo, useRef, useEffect, useState } from "react";
+import { useMemo, useRef, useEffect, useState, useCallback } from "react";
 import type { ForceNode, ForceLink } from "../graph/types";
 import { FilterBar } from "./FilterBar";
 import { HotCards } from "./HotCards";
 import { FeedItem } from "./FeedItem";
 import { theme } from "../theme";
+
+const INITIAL_RENDER_LIMIT = 80;
+const LOAD_MORE_INCREMENT = 60;
 
 interface ActivityFeedProps {
   nodes: ForceNode[];
@@ -81,24 +84,29 @@ export function ActivityFeed({
 }: ActivityFeedProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeBucket, setActiveBucket] = useState<string | null>(null);
+  const [renderLimit, setRenderLimit] = useState(INITIAL_RENDER_LIMIT);
 
   // Sync internal state with external prop
   const currentBucket = activeBucketName !== undefined ? activeBucketName : activeBucket;
 
   // Flatten all events from all nodes, sorted by timestamp
-  const groupedEvents = useMemo(() => {
+  const flatEvents = useMemo(() => {
     const flat: FlatEvent[] = [];
     for (const node of nodes) {
       for (const event of node.events) {
-        // If event type filter is active, skip non-matching events
         if (activeEventTypes && !activeEventTypes.has(event.event_type)) continue;
         flat.push({ node, event, ts: new Date(event.timestamp).getTime() });
       }
     }
     flat.sort((a, b) => b.ts - a.ts);
+    return flat;
+  }, [nodes, activeEventTypes]);
 
+  // Group only the items we'll render (capped by renderLimit)
+  const { groupedEvents, totalCount, renderedCount } = useMemo(() => {
+    const capped = flatEvents.slice(0, renderLimit);
     const groups = new Map<string, FlatEvent[]>();
-    for (const item of flat) {
+    for (const item of capped) {
       const bucket = dateBucket(item.ts);
       const arr = groups.get(bucket);
       if (arr) {
@@ -107,8 +115,22 @@ export function ActivityFeed({
         groups.set(bucket, [item]);
       }
     }
-    return groups;
-  }, [nodes, activeEventTypes]);
+    return { groupedEvents: groups, totalCount: flatEvents.length, renderedCount: capped.length };
+  }, [flatEvents, renderLimit]);
+
+  // Reset render limit when filters change
+  useEffect(() => {
+    setRenderLimit(INITIAL_RENDER_LIMIT);
+  }, [activeEventTypes, nodes]);
+
+  // Load more on scroll near bottom
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el || renderedCount >= totalCount) return;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 200) {
+      setRenderLimit((prev) => prev + LOAD_MORE_INCREMENT);
+    }
+  }, [renderedCount, totalCount]);
 
   // Auto-scroll to highlighted node's events when graph click sets highlightedNodeId
   useEffect(() => {
@@ -149,7 +171,7 @@ export function ActivityFeed({
         onClick={onSelectNode}
       />
 
-      <div ref={scrollRef} style={eventListStyle}>
+      <div ref={scrollRef} style={eventListStyle} onScroll={handleScroll}>
         {BUCKET_ORDER.map((bucket) => {
           const events = groupedEvents.get(bucket);
           if (!events || events.length === 0) return null;
@@ -180,8 +202,11 @@ export function ActivityFeed({
             </div>
           );
         })}
-        {groupedEvents.size === 0 && (
-          <div style={emptyState}>No events match current filters</div>
+        {groupedEvents.size === 0 && <div style={emptyState}>No events match current filters</div>}
+        {renderedCount < totalCount && (
+          <div style={loadMoreStyle}>
+            {renderedCount} of {totalCount.toLocaleString()} events
+          </div>
         )}
       </div>
     </div>
@@ -241,4 +266,11 @@ const emptyState: React.CSSProperties = {
   textAlign: "center",
   fontSize: 13,
   opacity: 0.4,
+};
+
+const loadMoreStyle: React.CSSProperties = {
+  padding: "12px 14px",
+  textAlign: "center",
+  fontSize: 11,
+  opacity: 0.35,
 };
