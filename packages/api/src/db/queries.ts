@@ -44,22 +44,29 @@ function parseNode(raw: Record<string, unknown>): NodeResult {
 
 export async function queryFullGraph(
   session: Session,
-  options: { since?: string; cursor?: string; limit?: number },
+  options: { since?: string; cursor?: string; limit?: number; significance_min?: number },
 ): Promise<{ nodes: NodeResult[]; edges: EdgeResult[]; cursor: string | null }> {
   const limit = options.limit ?? 100;
+  const sigMin = options.significance_min ?? 0.1;
 
-  let nodeQuery = `MATCH (n:Entity)`;
+  const conditions: string[] = [];
   const params: Record<string, unknown> = { limit: neo4j.int(limit) };
 
+  // Always apply significance floor to avoid shipping thousands of noise nodes
+  conditions.push("n.significance >= $sig_min");
+  params.sig_min = sigMin;
+
   if (options.since) {
-    nodeQuery += ` WHERE n.updated_at >= $since`;
+    conditions.push("n.updated_at >= $since");
     params.since = options.since;
   }
   if (options.cursor) {
-    nodeQuery += options.since ? ` AND n.id > $cursor` : ` WHERE n.id > $cursor`;
+    conditions.push("n.id > $cursor");
     params.cursor = options.cursor;
   }
-  nodeQuery += ` RETURN properties(n) as props ORDER BY n.id LIMIT $limit`;
+
+  const where = conditions.length > 0 ? ` WHERE ${conditions.join(" AND ")}` : "";
+  const nodeQuery = `MATCH (n:Entity)${where} RETURN properties(n) as props ORDER BY n.id LIMIT $limit`;
 
   const nodeResult = await session.run(nodeQuery, params);
   const nodes = nodeResult.records.map((r) => parseNode(r.get("props")));
