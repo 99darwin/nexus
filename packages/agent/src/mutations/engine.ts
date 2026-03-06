@@ -5,6 +5,25 @@ import { detectConflicts } from "./conflict.js";
 import { logMutation } from "./audit.js";
 import { routeToModeration } from "./moderation.js";
 
+function safeParseEvents(raw: unknown): NodeEvent[] {
+  if (!raw || typeof raw !== "string") return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function dedupeEvents(events: NodeEvent[]): NodeEvent[] {
+  const seen = new Set<string>();
+  return events.filter((e) => {
+    if (seen.has(e.source_url)) return false;
+    seen.add(e.source_url);
+    return true;
+  });
+}
+
 export interface MutationEngineConfig {
   neo4jSession: neo4j.Session;
   pgPool?: Pool; // optional for audit logging
@@ -75,26 +94,40 @@ function getConfidence(op: MutationOp): number {
   return 1;
 }
 
-async function getBeforeState(op: MutationOp, session: neo4j.Session): Promise<Record<string, unknown> | null> {
+async function getBeforeState(
+  op: MutationOp,
+  session: neo4j.Session,
+): Promise<Record<string, unknown> | null> {
   const id = getEntityId(op);
   if (!id) return null;
-  const result = await session.run("MATCH (n:Entity {id: $id}) RETURN properties(n) as props", { id });
+  const result = await session.run("MATCH (n:Entity {id: $id}) RETURN properties(n) as props", {
+    id,
+  });
   return result.records.length > 0 ? result.records[0].get("props") : null;
 }
 
-async function getAfterState(op: MutationOp, session: neo4j.Session): Promise<Record<string, unknown> | null> {
+async function getAfterState(
+  op: MutationOp,
+  session: neo4j.Session,
+): Promise<Record<string, unknown> | null> {
   const id = getEntityId(op);
   if (!id) return null;
-  const result = await session.run("MATCH (n:Entity {id: $id}) RETURN properties(n) as props", { id });
+  const result = await session.run("MATCH (n:Entity {id: $id}) RETURN properties(n) as props", {
+    id,
+  });
   return result.records.length > 0 ? result.records[0].get("props") : null;
 }
 
 function getEntityId(op: MutationOp): string | null {
   switch (op.op) {
-    case "upsert_node": return op.node.id;
-    case "upsert_edge": return op.edge.source_id;
-    case "update_status": return op.id;
-    case "update_significance": return op.id;
+    case "upsert_node":
+      return op.node.id;
+    case "upsert_edge":
+      return op.edge.source_id;
+    case "update_status":
+      return op.id;
+    case "update_significance":
+      return op.id;
   }
 }
 
@@ -116,6 +149,18 @@ async function applyMutation(op: MutationOp, session: neo4j.Session): Promise<vo
 }
 
 async function upsertNode(node: GraphNode, session: neo4j.Session): Promise<void> {
+  // Read existing events to merge in TypeScript (avoids broken Cypher string concat)
+  const existing = await session.run("MATCH (n:Entity {id: $id}) RETURN n.events as events", {
+    id: node.id,
+  });
+
+  let mergedEvents = node.events;
+  if (existing.records.length > 0) {
+    const raw = existing.records[0].get("events");
+    const existingEvents = safeParseEvents(raw);
+    mergedEvents = dedupeEvents([...existingEvents, ...node.events]);
+  }
+
   await session.run(
     `MERGE (n:Entity {id: $id})
      ON CREATE SET
@@ -138,10 +183,7 @@ async function upsertNode(node: GraphNode, session: neo4j.Session): Promise<void
        n.updated_at = $updated_at,
        n.significance = $significance,
        n.summary = $summary,
-       n.events = CASE
-         WHEN n.events IS NULL THEN $events
-         ELSE n.events + $newEvents
-       END,
+       n.events = $events,
        n.metadata = $metadata`,
     {
       id: node.id,
@@ -154,8 +196,7 @@ async function upsertNode(node: GraphNode, session: neo4j.Session): Promise<void
       updated_at: node.updated_at,
       significance: node.significance,
       summary: node.summary,
-      events: JSON.stringify(node.events),
-      newEvents: JSON.stringify(node.events),
+      events: JSON.stringify(mergedEvents),
       metadata: JSON.stringify(node.metadata),
     },
   );
@@ -183,25 +224,40 @@ async function upsertEdge(edge: GraphEdge, session: neo4j.Session): Promise<void
   );
 }
 
-async function updateStatus(id: string, status: NodeStatus, event: NodeEvent, session: neo4j.Session): Promise<void> {
+async function updateStatus(
+  id: string,
+  status: NodeStatus,
+  event: NodeEvent,
+  session: neo4j.Session,
+): Promise<void> {
+  // Read existing events to merge in TypeScript (avoids broken Cypher string concat)
+  const existing = await session.run("MATCH (n:Entity {id: $id}) RETURN n.events as events", {
+    id,
+  });
+
+  const existingEvents =
+    existing.records.length > 0 ? safeParseEvents(existing.records[0].get("events")) : [];
+  const mergedEvents = dedupeEvents([...existingEvents, event]);
+
   await session.run(
     `MATCH (n:Entity {id: $id})
      SET n.status = $status,
          n.updated_at = $timestamp,
-         n.events = CASE
-           WHEN n.events IS NULL THEN $eventJson
-           ELSE n.events + $eventJson
-         END`,
+         n.events = $events`,
     {
       id,
       status,
       timestamp: event.timestamp,
-      eventJson: JSON.stringify([event]),
+      events: JSON.stringify(mergedEvents),
     },
   );
 }
 
-async function updateSignificance(id: string, significance: number, session: neo4j.Session): Promise<void> {
+async function updateSignificance(
+  id: string,
+  significance: number,
+  session: neo4j.Session,
+): Promise<void> {
   await session.run(
     `MATCH (n:Entity {id: $id})
      SET n.significance = $significance,
