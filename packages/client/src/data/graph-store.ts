@@ -128,18 +128,18 @@ export function useGraphStore(initialData?: GraphData): GraphStore {
 
     // Event type filter — keep nodes that have at least one matching event
     if (activeEventTypes) {
-      nodes = nodes.filter((node) =>
-        node.events.some((e) => activeEventTypes.has(e.event_type)),
-      );
+      nodes = nodes.filter((node) => node.events.some((e) => activeEventTypes.has(e.event_type)));
     }
 
-    // Time filter
+    // Time filter — include nodes that have at least one event in range
     if (timeRange.from || timeRange.to) {
       nodes = nodes.filter((node) => {
-        const discovered = new Date(node.discovered_at);
-        if (timeRange.from && discovered < timeRange.from) return false;
-        if (timeRange.to && discovered > timeRange.to) return false;
-        return true;
+        return node.events.some((e) => {
+          const ts = new Date(e.timestamp);
+          if (timeRange.from && ts < timeRange.from) return false;
+          if (timeRange.to && ts > timeRange.to) return false;
+          return true;
+        });
       });
     }
 
