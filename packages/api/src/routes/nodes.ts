@@ -20,12 +20,17 @@ export async function nodeRoutes(app: FastifyInstance): Promise<void> {
     try {
       const limit = Math.max(1, Math.min(q.limit ? parseInt(q.limit, 10) || 100 : 100, 500));
       const offset = Math.max(0, q.offset ? parseInt(q.offset, 10) || 0 : 0);
-      const significance_min = q.significance_min ? Math.max(0, Math.min(parseFloat(q.significance_min), 1)) : undefined;
+      const significance_min = q.significance_min
+        ? Math.max(0, Math.min(parseFloat(q.significance_min), 1))
+        : undefined;
       const nodes = await queryNodes(session, {
         vertical: q.vertical,
         type: q.type,
         status: q.status,
-        significance_min: significance_min !== undefined && Number.isFinite(significance_min) ? significance_min : undefined,
+        significance_min:
+          significance_min !== undefined && Number.isFinite(significance_min)
+            ? significance_min
+            : undefined,
         since: q.since,
         search: q.search,
         limit,

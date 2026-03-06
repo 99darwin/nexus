@@ -54,9 +54,13 @@ export function detectConflicts(mutations: MutationOp[]): ConflictResult {
 
 function getEntityIdFromOp(op: MutationOp): string | null {
   switch (op.op) {
-    case "upsert_node": return op.node.id;
-    case "update_status": return op.id;
-    case "update_significance": return op.id;
-    case "upsert_edge": return null; // edges don't have status conflicts
+    case "upsert_node":
+      return op.node.id;
+    case "update_status":
+      return op.id;
+    case "update_significance":
+      return op.id;
+    case "upsert_edge":
+      return null; // edges don't have status conflicts
   }
 }

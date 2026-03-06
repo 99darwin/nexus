@@ -4,10 +4,7 @@ import { checkPostgresHealth } from "../db/postgres.js";
 
 export async function healthRoutes(app: FastifyInstance): Promise<void> {
   app.get("/api/health", async () => {
-    const [neo4j, postgres] = await Promise.allSettled([
-      checkNeo4jHealth(),
-      checkPostgresHealth(),
-    ]);
+    const [neo4j, postgres] = await Promise.allSettled([checkNeo4jHealth(), checkPostgresHealth()]);
 
     return {
       status: "ok",

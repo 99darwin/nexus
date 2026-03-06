@@ -17,14 +17,19 @@ export interface DashboardResponse {
   queueDepth: number;
   nodeCount: number;
   edgeCount: number;
-  adapterStats: Record<string, {
-    successRate: number;
-    totalItems: number;
-    avgDurationMs: number;
-  }>;
+  adapterStats: Record<
+    string,
+    {
+      successRate: number;
+      totalItems: number;
+      avgDurationMs: number;
+    }
+  >;
 }
 
-async function getLastMutationAt(neo4jSession: ReturnType<typeof getSession>): Promise<string | null> {
+async function getLastMutationAt(
+  neo4jSession: ReturnType<typeof getSession>,
+): Promise<string | null> {
   const result = await neo4jSession.run(
     `MATCH (n:Entity)
      WHERE n.updated_at IS NOT NULL
@@ -81,9 +86,9 @@ async function getQueueDepth(pgPool: ReturnType<typeof getPool>): Promise<number
   return parseInt(result.rows[0]?.count ?? "0", 10);
 }
 
-async function getAdapterStatsFromDb(pgPool: ReturnType<typeof getPool>): Promise<
-  Record<string, { successRate: number; totalItems: number; avgDurationMs: number }>
-> {
+async function getAdapterStatsFromDb(
+  pgPool: ReturnType<typeof getPool>,
+): Promise<Record<string, { successRate: number; totalItems: number; avgDurationMs: number }>> {
   const result = await pgPool.query(
     `SELECT
        adapter_name,
@@ -96,7 +101,8 @@ async function getAdapterStatsFromDb(pgPool: ReturnType<typeof getPool>): Promis
      GROUP BY adapter_name`,
   );
 
-  const stats: Record<string, { successRate: number; totalItems: number; avgDurationMs: number }> = {};
+  const stats: Record<string, { successRate: number; totalItems: number; avgDurationMs: number }> =
+    {};
 
   for (const row of result.rows) {
     const totalRuns = parseInt(row.total_runs, 10);

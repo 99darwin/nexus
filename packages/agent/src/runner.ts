@@ -55,10 +55,7 @@ function parseJsonFromResponse(text: string): unknown {
   }
 }
 
-export async function runExtraction(
-  items: RawItem[],
-  config: RunnerConfig,
-): Promise<RunnerResult> {
+export async function runExtraction(items: RawItem[], config: RunnerConfig): Promise<RunnerResult> {
   if (items.length === 0) {
     throw new Error("Items array must not be empty");
   }
@@ -101,9 +98,7 @@ export async function runExtraction(
   const validation = validateAgentOutput(parsed);
 
   if (!validation.isValid) {
-    throw new Error(
-      `Invalid AgentOutput from LLM: ${validation.errors.join("; ")}`,
-    );
+    throw new Error(`Invalid AgentOutput from LLM: ${validation.errors.join("; ")}`);
   }
 
   return {

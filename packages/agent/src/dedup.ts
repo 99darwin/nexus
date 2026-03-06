@@ -9,12 +9,13 @@ export async function deduplicateItems(items: RawItem[], pool: PgPool): Promise<
   const urls = items.map((item) => item.source_url);
 
   // Check which URLs already exist
-  const result = await pool.query(
-    `SELECT source_url FROM raw_items WHERE source_url = ANY($1)`,
-    [urls],
-  );
+  const result = await pool.query(`SELECT source_url FROM raw_items WHERE source_url = ANY($1)`, [
+    urls,
+  ]);
 
-  const existingUrls = new Set<string>(result.rows.map((r: { source_url: string }) => r.source_url));
+  const existingUrls = new Set<string>(
+    result.rows.map((r: { source_url: string }) => r.source_url),
+  );
   const newItems = items.filter((item) => !existingUrls.has(item.source_url));
 
   // Also do fuzzy title dedup within the last 24h
@@ -27,9 +28,7 @@ export async function deduplicateItems(items: RawItem[], pool: PgPool): Promise<
       [titles],
     );
 
-    const existingTitles = new Set<string>(
-      fuzzyResult.rows.map((r: { title: string }) => r.title),
-    );
+    const existingTitles = new Set<string>(fuzzyResult.rows.map((r: { title: string }) => r.title));
 
     return newItems.filter((item) => !existingTitles.has(item.title));
   }

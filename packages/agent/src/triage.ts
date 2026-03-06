@@ -35,12 +35,20 @@ Example: [0, 2, 5, 7]
 If none are relevant: []`;
 
 export async function runTriage(items: RawItem[], config: TriageConfig): Promise<TriageResult> {
-  if (items.length === 0) return { relevant: [], rejected: [], usage: { inputTokens: 0, outputTokens: 0 }, durationMs: 0 };
+  if (items.length === 0)
+    return {
+      relevant: [],
+      rejected: [],
+      usage: { inputTokens: 0, outputTokens: 0 },
+      durationMs: 0,
+    };
 
   const start = Date.now();
   const client = new Anthropic({ apiKey: config.apiKey });
 
-  const userContent = items.map((item, i) => `[${i}] ${item.title}\n${item.content?.slice(0, 200) ?? ""}`).join("\n\n");
+  const userContent = items
+    .map((item, i) => `[${i}] ${item.title}\n${item.content?.slice(0, 200) ?? ""}`)
+    .join("\n\n");
 
   const response = await client.messages.create({
     model: config.model ?? "claude-haiku-4-5-20251001",
@@ -54,7 +62,10 @@ export async function runTriage(items: RawItem[], config: TriageConfig): Promise
   // Parse the JSON array of indices
   let indices: number[];
   try {
-    const cleaned = text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
+    const cleaned = text
+      .replace(/```json?\n?/g, "")
+      .replace(/```/g, "")
+      .trim();
     indices = JSON.parse(cleaned);
     if (!Array.isArray(indices)) indices = [];
   } catch {

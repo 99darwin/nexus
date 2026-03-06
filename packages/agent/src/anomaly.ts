@@ -74,10 +74,7 @@ export function checkNodeCountAnomaly(
  * Check whether the current event rate (events per hour) is anomalous
  * compared to a historical series of hourly rates.
  */
-export function checkEventRate(
-  eventsPerHour: number[],
-  currentRate: number,
-): AnomalyResult {
+export function checkEventRate(eventsPerHour: number[], currentRate: number): AnomalyResult {
   if (eventsPerHour.length < 2) {
     return {
       isAnomaly: false,
@@ -151,18 +148,15 @@ export class AnomalyDetector {
    * Check a mutation batch for anomalies against the rolling history.
    * Returns anomaly results for both node count and event rate.
    */
-  checkBatch(currentNodeCount: number, currentEventRate: number): {
+  checkBatch(
+    currentNodeCount: number,
+    currentEventRate: number,
+  ): {
     nodeCountAnomaly: AnomalyResult;
     eventRateAnomaly: AnomalyResult;
   } {
-    const nodeCountAnomaly = checkNodeCountAnomaly(
-      currentNodeCount,
-      this.nodeCountHistory,
-    );
-    const eventRateAnomaly = checkEventRate(
-      this.eventRateHistory,
-      currentEventRate,
-    );
+    const nodeCountAnomaly = checkNodeCountAnomaly(currentNodeCount, this.nodeCountHistory);
+    const eventRateAnomaly = checkEventRate(this.eventRateHistory, currentEventRate);
 
     // Record current values into history after checking
     this.recordNodeCount(currentNodeCount);

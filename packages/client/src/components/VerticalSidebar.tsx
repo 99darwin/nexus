@@ -45,7 +45,12 @@ const VERTICAL_ORDER = Object.keys(VERTICAL_META);
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
-export function VerticalSidebar({ nodes, activeVerticals, onVerticalToggle, onClearFilter }: VerticalSidebarProps) {
+export function VerticalSidebar({
+  nodes,
+  activeVerticals,
+  onVerticalToggle,
+  onClearFilter,
+}: VerticalSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   const verticals = useMemo(() => {
@@ -60,15 +65,15 @@ export function VerticalSidebar({ nodes, activeVerticals, onVerticalToggle, onCl
       }
     }
 
-    return VERTICAL_ORDER
-      .filter((v) => counts.has(v))
-      .map((vertical): VerticalInfo => ({
+    return VERTICAL_ORDER.filter((v) => counts.has(v)).map(
+      (vertical): VerticalInfo => ({
         vertical,
         label: VERTICAL_META[vertical].label,
         color: VERTICAL_META[vertical].color,
         count: counts.get(vertical) ?? 0,
         hasRecentActivity: recentActivity.has(vertical),
-      }));
+      }),
+    );
   }, [nodes]);
 
   const handleClick = useCallback(
@@ -103,7 +108,9 @@ export function VerticalSidebar({ nodes, activeVerticals, onVerticalToggle, onCl
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
-        <span style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>
+        <span
+          style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}
+        >
           Verticals
         </span>
         <div style={{ display: "flex", gap: 4 }}>
@@ -126,7 +133,8 @@ export function VerticalSidebar({ nodes, activeVerticals, onVerticalToggle, onCl
               style={{
                 ...rowStyle,
                 opacity: isActive ? 1 : 0.3,
-                backgroundColor: isActive && activeVerticals ? "rgba(255,255,255,0.05)" : "transparent",
+                backgroundColor:
+                  isActive && activeVerticals ? "rgba(255,255,255,0.05)" : "transparent",
               }}
               onClick={(e) => handleClick(v.vertical, e)}
             >

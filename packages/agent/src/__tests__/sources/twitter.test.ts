@@ -84,9 +84,7 @@ describe("TwitterAdapter", () => {
   });
 
   it("deduplicates by tweet URL", async () => {
-    mockFetch.mockResolvedValue(
-      makeApiResponse([SAMPLE_TWEET, SAMPLE_TWEET], [SAMPLE_USER]),
-    );
+    mockFetch.mockResolvedValue(makeApiResponse([SAMPLE_TWEET, SAMPLE_TWEET], [SAMPLE_USER]));
 
     const items = await adapter.poll();
     const urls = items.map((i) => i.source_url);

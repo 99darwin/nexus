@@ -22,7 +22,13 @@ function getLinkNodeId(end: string | ForceNode): string {
   return typeof end === "string" ? end : end.id;
 }
 
-export function ComparisonPanel({ selectedNodes, allLinks, allNodes, onClose, onNavigate }: ComparisonPanelProps) {
+export function ComparisonPanel({
+  selectedNodes,
+  allLinks,
+  allNodes,
+  onClose,
+  onNavigate,
+}: ComparisonPanelProps) {
   const nodeMap = useMemo(() => new Map(allNodes.map((n) => [n.id, n])), [allNodes]);
 
   const analysis = useMemo(() => {
@@ -87,7 +93,12 @@ export function ComparisonPanel({ selectedNodes, allLinks, allNodes, onClose, on
     }
 
     // Direct relationships between selected nodes
-    const directLinks: Array<{ source: string; target: string; relationship: string; confidence: number }> = [];
+    const directLinks: Array<{
+      source: string;
+      target: string;
+      relationship: string;
+      confidence: number;
+    }> = [];
     for (const link of allLinks) {
       const sourceId = getLinkNodeId(link.source);
       const targetId = getLinkNodeId(link.target);
@@ -107,8 +118,12 @@ export function ComparisonPanel({ selectedNodes, allLinks, allNodes, onClose, on
   return (
     <div style={panelStyle}>
       <div style={headerStyle}>
-        <span style={{ fontWeight: 600, fontSize: 14 }}>Comparing {selectedNodes.length} Entities</span>
-        <button style={closeBtnStyle} onClick={onClose}>&times;</button>
+        <span style={{ fontWeight: 600, fontSize: 14 }}>
+          Comparing {selectedNodes.length} Entities
+        </span>
+        <button style={closeBtnStyle} onClick={onClose}>
+          &times;
+        </button>
       </div>
 
       <div style={bodyStyle}>
@@ -117,7 +132,9 @@ export function ComparisonPanel({ selectedNodes, allLinks, allNodes, onClose, on
           <div style={sectionTitleStyle}>Selected</div>
           {selectedNodes.map((node) => (
             <div key={node.id} style={entityRowStyle}>
-              <div style={{ ...dotStyle, backgroundColor: VERTICAL_COLORS[node.vertical] ?? "#888" }} />
+              <div
+                style={{ ...dotStyle, backgroundColor: VERTICAL_COLORS[node.vertical] ?? "#888" }}
+              />
               <span style={{ fontSize: 12 }}>{node.name}</span>
               <span style={badgeStyle}>{node.type}</span>
             </div>
@@ -156,7 +173,14 @@ export function ComparisonPanel({ selectedNodes, allLinks, allNodes, onClose, on
                   style={{ ...entityRowStyle, cursor: "pointer" }}
                   onClick={() => onNavigate(targetId)}
                 >
-                  <div style={{ ...dotStyle, backgroundColor: target ? VERTICAL_COLORS[target.vertical] ?? "#888" : "#888" }} />
+                  <div
+                    style={{
+                      ...dotStyle,
+                      backgroundColor: target
+                        ? (VERTICAL_COLORS[target.vertical] ?? "#888")
+                        : "#888",
+                    }}
+                  />
                   <span style={{ fontSize: 12 }}>{target?.name ?? targetId}</span>
                   <span style={{ fontSize: 10, opacity: 0.5 }}>
                     via {fromNodes.length} selected

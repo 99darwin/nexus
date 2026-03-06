@@ -45,7 +45,9 @@ export abstract class BaseAdapter implements SourceAdapter {
       }
     }
 
-    throw lastError ?? new Error(`${this.name}: poll failed after ${this.options.maxRetries} attempts`);
+    throw (
+      lastError ?? new Error(`${this.name}: poll failed after ${this.options.maxRetries} attempts`)
+    );
   }
 
   protected abstract fetchItems(): Promise<RawItem[]>;
