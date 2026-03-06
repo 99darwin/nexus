@@ -37,9 +37,17 @@ interface XUser {
   name: string;
 }
 
+interface XError {
+  message: string;
+  title?: string;
+  type?: string;
+}
+
 interface XSearchResponse {
   data?: Tweet[];
   includes?: { users?: XUser[] };
+  errors?: XError[];
+  meta?: { result_count?: number };
 }
 
 export class TwitterAdapter extends BaseAdapter {
@@ -100,7 +108,20 @@ export class TwitterAdapter extends BaseAdapter {
       }
 
       const data = (await response.json()) as XSearchResponse;
-      if (!data.data) continue;
+
+      // Surface API-level errors returned with 200 status
+      if (data.errors && !data.data) {
+        const msgs = data.errors.map((e) => e.message).join("; ");
+        console.warn(`[twitter] chunk ${i + 1}/${chunks.length} API errors: ${msgs}`);
+        continue;
+      }
+
+      if (!data.data) {
+        console.debug(`[twitter] chunk ${i + 1}/${chunks.length}: 0 results`);
+        continue;
+      }
+
+      console.debug(`[twitter] chunk ${i + 1}/${chunks.length}: ${data.data.length} tweets`);
 
       const userMap = this.buildUserMap(data.includes?.users);
 
@@ -135,7 +156,12 @@ export class TwitterAdapter extends BaseAdapter {
       }
     }
 
-    return this.dedupeByUrl(items);
+    const deduped = this.dedupeByUrl(items);
+    const skippingTriage = deduped.filter((i) => i.skip_triage).length;
+    console.log(
+      `[twitter] poll complete: ${deduped.length} items (${skippingTriage} skip triage) from ${chunks.length} chunks`,
+    );
+    return deduped;
   }
 
   private buildQueryChunks(): string[] {

@@ -54,6 +54,9 @@ export function createPollWorker(
             seenCache.prune();
             const items = await adapter.poll();
             const newItems = seenCache.filter(items);
+            console.log(
+              `[poll:${adapter.name}] fetched=${items.length} new=${newItems.length} deduped=${items.length - newItems.length}`,
+            );
             if (newItems.length > 0) {
               await enqueueItems(queue, newItems, PRIORITY_MAP[adapter.priority]);
             }
