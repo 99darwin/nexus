@@ -5,10 +5,12 @@ interface TemporalSliderProps {
   minDate: Date;
   maxDate: Date;
   value: Date | null;
-  onChange: (date: Date | null) => void;
+  from?: Date | null;
+  onChange: (from: Date | null, to: Date | null) => void;
 }
 
 const PRESETS = [
+  { label: "Today", days: -1 },
   { label: "24h", days: 1 },
   { label: "7d", days: 7 },
   { label: "30d", days: 30 },
@@ -17,7 +19,13 @@ const PRESETS = [
   { label: "All", days: 0 },
 ] as const;
 
-export function TemporalSlider({ minDate, maxDate, value, onChange }: TemporalSliderProps) {
+function todayStart(): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+export function TemporalSlider({ minDate, maxDate, value, from, onChange }: TemporalSliderProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const minTime = minDate.getTime();
@@ -28,9 +36,9 @@ export function TemporalSlider({ minDate, maxDate, value, onChange }: TemporalSl
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const time = parseInt(e.target.value, 10);
       if (time >= maxTime) {
-        onChange(null); // Show all
+        onChange(null, null); // Show all
       } else {
-        onChange(new Date(time));
+        onChange(null, new Date(time));
       }
     },
     [maxTime, onChange],
@@ -39,22 +47,54 @@ export function TemporalSlider({ minDate, maxDate, value, onChange }: TemporalSl
   const handlePreset = useCallback(
     (days: number) => {
       if (days === 0) {
-        onChange(null);
+        onChange(null, null);
+      } else if (days === -1) {
+        // "Today" — from start of today, no upper bound
+        onChange(todayStart(), null);
       } else {
-        onChange(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
+        onChange(null, new Date(Date.now() - days * 24 * 60 * 60 * 1000));
       }
     },
     [onChange],
   );
 
+  const activePreset = useMemo(() => {
+    for (const preset of PRESETS) {
+      if (preset.days === 0) {
+        if (!value && !from) return preset.label;
+        continue;
+      }
+      if (preset.days === -1) {
+        // "Today": from = todayStart, to = null
+        if (from && !value) {
+          const diff = Math.abs(from.getTime() - todayStart().getTime());
+          if (diff < 1000) return preset.label;
+        }
+        continue;
+      }
+      // Standard presets: from = null, to = now - days
+      if (value && !from) {
+        const expected = Date.now() - preset.days * 24 * 60 * 60 * 1000;
+        if (Math.abs(value.getTime() - expected) < 2000) return preset.label;
+      }
+    }
+    return null;
+  }, [value, from]);
+
   const dateLabel = useMemo(() => {
-    if (!value) return "All time";
-    return value.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  }, [value]);
+    if (!value && !from) return "All time";
+    if (from && !value) {
+      return `Since ${from.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+    }
+    if (value) {
+      return value.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    }
+    return "All time";
+  }, [value, from]);
 
   return (
     <div style={containerStyle}>
@@ -67,7 +107,7 @@ export function TemporalSlider({ minDate, maxDate, value, onChange }: TemporalSl
               style={{
                 ...presetButtonStyle,
                 backgroundColor:
-                  !value && preset.days === 0
+                  activePreset === preset.label
                     ? theme.accent.primaryMuted
                     : theme.bg.surface,
               }}
