@@ -134,10 +134,12 @@ export function useGraphStore(initialData?: GraphData): GraphStore {
     }
 
     // Time filter
-    if (timeRange.to) {
+    if (timeRange.from || timeRange.to) {
       nodes = nodes.filter((node) => {
         const discovered = new Date(node.discovered_at);
-        return discovered <= timeRange.to!;
+        if (timeRange.from && discovered < timeRange.from) return false;
+        if (timeRange.to && discovered > timeRange.to) return false;
+        return true;
       });
     }
 
