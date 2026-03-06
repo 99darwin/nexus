@@ -15,6 +15,8 @@ interface VerticalSidebarProps {
   activeVerticals: Set<string> | null;
   onVerticalToggle: (vertical: string, multi: boolean) => void;
   onClearFilter: () => void;
+  width?: number;
+  onWidthChange?: (width: number) => void;
 }
 
 const VERTICAL_META: Record<string, { label: string; color: string }> = {
@@ -50,10 +52,15 @@ export function VerticalSidebar({
   activeVerticals,
   onVerticalToggle,
   onClearFilter,
+  width: controlledWidth,
+  onWidthChange,
 }: VerticalSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const [width, setWidth] = useState(200);
+  const [internalWidth, setInternalWidth] = useState(200);
   const [isResizing, setIsResizing] = useState(false);
+
+  const width = controlledWidth ?? internalWidth;
+  const setWidth = onWidthChange ?? setInternalWidth;
 
   const verticals = useMemo(() => {
     const counts = new Map<string, number>();

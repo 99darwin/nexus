@@ -8,12 +8,14 @@ import { NodePanel } from "./components/NodePanel";
 import { TemporalSlider } from "./components/TemporalSlider";
 import { ComparisonPanel } from "./components/ComparisonPanel";
 import { ActivityFeed } from "./components/ActivityFeed";
+import { VerticalSidebar } from "./components/VerticalSidebar";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { theme } from "./theme";
 import type { ForceNode } from "./graph/types";
 
-const FEED_WIDTH = 380;
+const DEFAULT_FEED_WIDTH = 380;
 const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const DEFAULT_SIDEBAR_WIDTH = 200;
 
 export function App() {
   const store = useGraphStore();
@@ -22,6 +24,9 @@ export function App() {
   const [showSearch, setShowSearch] = useState(false);
   const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
   const [showMobileFeed, setShowMobileFeed] = useState(true);
+  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
+  const [feedWidth, setFeedWidth] = useState(DEFAULT_FEED_WIDTH);
+  const [isResizingFeed, setIsResizingFeed] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   // Load data + auto-refresh every 5 minutes
@@ -172,6 +177,36 @@ export function App() {
 
   const showComparison = comparisonNodes.length >= 2;
 
+  const handleFeedResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizingFeed(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isResizingFeed) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const newWidth = Math.max(280, Math.min(600, e.clientX - sidebarWidth));
+      setFeedWidth(newWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizingFeed(false);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isResizingFeed, sidebarWidth]);
+
   if (error) {
     return (
       <div
@@ -223,11 +258,26 @@ export function App() {
 
   return (
     <div style={rootStyle}>
+      {/* Vertical Sidebar — fixed left (desktop only) */}
+      {!isMobile && (
+        <VerticalSidebar
+          nodes={store.filteredData.nodes}
+          activeVerticals={store.activeVerticals}
+          onVerticalToggle={store.toggleVertical}
+          onClearFilter={store.clearAllFilters}
+          width={sidebarWidth}
+          onWidthChange={setSidebarWidth}
+        />
+      )}
+
       {/* Main split: feed left, graph right */}
-      <div style={splitContainer}>
+      <div style={{ ...splitContainer, marginLeft: isMobile ? 0 : sidebarWidth }}>
         {/* Activity Feed — left panel (desktop) */}
         {!isMobile && (
-          <div style={{ width: FEED_WIDTH, flexShrink: 0, height: "100%" }}>{feedElement}</div>
+          <div style={{ width: feedWidth, flexShrink: 0, height: "100%", position: "relative" }}>
+            {feedElement}
+            <div style={feedResizeHandleStyle} onMouseDown={handleFeedResizeStart} />
+          </div>
         )}
 
         {/* 3D Force Graph — fills remaining space */}
@@ -416,4 +466,16 @@ const mobileFeedDrawer: React.CSSProperties = {
   borderTop: `1px solid ${theme.border.subtle}`,
   borderRadius: "16px 16px 0 0",
   overflow: "hidden",
+};
+
+const feedResizeHandleStyle: React.CSSProperties = {
+  position: "absolute",
+  top: 0,
+  right: 0,
+  bottom: 0,
+  width: 4,
+  cursor: "col-resize",
+  backgroundColor: "transparent",
+  transition: "background-color 0.15s",
+  zIndex: 10,
 };
