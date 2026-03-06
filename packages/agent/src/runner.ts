@@ -5,7 +5,7 @@ import { SYSTEM_PROMPT } from "./prompts/system-prompt.js";
 import type { RawItem } from "./sources/types.js";
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
-const DEFAULT_MAX_TOKENS = 4096;
+const DEFAULT_MAX_TOKENS = 16384;
 
 export interface RunnerConfig {
   apiKey: string;
@@ -88,8 +88,16 @@ export async function runExtraction(
     throw new Error("No text content in Anthropic response");
   }
 
+  // Log truncation and raw response for debugging
+  if (response.stop_reason === "max_tokens") {
+    console.warn(`[extraction] Response truncated at ${maxTokens} tokens`);
+  }
+
   // Prepend the "{" prefill to reconstruct the full JSON
-  const parsed = parseJsonFromResponse("{" + textBlock.text);
+  const rawJson = "{" + textBlock.text;
+  console.log(`[extraction] stop_reason=${response.stop_reason} response_length=${rawJson.length}`);
+
+  const parsed = parseJsonFromResponse(rawJson);
   const validation = validateAgentOutput(parsed);
 
   if (!validation.isValid) {
