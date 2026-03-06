@@ -1,4 +1,4 @@
-import type { Session } from "neo4j-driver";
+import neo4j, { type Session } from "neo4j-driver";
 
 export interface NodeResult {
   id: string;
@@ -40,7 +40,7 @@ export async function queryFullGraph(
   const limit = options.limit ?? 100;
 
   let nodeQuery = `MATCH (n:Entity)`;
-  const params: Record<string, unknown> = { limit };
+  const params: Record<string, unknown> = { limit: neo4j.int(limit) };
 
   if (options.since) {
     nodeQuery += ` WHERE n.updated_at >= $since`;
@@ -115,8 +115,8 @@ export async function queryNodes(
   const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
   const limit = filters.limit ?? 100;
   const offset = filters.offset ?? 0;
-  params.limit = limit;
-  params.offset = offset;
+  params.limit = neo4j.int(limit);
+  params.offset = neo4j.int(offset);
 
   const query = `MATCH (n:Entity) ${where}
     RETURN properties(n) as props
@@ -218,7 +218,7 @@ export async function querySearch(
      RETURN properties(node) as props, score
      ORDER BY score DESC
      LIMIT $limit`,
-    { query: `${query}~`, limit },
+    { query: `${query}~`, limit: neo4j.int(limit) },
   );
 
   return result.records.map((r) => parseNode(r.get("props")));
