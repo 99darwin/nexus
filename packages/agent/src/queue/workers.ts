@@ -6,6 +6,31 @@ import { runPipeline } from "../pipeline.js";
 
 const PRIORITY_MAP: Record<string, number> = { P0: 0, P1: 5, P2: 10 };
 
+class SeenUrlCache {
+  private seen = new Map<string, number>();
+  private ttlMs: number;
+
+  constructor(ttlMs = 3 * 60 * 60 * 1000) {
+    this.ttlMs = ttlMs;
+  }
+
+  filter(items: RawItem[]): RawItem[] {
+    const now = Date.now();
+    return items.filter((item) => {
+      if (this.seen.has(item.source_url)) return false;
+      this.seen.set(item.source_url, now);
+      return true;
+    });
+  }
+
+  prune(): void {
+    const cutoff = Date.now() - this.ttlMs;
+    for (const [url, ts] of this.seen) {
+      if (ts < cutoff) this.seen.delete(url);
+    }
+  }
+}
+
 export interface WorkerConfig {
   redisUrl?: string;
   pipelineConfig: PipelineConfig;
@@ -18,6 +43,7 @@ export function createPollWorker(
   config: WorkerConfig,
 ): { start: () => Promise<void>; stop: () => void } {
   const queue = createIngestionQueue({ redisUrl: config.redisUrl });
+  const seenCache = new SeenUrlCache();
   let intervalIds: ReturnType<typeof setInterval>[] = [];
 
   return {
@@ -25,9 +51,11 @@ export function createPollWorker(
       for (const adapter of adapters) {
         const pollFn = async () => {
           try {
+            seenCache.prune();
             const items = await adapter.poll();
-            if (items.length > 0) {
-              await enqueueItems(queue, items, PRIORITY_MAP[adapter.priority]);
+            const newItems = seenCache.filter(items);
+            if (newItems.length > 0) {
+              await enqueueItems(queue, newItems, PRIORITY_MAP[adapter.priority]);
             }
           } catch (err) {
             config.onError?.(err instanceof Error ? err : new Error(String(err)));

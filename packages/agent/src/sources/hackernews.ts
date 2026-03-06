@@ -4,13 +4,44 @@ import { BaseAdapter } from "./base-adapter.js";
 const HN_ALGOLIA_URL = "https://hn.algolia.com/api/v1/search";
 
 const AI_KEYWORDS = [
-  "AI", "artificial intelligence", "machine learning", "deep learning",
-  "LLM", "GPT", "Claude", "Gemini", "Llama", "transformer",
-  "neural network", "NLP", "computer vision", "diffusion model",
-  "OpenAI", "Anthropic", "DeepMind", "Mistral", "Hugging Face",
-  "NVIDIA", "GPU", "TPU", "CUDA", "fine-tuning", "RLHF",
-  "langchain", "vector database", "RAG", "embedding",
-  "autonomous agent", "copilot", "code generation",
+  "AI",
+  "artificial intelligence",
+  "machine learning",
+  "deep learning",
+  "LLM",
+  "GPT",
+  "ChatGPT",
+  "Claude",
+  "Gemini",
+  "Llama",
+  "transformer",
+  "neural network",
+  "NLP",
+  "computer vision",
+  "diffusion model",
+  "OpenAI",
+  "Anthropic",
+  "DeepMind",
+  "Mistral",
+  "Hugging Face",
+  "NVIDIA",
+  "GPU",
+  "TPU",
+  "CUDA",
+  "fine-tuning",
+  "RLHF",
+  "langchain",
+  "vector database",
+  "RAG",
+  "embedding",
+  "autonomous agent",
+  "copilot",
+  "code generation",
+  "Grok",
+  "Perplexity",
+  "AI safety",
+  "foundation model",
+  "open weight",
 ];
 
 interface HNHit {
@@ -74,9 +105,7 @@ export class HackerNewsAdapter extends BaseAdapter {
   }
 
   private getSearchQueries(): string[] {
-    // Sample a few keywords each poll to stay within rate limits
-    const shuffled = [...AI_KEYWORDS].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 5);
+    return AI_KEYWORDS;
   }
 
   private getTimeCutoff(): number {
