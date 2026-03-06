@@ -75,7 +75,10 @@ export async function runExtraction(
     model,
     max_tokens: maxTokens,
     system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userPrompt }],
+    messages: [
+      { role: "user", content: userPrompt },
+      { role: "assistant", content: "{" },
+    ],
   });
 
   const durationMs = Date.now() - startTime;
@@ -85,7 +88,8 @@ export async function runExtraction(
     throw new Error("No text content in Anthropic response");
   }
 
-  const parsed = parseJsonFromResponse(textBlock.text);
+  // Prepend the "{" prefill to reconstruct the full JSON
+  const parsed = parseJsonFromResponse("{" + textBlock.text);
   const validation = validateAgentOutput(parsed);
 
   if (!validation.isValid) {
