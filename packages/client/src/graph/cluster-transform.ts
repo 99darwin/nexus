@@ -1,13 +1,20 @@
 import type { ForceNode, ForceLink, GraphData } from "./types";
 
-const SIGNIFICANCE_THRESHOLD = 0.3;
+// Papers are high-volume/low-signal — need higher significance to render individually
+const PAPER_THRESHOLD = 0.5;
+const DEFAULT_THRESHOLD = 0.3;
+
+function shouldCluster(node: ForceNode): boolean {
+  const threshold = node.type === "paper" ? PAPER_THRESHOLD : DEFAULT_THRESHOLD;
+  return node.significance < threshold;
+}
 
 export function clusterGraphData(data: GraphData): GraphData {
   const individual: ForceNode[] = [];
   const grouped = new Map<string, ForceNode[]>();
 
   for (const node of data.nodes) {
-    if (node.significance >= SIGNIFICANCE_THRESHOLD) {
+    if (!shouldCluster(node)) {
       individual.push(node);
     } else {
       const arr = grouped.get(node.vertical) ?? [];
@@ -17,7 +24,6 @@ export function clusterGraphData(data: GraphData): GraphData {
   }
 
   const clusters: ForceNode[] = [];
-  const clusteredIds = new Set<string>();
 
   for (const [vertical, nodes] of grouped) {
     // Render individually if too few to cluster
@@ -25,8 +31,6 @@ export function clusterGraphData(data: GraphData): GraphData {
       individual.push(...nodes);
       continue;
     }
-
-    for (const n of nodes) clusteredIds.add(n.id);
 
     clusters.push({
       id: `cluster/${vertical}`,
