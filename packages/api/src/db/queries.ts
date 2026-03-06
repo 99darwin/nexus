@@ -11,8 +11,8 @@ export interface NodeResult {
   updated_at: string;
   significance: number;
   summary: string;
-  events: string;
-  metadata: string;
+  events: Array<{ timestamp: string; event_type: string; summary: string; source_url: string }>;
+  metadata: Record<string, unknown>;
 }
 
 export interface EdgeResult {
@@ -22,6 +22,15 @@ export interface EdgeResult {
   discovered_at: string;
   confidence: number;
   evidence: string;
+}
+
+function parseNode(raw: Record<string, unknown>): NodeResult {
+  return {
+    ...raw,
+    events: typeof raw.events === "string" ? JSON.parse(raw.events) : (raw.events ?? []),
+    metadata: typeof raw.metadata === "string" ? JSON.parse(raw.metadata) : (raw.metadata ?? {}),
+    verticals_secondary: raw.verticals_secondary ?? [],
+  } as NodeResult;
 }
 
 export async function queryFullGraph(
@@ -44,7 +53,7 @@ export async function queryFullGraph(
   nodeQuery += ` RETURN properties(n) as props ORDER BY n.id LIMIT $limit`;
 
   const nodeResult = await session.run(nodeQuery, params);
-  const nodes = nodeResult.records.map((r) => r.get("props") as NodeResult);
+  const nodes = nodeResult.records.map((r) => parseNode(r.get("props")));
 
   const edgeResult = await session.run(
     `MATCH (a:Entity)-[r:RELATES_TO]->(b:Entity)
@@ -115,7 +124,7 @@ export async function queryNodes(
     SKIP $offset LIMIT $limit`;
 
   const result = await session.run(query, params);
-  return result.records.map((r) => r.get("props") as NodeResult);
+  return result.records.map((r) => parseNode(r.get("props")));
 }
 
 export async function queryNodeById(
@@ -129,7 +138,7 @@ export async function queryNodeById(
 
   if (nodeResult.records.length === 0) return { node: null, edges: [] };
 
-  const node = nodeResult.records[0].get("props") as NodeResult;
+  const node = parseNode(nodeResult.records[0].get("props"));
 
   const edgeResult = await session.run(
     `MATCH (a:Entity {id: $id})-[r:RELATES_TO]-(b:Entity)
@@ -165,14 +174,14 @@ export async function queryNeighborhood(
     { id },
   );
 
-  const neighborNodes = result.records.map((r) => r.get("props") as NodeResult);
+  const neighborNodes = result.records.map((r) => parseNode(r.get("props")));
 
   // Also get the center node
   const centerResult = await session.run(
     "MATCH (n:Entity {id: $id}) RETURN properties(n) as props",
     { id },
   );
-  const centerNode = centerResult.records[0]?.get("props") as NodeResult | undefined;
+  const centerNode = centerResult.records[0] ? parseNode(centerResult.records[0].get("props")) : undefined;
   const nodes = centerNode ? [centerNode, ...neighborNodes] : neighborNodes;
 
   // Get edges between these nodes
@@ -212,7 +221,7 @@ export async function querySearch(
     { query: `${query}~`, limit },
   );
 
-  return result.records.map((r) => r.get("props") as NodeResult);
+  return result.records.map((r) => parseNode(r.get("props")));
 }
 
 export async function queryVerticals(session: Session): Promise<
