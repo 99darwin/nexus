@@ -17,9 +17,10 @@ Each node MUST have:
 - \`vertical\`: primary vertical classification (see Taxonomy below)
 - \`verticals_secondary\`: array of additional relevant verticals
 - \`status\`: \`announced\` | \`alpha\` | \`beta\` | \`ga\` | \`deprecated\` | \`acquired\` | \`shutdown\`
-- \`discovered_at\`: ISO 8601 timestamp of first observation
-- \`updated_at\`: ISO 8601 timestamp of most recent mutation
+- \`discovered_at\`: ISO 8601 timestamp of first observation (REQUIRED, e.g. "2025-06-01T00:00:00Z")
+- \`updated_at\`: ISO 8601 timestamp of most recent mutation (REQUIRED, e.g. "2025-06-01T00:00:00Z")
 - \`events\`: array of \`{ timestamp, event_type, summary, source_url }\` chronicling the entity's history
+  - \`event_type\` MUST be one of: \`launch\`, \`funding\`, \`release\`, \`acquisition\`, \`paper\`, \`update\`, \`shutdown\`
 - \`significance\`: float 0.0–1.0 estimating ecosystem impact (used for visual scaling)
 - \`summary\`: 1–2 sentence description of what this entity is/does
 - \`metadata\`: flexible key-value store for type-specific attributes
@@ -113,6 +114,8 @@ Always respond with a JSON object:
         "vertical": "code_generation",
         "verticals_secondary": ["agents", "developer_tooling"],
         "status": "ga",
+        "discovered_at": "2025-02-24T00:00:00Z",
+        "updated_at": "2025-06-01T00:00:00Z",
         "significance": 0.75,
         "summary": "Anthropic's agentic coding tool that operates in the terminal.",
         "events": [
@@ -135,6 +138,7 @@ Always respond with a JSON object:
         "source_id": "anthropic/claude-code",
         "target_id": "anthropic/claude-sonnet-4",
         "relationship": "built_on",
+        "discovered_at": "2025-06-01T00:00:00Z",
         "confidence": 0.95,
         "evidence": "Uses Sonnet as default model for coding tasks"
       }
