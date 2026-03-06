@@ -22,6 +22,10 @@ export interface ForceNode {
     summary: string;
     source_url: string;
   }>;
+  // cluster fields (set by cluster transform)
+  isCluster?: boolean;
+  clusterCount?: number;
+  clusterNodeIds?: string[];
   // d3-force position fields
   x?: number;
   y?: number;

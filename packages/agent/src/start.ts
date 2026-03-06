@@ -61,7 +61,9 @@ if (xBearerToken) {
   console.log("Twitter adapter disabled (no X_BEARER_TOKEN)");
 }
 
-console.log(`Starting agent with ${adapters.length} adapters: ${adapters.map((a) => a.name).join(", ")}`);
+console.log(
+  `Starting agent with ${adapters.length} adapters: ${adapters.map((a) => a.name).join(", ")}`,
+);
 
 // Start poll worker (fetches from sources → enqueues to Redis)
 const pollWorker = createPollWorker(adapters, {
@@ -77,7 +79,7 @@ const processWorker = createProcessWorker({
   onResult: async (result) => {
     console.log(
       `[pipeline] relevant=${result.triageResult.relevant.length} rejected=${result.triageResult.rejected.length} ` +
-      `valid=${result.validMutations.length} invalid=${result.invalidMutations.length}`,
+        `valid=${result.validMutations.length} invalid=${result.invalidMutations.length}`,
     );
 
     if (result.validMutations.length > 0) {
@@ -88,7 +90,7 @@ const processWorker = createProcessWorker({
         });
         console.log(
           `[mutations] applied=${mutationResult.applied} rejected=${mutationResult.rejected} ` +
-          `moderated=${mutationResult.moderated} errors=${mutationResult.errors.length}`,
+            `moderated=${mutationResult.moderated} errors=${mutationResult.errors.length}`,
         );
         if (mutationResult.errors.length > 0) {
           for (const e of mutationResult.errors) {

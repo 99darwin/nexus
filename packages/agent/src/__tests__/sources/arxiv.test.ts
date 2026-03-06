@@ -59,8 +59,7 @@ describe("ArxivAdapter", () => {
   it("handles empty RSS feed", async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      text: async () =>
-        '<?xml version="1.0"?><rss><channel><title>Empty</title></channel></rss>',
+      text: async () => '<?xml version="1.0"?><rss><channel><title>Empty</title></channel></rss>',
     });
 
     const items = await adapter.poll();

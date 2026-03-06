@@ -3,7 +3,8 @@ import ForceGraph3D from "3d-force-graph";
 import * as THREE from "three";
 import type { GraphData, ForceNode } from "./types";
 import { verticalClusterForce } from "./forces";
-import { nodeSize, nodeColor, edgeWidth, edgeColor } from "./visual-encoding";
+import { nodeSize, nodeColor, edgeWidth, edgeColor, clusterRadius } from "./visual-encoding";
+import { clusterGraphData } from "./cluster-transform";
 
 interface ForceGraphProps {
   data: GraphData;
@@ -16,7 +17,13 @@ interface ForceGraphProps {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GraphInstance = any;
 
-export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, hoveredNodeId }: ForceGraphProps) {
+export function ForceGraph({
+  data,
+  onNodeClick,
+  focusNodeId,
+  highlightNodeIds,
+  hoveredNodeId,
+}: ForceGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<GraphInstance>(null);
   const onNodeClickRef = useRef(onNodeClick);
@@ -28,10 +35,12 @@ export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, h
   const hoveredRef = useRef(hoveredNodeId);
   hoveredRef.current = hoveredNodeId;
 
-  // Build neighbor lookup for hover dimming
+  const clusteredData = useMemo(() => clusterGraphData(data), [data]);
+
+  // Build neighbor lookup for hover dimming (uses clustered links)
   const neighborsOf = useMemo(() => {
     const map = new Map<string, Set<string>>();
-    for (const link of data.links) {
+    for (const link of clusteredData.links) {
       const sid = typeof link.source === "string" ? link.source : link.source.id;
       const tid = typeof link.target === "string" ? link.target : link.target.id;
       if (!map.has(sid)) map.set(sid, new Set());
@@ -40,7 +49,7 @@ export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, h
       map.get(tid)!.add(sid);
     }
     return map;
-  }, [data.links]);
+  }, [clusteredData.links]);
 
   const neighborsRef = useRef(neighborsOf);
   neighborsRef.current = neighborsOf;
@@ -57,15 +66,19 @@ export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, h
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const graph = (ForceGraph3D as any)()(containerRef.current)
-      .graphData(data)
+      .graphData(clusteredData)
       .nodeId("id")
-      .nodeLabel((node: ForceNode) => `${node.name} (${node.type})`)
+      .nodeLabel((node: ForceNode) =>
+        node.isCluster
+          ? `${node.vertical.replace(/_/g, " ")} cluster (${node.clusterCount})`
+          : `${node.name} (${node.type})`,
+      )
       .nodeThreeObject((node: ForceNode) => {
         const hl = highlightRef.current;
         const isHighlighted = hl && hl.size >= 2 && hl.has(node.id);
         const isDimmedByComparison = hl && hl.size >= 2 && !hl.has(node.id);
 
-        // Hover dimming: hovered node = full, neighbors = 70%, others = 10%
+        // Hover dimming
         const hId = hoveredRef.current;
         const neighbors = neighborsRef.current;
         let hoverOpacity = 1;
@@ -80,9 +93,53 @@ export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, h
         }
 
         const color = isHighlighted ? "#d4a520" : nodeColor(node.vertical);
-        const size = nodeSize(node.significance);
         const opacity = isDimmedByComparison ? 0.08 : Math.min(0.8, hoverOpacity);
 
+        // --- Cluster bubble rendering ---
+        if (node.isCluster) {
+          const radius = clusterRadius(node.clusterCount!);
+          const geometry = new THREE.SphereGeometry(radius, 16, 12);
+          const material = new THREE.MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity: 0.15 * (opacity / 0.8),
+          });
+          const sphere = new THREE.Mesh(geometry, material);
+
+          // Wireframe ring for visibility
+          const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(radius, 0.5, 8, 32),
+            new THREE.MeshBasicMaterial({
+              color,
+              transparent: true,
+              opacity: 0.4 * (opacity / 0.8),
+            }),
+          );
+          sphere.add(ring);
+
+          // Text sprite: count + vertical label
+          const canvas = document.createElement("canvas");
+          canvas.width = 128;
+          canvas.height = 64;
+          const ctx = canvas.getContext("2d")!;
+          ctx.fillStyle = "white";
+          ctx.font = "bold 24px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(String(node.clusterCount), 64, 28);
+          ctx.font = "14px sans-serif";
+          ctx.fillText(node.vertical.replace(/_/g, " "), 64, 50);
+          const texture = new THREE.CanvasTexture(canvas);
+          const label = new THREE.Sprite(
+            new THREE.SpriteMaterial({ map: texture, transparent: true, opacity }),
+          );
+          label.scale.set(radius * 2.5, radius * 1.25, 1);
+          sphere.add(label);
+
+          return sphere;
+        }
+
+        // --- Individual node rendering ---
+        const size = nodeSize(node.significance);
         const geometry = new THREE.SphereGeometry(size / 2, 16, 12);
         const material = new THREE.MeshBasicMaterial({
           color,
@@ -150,7 +207,7 @@ export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, h
 
     // Custom cluster force
     graph.d3Force("cluster", (alpha: number) => {
-      verticalClusterForce(alpha)(data.nodes);
+      verticalClusterForce(alpha)(clusteredData.nodes);
     });
 
     // Tune forces for spread-out layout
@@ -170,7 +227,7 @@ export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, h
       window.removeEventListener("resize", handleResize);
       graph._destructor();
     };
-  }, [data, handleResize]);
+  }, [clusteredData, handleResize]);
 
   // Refresh visual encoding when highlights or hover changes
   useEffect(() => {
@@ -181,7 +238,10 @@ export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, h
   // Focus on a specific node when focusNodeId changes
   useEffect(() => {
     if (!focusNodeId || !graphRef.current) return;
-    const node = data.nodes.find((n) => n.id === focusNodeId);
+    // Try clustered nodes first (what's actually rendered), fall back to original data
+    const node =
+      clusteredData.nodes.find((n) => n.id === focusNodeId) ??
+      data.nodes.find((n) => n.id === focusNodeId);
     if (!node) return;
 
     const distance = 300;
@@ -195,7 +255,7 @@ export function ForceGraph({ data, onNodeClick, focusNodeId, highlightNodeIds, h
       node,
       1000,
     );
-  }, [focusNodeId, data.nodes]);
+  }, [focusNodeId, clusteredData.nodes, data.nodes]);
 
   return (
     <div style={gridBackgroundStyle}>

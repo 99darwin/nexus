@@ -20,7 +20,9 @@ const makeItem = (title: string, content = ""): RawItem => ({
 });
 
 describe("runTriage", () => {
-  beforeEach(() => { mockCreate.mockReset(); });
+  beforeEach(() => {
+    mockCreate.mockReset();
+  });
 
   it("filters relevant AI items", async () => {
     mockCreate.mockResolvedValue({

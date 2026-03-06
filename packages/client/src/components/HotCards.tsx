@@ -73,9 +73,7 @@ function HotCard({
         <span style={cardName}>{node.name}</span>
       </div>
       <div style={cardType}>{node.type}</div>
-      {latestEvent && (
-        <div style={cardSummary}>{latestEvent.summary}</div>
-      )}
+      {latestEvent && <div style={cardSummary}>{latestEvent.summary}</div>}
     </div>
   );
 }

@@ -58,10 +58,7 @@ export function updateInstanceTransforms(
 /**
  * Update instance colors from a color array.
  */
-export function updateInstanceColors(
-  mesh: THREE.InstancedMesh,
-  colors: Float32Array,
-): void {
+export function updateInstanceColors(mesh: THREE.InstancedMesh, colors: Float32Array): void {
   if (!mesh.instanceColor) return;
   const attr = mesh.instanceColor as THREE.InstancedBufferAttribute;
   attr.array = colors;

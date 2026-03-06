@@ -13,7 +13,15 @@ interface NodePanelProps {
   fullscreen?: boolean;
 }
 
-export function NodePanel({ node, edges, allNodes, allLinks, onClose, onNavigate, fullscreen }: NodePanelProps) {
+export function NodePanel({
+  node,
+  edges,
+  allNodes,
+  allLinks,
+  onClose,
+  onNavigate,
+  fullscreen,
+}: NodePanelProps) {
   const nodeMap = new Map(allNodes.map((n) => [n.id, n]));
 
   const groupedEdges = edges.reduce(
@@ -100,24 +108,16 @@ export function NodePanel({ node, edges, allNodes, allLinks, onClose, onNavigate
                   {rel.replace(/_/g, " ")}
                 </div>
                 {relEdges.map((edge, i) => {
-                  const sourceId =
-                    typeof edge.source === "string" ? edge.source : edge.source.id;
-                  const targetId =
-                    typeof edge.target === "string" ? edge.target : edge.target.id;
+                  const sourceId = typeof edge.source === "string" ? edge.source : edge.source.id;
+                  const targetId = typeof edge.target === "string" ? edge.target : edge.target.id;
                   const otherId = sourceId === node.id ? targetId : sourceId;
                   const otherNode = nodeMap.get(otherId);
                   return (
-                    <div
-                      key={i}
-                      style={relNodeStyle}
-                      onClick={() => onNavigate(otherId)}
-                    >
+                    <div key={i} style={relNodeStyle} onClick={() => onNavigate(otherId)}>
                       <span
                         style={{
                           ...dotStyle,
-                          backgroundColor: otherNode
-                            ? nodeColor(otherNode.vertical)
-                            : "#666",
+                          backgroundColor: otherNode ? nodeColor(otherNode.vertical) : "#666",
                         }}
                       />
                       {otherNode?.name ?? otherId}
@@ -177,7 +177,9 @@ function RelatedEvents({
           style={{ ...eventStyle, cursor: "pointer" }}
           onClick={() => onNavigate(item.node.id)}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, opacity: 0.5 }}>
+          <div
+            style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, opacity: 0.5 }}
+          >
             <span
               style={{
                 ...dotStyle,

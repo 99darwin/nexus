@@ -5,10 +5,7 @@
       "type": "company",
       "name": "OpenAI",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "agents",
-        "consumer_products"
-      ],
+      "verticals_secondary": ["agents", "consumer_products"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -32,10 +29,7 @@
       "type": "company",
       "name": "Anthropic",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "safety_alignment",
-        "agents"
-      ],
+      "verticals_secondary": ["safety_alignment", "agents"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -59,10 +53,7 @@
       "type": "company",
       "name": "Google DeepMind",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "research",
-        "multimodal"
-      ],
+      "verticals_secondary": ["research", "multimodal"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -86,10 +77,7 @@
       "type": "company",
       "name": "Meta AI",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source",
-        "research"
-      ],
+      "verticals_secondary": ["open_source", "research"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -112,10 +100,7 @@
       "type": "company",
       "name": "Mistral AI",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source",
-        "inference"
-      ],
+      "verticals_secondary": ["open_source", "inference"],
       "status": "ga",
       "discovered_at": "2023-06-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -139,10 +124,7 @@
       "type": "company",
       "name": "NVIDIA",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training",
-        "inference"
-      ],
+      "verticals_secondary": ["training", "inference"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -166,10 +148,7 @@
       "type": "company",
       "name": "Microsoft",
       "vertical": "enterprise_platforms",
-      "verticals_secondary": [
-        "code_generation",
-        "consumer_products"
-      ],
+      "verticals_secondary": ["code_generation", "consumer_products"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -192,10 +171,7 @@
       "type": "company",
       "name": "Google",
       "vertical": "enterprise_platforms",
-      "verticals_secondary": [
-        "search_retrieval",
-        "consumer_products"
-      ],
+      "verticals_secondary": ["search_retrieval", "consumer_products"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -218,9 +194,7 @@
       "type": "company",
       "name": "xAI",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "consumer_products"
-      ],
+      "verticals_secondary": ["consumer_products"],
       "status": "ga",
       "discovered_at": "2023-07-12T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -244,10 +218,7 @@
       "type": "company",
       "name": "Cohere",
       "vertical": "enterprise_platforms",
-      "verticals_secondary": [
-        "search_retrieval",
-        "foundation_models"
-      ],
+      "verticals_secondary": ["search_retrieval", "foundation_models"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -271,10 +242,7 @@
       "type": "company",
       "name": "Stability AI",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "open_source",
-        "multimodal"
-      ],
+      "verticals_secondary": ["open_source", "multimodal"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -298,10 +266,7 @@
       "type": "company",
       "name": "Hugging Face",
       "vertical": "open_source",
-      "verticals_secondary": [
-        "developer_tooling",
-        "data_infrastructure"
-      ],
+      "verticals_secondary": ["developer_tooling", "data_infrastructure"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -325,9 +290,7 @@
       "type": "model",
       "name": "GPT-4o",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "discovered_at": "2024-05-13T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -374,9 +337,7 @@
       "type": "model",
       "name": "o1",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "discovered_at": "2024-09-12T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -400,10 +361,7 @@
       "type": "model",
       "name": "Claude 4 Opus",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "agents",
-        "code_generation"
-      ],
+      "verticals_secondary": ["agents", "code_generation"],
       "status": "ga",
       "discovered_at": "2025-05-22T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -426,9 +384,7 @@
       "type": "model",
       "name": "Claude 4 Sonnet",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "code_generation"
-      ],
+      "verticals_secondary": ["code_generation"],
       "status": "ga",
       "discovered_at": "2025-05-22T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -451,9 +407,7 @@
       "type": "model",
       "name": "Claude 4 Haiku",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "discovered_at": "2025-06-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -476,9 +430,7 @@
       "type": "model",
       "name": "Claude 3.5 Sonnet",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "code_generation"
-      ],
+      "verticals_secondary": ["code_generation"],
       "status": "ga",
       "discovered_at": "2024-06-20T00:00:00Z",
       "updated_at": "2025-05-22T00:00:00Z",
@@ -501,10 +453,7 @@
       "type": "model",
       "name": "Gemini 2.5 Pro",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "multimodal",
-        "agents"
-      ],
+      "verticals_secondary": ["multimodal", "agents"],
       "status": "ga",
       "discovered_at": "2025-03-25T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -528,9 +477,7 @@
       "type": "model",
       "name": "Llama 4",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "discovered_at": "2025-04-05T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -553,9 +500,7 @@
       "type": "model",
       "name": "Llama 3",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "discovered_at": "2024-04-18T00:00:00Z",
       "updated_at": "2025-04-05T00:00:00Z",
@@ -599,9 +544,7 @@
       "type": "model",
       "name": "Gemini 1.5 Pro",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "discovered_at": "2024-02-15T00:00:00Z",
       "updated_at": "2025-03-25T00:00:00Z",
@@ -645,10 +588,7 @@
       "type": "model",
       "name": "Stable Diffusion 3",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal",
-        "open_source"
-      ],
+      "verticals_secondary": ["multimodal", "open_source"],
       "status": "ga",
       "discovered_at": "2024-02-22T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -671,9 +611,7 @@
       "type": "model",
       "name": "DALL-E 3",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "discovered_at": "2023-10-03T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -696,9 +634,7 @@
       "type": "product",
       "name": "ChatGPT",
       "vertical": "consumer_products",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -721,10 +657,7 @@
       "type": "product",
       "name": "Claude Code",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "agents",
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["agents", "developer_tooling"],
       "status": "ga",
       "discovered_at": "2025-02-24T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -747,9 +680,7 @@
       "type": "product",
       "name": "GitHub Copilot",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -772,10 +703,7 @@
       "type": "product",
       "name": "Cursor",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "developer_tooling",
-        "agents"
-      ],
+      "verticals_secondary": ["developer_tooling", "agents"],
       "status": "ga",
       "discovered_at": "2023-06-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -796,9 +724,7 @@
       "type": "product",
       "name": "Perplexity",
       "vertical": "search_retrieval",
-      "verticals_secondary": [
-        "consumer_products"
-      ],
+      "verticals_secondary": ["consumer_products"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -819,9 +745,7 @@
       "type": "product",
       "name": "Midjourney",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "consumer_products"
-      ],
+      "verticals_secondary": ["consumer_products"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -842,9 +766,7 @@
       "type": "product",
       "name": "Sora",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "discovered_at": "2024-02-15T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -867,9 +789,7 @@
       "type": "product",
       "name": "NotebookLM",
       "vertical": "consumer_products",
-      "verticals_secondary": [
-        "search_retrieval"
-      ],
+      "verticals_secondary": ["search_retrieval"],
       "status": "ga",
       "discovered_at": "2023-07-12T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -890,9 +810,7 @@
       "type": "framework",
       "name": "LangChain",
       "vertical": "developer_tooling",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -915,10 +833,7 @@
       "type": "framework",
       "name": "Transformers",
       "vertical": "developer_tooling",
-      "verticals_secondary": [
-        "open_source",
-        "training"
-      ],
+      "verticals_secondary": ["open_source", "training"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -942,9 +857,7 @@
       "type": "framework",
       "name": "vLLM",
       "vertical": "inference",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "discovered_at": "2023-06-20T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -967,10 +880,7 @@
       "type": "framework",
       "name": "PyTorch",
       "vertical": "training",
-      "verticals_secondary": [
-        "developer_tooling",
-        "research"
-      ],
+      "verticals_secondary": ["developer_tooling", "research"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -994,9 +904,7 @@
       "type": "framework",
       "name": "LlamaIndex",
       "vertical": "search_retrieval",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -1042,9 +950,7 @@
       "type": "benchmark",
       "name": "HumanEval",
       "vertical": "evaluation",
-      "verticals_secondary": [
-        "code_generation"
-      ],
+      "verticals_secondary": ["code_generation"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -1067,10 +973,7 @@
       "type": "benchmark",
       "name": "SWE-bench",
       "vertical": "evaluation",
-      "verticals_secondary": [
-        "code_generation",
-        "agents"
-      ],
+      "verticals_secondary": ["code_generation", "agents"],
       "status": "ga",
       "discovered_at": "2023-10-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -1091,9 +994,7 @@
       "type": "paper",
       "name": "Attention Is All You Need",
       "vertical": "research",
-      "verticals_secondary": [
-        "foundation_models"
-      ],
+      "verticals_secondary": ["foundation_models"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2023-01-01T00:00:00Z",
@@ -1117,9 +1018,7 @@
       "type": "paper",
       "name": "Scaling Laws for Neural Language Models",
       "vertical": "research",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2023-01-01T00:00:00Z",
@@ -1142,9 +1041,7 @@
       "type": "paper",
       "name": "Constitutional AI",
       "vertical": "safety_alignment",
-      "verticals_secondary": [
-        "research"
-      ],
+      "verticals_secondary": ["research"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2023-01-01T00:00:00Z",
@@ -1167,9 +1064,7 @@
       "type": "dataset",
       "name": "The Pile",
       "vertical": "data_infrastructure",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2023-01-01T00:00:00Z",
@@ -1238,9 +1133,7 @@
       "type": "initiative",
       "name": "NIST AI Risk Management Framework",
       "vertical": "governance_policy",
-      "verticals_secondary": [
-        "safety_alignment"
-      ],
+      "verticals_secondary": ["safety_alignment"],
       "status": "ga",
       "discovered_at": "2023-01-26T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -1263,10 +1156,7 @@
       "type": "product",
       "name": "NVIDIA H100",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training",
-        "inference"
-      ],
+      "verticals_secondary": ["training", "inference"],
       "status": "ga",
       "discovered_at": "2023-01-01T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -1290,10 +1180,7 @@
       "type": "product",
       "name": "NVIDIA B200",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training",
-        "inference"
-      ],
+      "verticals_secondary": ["training", "inference"],
       "status": "announced",
       "discovered_at": "2024-03-18T00:00:00Z",
       "updated_at": "2026-03-01T00:00:00Z",
@@ -1317,9 +1204,7 @@
       "type": "company",
       "name": "AI21 Labs",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "enterprise_platforms"
-      ],
+      "verticals_secondary": ["enterprise_platforms"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Creator of Jamba and Jurassic models.",
@@ -1340,9 +1225,7 @@
       "type": "company",
       "name": "Inflection AI",
       "vertical": "consumer_products",
-      "verticals_secondary": [
-        "foundation_models"
-      ],
+      "verticals_secondary": ["foundation_models"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Creator of Pi personal AI assistant.",
@@ -1363,9 +1246,7 @@
       "type": "company",
       "name": "Character.AI",
       "vertical": "consumer_products",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "significance": 0.6,
       "summary": "AI character roleplay and conversation platform.",
@@ -1386,9 +1267,7 @@
       "type": "company",
       "name": "Runway",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.65,
       "summary": "AI video generation and creative tools company.",
@@ -1409,9 +1288,7 @@
       "type": "company",
       "name": "Midjourney Inc",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "consumer_products"
-      ],
+      "verticals_secondary": ["consumer_products"],
       "status": "ga",
       "significance": 0.65,
       "summary": "AI image generation company.",
@@ -1432,9 +1309,7 @@
       "type": "company",
       "name": "Replit",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Online IDE with AI coding features.",
@@ -1455,9 +1330,7 @@
       "type": "company",
       "name": "Scale AI",
       "vertical": "data_infrastructure",
-      "verticals_secondary": [
-        "enterprise_platforms"
-      ],
+      "verticals_secondary": ["enterprise_platforms"],
       "status": "ga",
       "significance": 0.65,
       "summary": "Data labeling and AI infrastructure company.",
@@ -1478,10 +1351,7 @@
       "type": "company",
       "name": "Databricks",
       "vertical": "enterprise_platforms",
-      "verticals_secondary": [
-        "data_infrastructure",
-        "training"
-      ],
+      "verticals_secondary": ["data_infrastructure", "training"],
       "status": "ga",
       "significance": 0.75,
       "summary": "Unified analytics and AI platform.",
@@ -1502,9 +1372,7 @@
       "type": "company",
       "name": "Weights & Biases",
       "vertical": "developer_tooling",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "ga",
       "significance": 0.55,
       "summary": "ML experiment tracking and model management.",
@@ -1525,9 +1393,7 @@
       "type": "company",
       "name": "Together AI",
       "vertical": "inference",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Open-source model inference and fine-tuning platform.",
@@ -1548,9 +1414,7 @@
       "type": "company",
       "name": "Fireworks AI",
       "vertical": "inference",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Fast inference platform for open-source models.",
@@ -1571,9 +1435,7 @@
       "type": "company",
       "name": "Groq",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.6,
       "summary": "LPU inference chip company for ultra-fast AI.",
@@ -1594,9 +1456,7 @@
       "type": "company",
       "name": "Cerebras",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Wafer-scale chip maker for AI training.",
@@ -1617,9 +1477,7 @@
       "type": "company",
       "name": "SambaNova",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.45,
       "summary": "AI chip company with RDU architecture.",
@@ -1640,9 +1498,7 @@
       "type": "company",
       "name": "ElevenLabs",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.6,
       "summary": "AI voice synthesis and cloning company.",
@@ -1663,9 +1519,7 @@
       "type": "company",
       "name": "Adept AI",
       "vertical": "agents",
-      "verticals_secondary": [
-        "enterprise_platforms"
-      ],
+      "verticals_secondary": ["enterprise_platforms"],
       "status": "acquired",
       "significance": 0.45,
       "summary": "AI agent company (acquired by Amazon).",
@@ -1686,9 +1540,7 @@
       "type": "company",
       "name": "Amazon",
       "vertical": "enterprise_platforms",
-      "verticals_secondary": [
-        "consumer_products"
-      ],
+      "verticals_secondary": ["consumer_products"],
       "status": "ga",
       "significance": 0.85,
       "summary": "Tech giant with AWS AI services and Alexa.",
@@ -1709,9 +1561,7 @@
       "type": "company",
       "name": "Apple",
       "vertical": "consumer_products",
-      "verticals_secondary": [
-        "hardware"
-      ],
+      "verticals_secondary": ["hardware"],
       "status": "ga",
       "significance": 0.8,
       "summary": "Consumer tech company with Apple Intelligence.",
@@ -1732,9 +1582,7 @@
       "type": "company",
       "name": "Samsung",
       "vertical": "consumer_products",
-      "verticals_secondary": [
-        "hardware"
-      ],
+      "verticals_secondary": ["hardware"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Electronics company with Galaxy AI features.",
@@ -1755,9 +1603,7 @@
       "type": "company",
       "name": "Baidu",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "search_retrieval"
-      ],
+      "verticals_secondary": ["search_retrieval"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Chinese tech company, creator of ERNIE models.",
@@ -1778,9 +1624,7 @@
       "type": "company",
       "name": "AMD",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.65,
       "summary": "GPU and CPU manufacturer with MI300 AI accelerators.",
@@ -1801,9 +1645,7 @@
       "type": "company",
       "name": "Intel",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Chip manufacturer with Gaudi AI accelerators.",
@@ -1824,9 +1666,7 @@
       "type": "company",
       "name": "Qualcomm",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Mobile chip company with on-device AI focus.",
@@ -1847,10 +1687,7 @@
       "type": "company",
       "name": "DeepSeek",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source",
-        "research"
-      ],
+      "verticals_secondary": ["open_source", "research"],
       "status": "ga",
       "significance": 0.75,
       "summary": "Chinese AI lab creating frontier open-weight models.",
@@ -1913,9 +1750,7 @@
       "type": "company",
       "name": "Suno",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.5,
       "summary": "AI music generation company.",
@@ -1936,9 +1771,7 @@
       "type": "company",
       "name": "Cognition AI",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Creator of Devin AI software engineer.",
@@ -1959,9 +1792,7 @@
       "type": "company",
       "name": "Modal",
       "vertical": "inference",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.45,
       "summary": "Serverless cloud for AI/ML workloads.",
@@ -1982,9 +1813,7 @@
       "type": "company",
       "name": "Anyscale",
       "vertical": "training",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.45,
       "summary": "Ray-based distributed computing company.",
@@ -2005,9 +1834,7 @@
       "type": "company",
       "name": "D-ID",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.4,
       "summary": "AI video avatar generation company.",
@@ -2028,9 +1855,7 @@
       "type": "company",
       "name": "Synthesia",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "enterprise_platforms"
-      ],
+      "verticals_secondary": ["enterprise_platforms"],
       "status": "ga",
       "significance": 0.5,
       "summary": "AI video generation for enterprise.",
@@ -2051,9 +1876,7 @@
       "type": "company",
       "name": "Pika",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.5,
       "summary": "AI video generation startup.",
@@ -2137,9 +1960,7 @@
       "type": "model",
       "name": "o3",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "significance": 0.88,
       "summary": "Advanced reasoning model.",
@@ -2181,9 +2002,7 @@
       "type": "model",
       "name": "Whisper",
       "vertical": "multimodal",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.72,
       "summary": "Open-source speech recognition model.",
@@ -2225,9 +2044,7 @@
       "type": "model",
       "name": "Claude 3 Haiku",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Fastest Claude 3 model.",
@@ -2269,9 +2086,7 @@
       "type": "model",
       "name": "Gemma 2",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.65,
       "summary": "Google's open-weight model family.",
@@ -2313,9 +2128,7 @@
       "type": "model",
       "name": "Imagen 3",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Google's image generation model.",
@@ -2336,9 +2149,7 @@
       "type": "model",
       "name": "Veo 2",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Google's video generation model.",
@@ -2359,9 +2170,7 @@
       "type": "model",
       "name": "Llama 2",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.7,
       "summary": "Meta's second open-weight model.",
@@ -2382,9 +2191,7 @@
       "type": "model",
       "name": "Llama 3.1",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.82,
       "summary": "Meta's 405B parameter open model.",
@@ -2405,9 +2212,7 @@
       "type": "model",
       "name": "Code Llama",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Meta's code-specialized Llama.",
@@ -2428,9 +2233,7 @@
       "type": "model",
       "name": "Segment Anything 2",
       "vertical": "multimodal",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.65,
       "summary": "Image and video segmentation model.",
@@ -2451,9 +2254,7 @@
       "type": "model",
       "name": "Mistral 7B",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.65,
       "summary": "Mistral's efficient 7B open model.",
@@ -2474,9 +2275,7 @@
       "type": "model",
       "name": "Mixtral 8x7B",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.7,
       "summary": "Mixture-of-experts open model.",
@@ -2497,9 +2296,7 @@
       "type": "model",
       "name": "Codestral",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Mistral's code generation model.",
@@ -2541,9 +2338,7 @@
       "type": "model",
       "name": "DeepSeek R1",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.85,
       "summary": "Open-weight reasoning model rivaling o1.",
@@ -2564,9 +2359,7 @@
       "type": "model",
       "name": "DeepSeek V3",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.8,
       "summary": "671B MoE model trained for $5.5M.",
@@ -2587,9 +2380,7 @@
       "type": "model",
       "name": "DeepSeek Coder V2",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Code-specialized MoE model.",
@@ -2610,9 +2401,7 @@
       "type": "model",
       "name": "Qwen 2.5",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.7,
       "summary": "Alibaba's multilingual open model.",
@@ -2633,9 +2422,7 @@
       "type": "model",
       "name": "Qwen 2.5 Coder",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Code-specialized Qwen model.",
@@ -2656,9 +2443,7 @@
       "type": "model",
       "name": "Falcon 180B",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.5,
       "summary": "UAE's open-weight 180B model.",
@@ -2679,9 +2464,7 @@
       "type": "model",
       "name": "Phi-3",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Microsoft's small language model.",
@@ -2702,9 +2485,7 @@
       "type": "model",
       "name": "Command R+",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "search_retrieval"
-      ],
+      "verticals_secondary": ["search_retrieval"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Cohere's RAG-optimized model.",
@@ -2725,9 +2506,7 @@
       "type": "model",
       "name": "DBRX",
       "vertical": "foundation_models",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Databricks' open MoE model.",
@@ -2748,9 +2527,7 @@
       "type": "model",
       "name": "FLUX",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.65,
       "summary": "Black Forest Labs' open image model.",
@@ -2771,9 +2548,7 @@
       "type": "model",
       "name": "Stable Diffusion XL",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Stability AI's XL image model.",
@@ -2794,10 +2569,7 @@
       "type": "model",
       "name": "MusicGen",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "open_source",
-        "multimodal"
-      ],
+      "verticals_secondary": ["open_source", "multimodal"],
       "status": "ga",
       "significance": 0.45,
       "summary": "Meta's music generation model.",
@@ -2818,9 +2590,7 @@
       "type": "model",
       "name": "Suno v3",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.5,
       "summary": "AI music generation model.",
@@ -2841,9 +2611,7 @@
       "type": "model",
       "name": "Gen-3 Alpha",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Runway's video generation model.",
@@ -2864,9 +2632,7 @@
       "type": "model",
       "name": "StarCoder 2",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Open-source code LLM from BigCode.",
@@ -2887,9 +2653,7 @@
       "type": "model",
       "name": "CodeGemma",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Google's code-specialized Gemma.",
@@ -2952,9 +2716,7 @@
       "type": "model",
       "name": "Mamba",
       "vertical": "research",
-      "verticals_secondary": [
-        "foundation_models"
-      ],
+      "verticals_secondary": ["foundation_models"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Selective state space model architecture.",
@@ -2975,9 +2737,7 @@
       "type": "product",
       "name": "Gemini App",
       "vertical": "consumer_products",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "significance": 0.75,
       "summary": "Google's consumer AI assistant (formerly Bard).",
@@ -2998,9 +2758,7 @@
       "type": "product",
       "name": "Microsoft Copilot",
       "vertical": "consumer_products",
-      "verticals_secondary": [
-        "enterprise_platforms"
-      ],
+      "verticals_secondary": ["enterprise_platforms"],
       "status": "ga",
       "significance": 0.8,
       "summary": "Microsoft's AI assistant across products.",
@@ -3042,9 +2800,7 @@
       "type": "product",
       "name": "Devin",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "beta",
       "significance": 0.6,
       "summary": "AI software engineer by Cognition.",
@@ -3065,9 +2821,7 @@
       "type": "product",
       "name": "Ghostwriter",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.45,
       "summary": "Replit's AI coding assistant.",
@@ -3088,9 +2842,7 @@
       "type": "product",
       "name": "Codeium",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Free AI code completion tool.",
@@ -3111,9 +2863,7 @@
       "type": "product",
       "name": "Tabnine",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.4,
       "summary": "AI code completion for enterprise.",
@@ -3134,9 +2884,7 @@
       "type": "product",
       "name": "Sourcegraph Cody",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "search_retrieval"
-      ],
+      "verticals_secondary": ["search_retrieval"],
       "status": "ga",
       "significance": 0.45,
       "summary": "AI coding assistant with codebase context.",
@@ -3157,9 +2905,7 @@
       "type": "product",
       "name": "Amazon CodeWhisperer",
       "vertical": "code_generation",
-      "verticals_secondary": [
-        "enterprise_platforms"
-      ],
+      "verticals_secondary": ["enterprise_platforms"],
       "status": "ga",
       "significance": 0.5,
       "summary": "AWS AI coding assistant (now Amazon Q).",
@@ -3201,9 +2947,7 @@
       "type": "product",
       "name": "ElevenLabs Studio",
       "vertical": "creative_tools",
-      "verticals_secondary": [
-        "multimodal"
-      ],
+      "verticals_secondary": ["multimodal"],
       "status": "ga",
       "significance": 0.45,
       "summary": "AI voice generation platform.",
@@ -3224,9 +2968,7 @@
       "type": "product",
       "name": "Amazon Bedrock",
       "vertical": "enterprise_platforms",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.7,
       "summary": "AWS managed AI model service.",
@@ -3247,9 +2989,7 @@
       "type": "product",
       "name": "Google Vertex AI",
       "vertical": "enterprise_platforms",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "ga",
       "significance": 0.65,
       "summary": "Google Cloud's ML platform.",
@@ -3270,9 +3010,7 @@
       "type": "product",
       "name": "Azure OpenAI Service",
       "vertical": "enterprise_platforms",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.75,
       "summary": "Microsoft's managed OpenAI API.",
@@ -3293,9 +3031,7 @@
       "type": "framework",
       "name": "CrewAI",
       "vertical": "agents",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Multi-agent orchestration framework.",
@@ -3316,9 +3052,7 @@
       "type": "framework",
       "name": "AutoGen",
       "vertical": "agents",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Microsoft's multi-agent framework.",
@@ -3339,9 +3073,7 @@
       "type": "framework",
       "name": "DSPy",
       "vertical": "developer_tooling",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Programming framework for LMs by Stanford.",
@@ -3362,10 +3094,7 @@
       "type": "framework",
       "name": "Ollama",
       "vertical": "inference",
-      "verticals_secondary": [
-        "developer_tooling",
-        "open_source"
-      ],
+      "verticals_secondary": ["developer_tooling", "open_source"],
       "status": "ga",
       "significance": 0.7,
       "summary": "Local LLM runner for Mac/Linux/Windows.",
@@ -3386,9 +3115,7 @@
       "type": "framework",
       "name": "MLX",
       "vertical": "training",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Apple's ML framework for Apple Silicon.",
@@ -3409,9 +3136,7 @@
       "type": "framework",
       "name": "ONNX Runtime",
       "vertical": "inference",
-      "verticals_secondary": [
-        "developer_tooling"
-      ],
+      "verticals_secondary": ["developer_tooling"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Cross-platform ML inference engine.",
@@ -3432,9 +3157,7 @@
       "type": "framework",
       "name": "TensorRT",
       "vertical": "inference",
-      "verticals_secondary": [
-        "hardware"
-      ],
+      "verticals_secondary": ["hardware"],
       "status": "ga",
       "significance": 0.6,
       "summary": "NVIDIA's deep learning inference optimizer.",
@@ -3455,9 +3178,7 @@
       "type": "framework",
       "name": "JAX",
       "vertical": "training",
-      "verticals_secondary": [
-        "research"
-      ],
+      "verticals_secondary": ["research"],
       "status": "ga",
       "significance": 0.7,
       "summary": "Google's high-performance numerical computing library.",
@@ -3478,9 +3199,7 @@
       "type": "framework",
       "name": "Ray",
       "vertical": "training",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Distributed computing framework for ML.",
@@ -3501,9 +3220,7 @@
       "type": "framework",
       "name": "Weaviate",
       "vertical": "search_retrieval",
-      "verticals_secondary": [
-        "data_infrastructure"
-      ],
+      "verticals_secondary": ["data_infrastructure"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Open-source vector database.",
@@ -3524,9 +3241,7 @@
       "type": "framework",
       "name": "Pinecone",
       "vertical": "search_retrieval",
-      "verticals_secondary": [
-        "data_infrastructure"
-      ],
+      "verticals_secondary": ["data_infrastructure"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Managed vector database.",
@@ -3547,9 +3262,7 @@
       "type": "framework",
       "name": "ChromaDB",
       "vertical": "search_retrieval",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.45,
       "summary": "Open-source embedding database.",
@@ -3591,9 +3304,7 @@
       "type": "benchmark",
       "name": "ARC-AGI",
       "vertical": "evaluation",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Abstraction and reasoning benchmark for AGI.",
@@ -3698,9 +3409,7 @@
       "type": "paper",
       "name": "Llama 2: Open Foundation and Fine-Tuned Chat Models",
       "vertical": "research",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.75,
       "summary": "Meta's open model methodology paper.",
@@ -3721,9 +3430,7 @@
       "type": "paper",
       "name": "GPT-4 Technical Report",
       "vertical": "research",
-      "verticals_secondary": [
-        "foundation_models"
-      ],
+      "verticals_secondary": ["foundation_models"],
       "status": "ga",
       "significance": 0.8,
       "summary": "OpenAI's GPT-4 system card.",
@@ -3744,9 +3451,7 @@
       "type": "paper",
       "name": "Chain-of-Thought Prompting",
       "vertical": "research",
-      "verticals_secondary": [
-        "agents"
-      ],
+      "verticals_secondary": ["agents"],
       "status": "ga",
       "significance": 0.75,
       "summary": "Wei et al. chain-of-thought reasoning paper.",
@@ -3767,10 +3472,7 @@
       "type": "paper",
       "name": "FlashAttention",
       "vertical": "research",
-      "verticals_secondary": [
-        "training",
-        "inference"
-      ],
+      "verticals_secondary": ["training", "inference"],
       "status": "ga",
       "significance": 0.78,
       "summary": "IO-aware exact attention algorithm.",
@@ -3791,9 +3493,7 @@
       "type": "paper",
       "name": "LoRA: Low-Rank Adaptation",
       "vertical": "research",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "ga",
       "significance": 0.8,
       "summary": "Parameter-efficient fine-tuning method.",
@@ -3814,9 +3514,7 @@
       "type": "paper",
       "name": "QLoRA",
       "vertical": "research",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "ga",
       "significance": 0.65,
       "summary": "Quantized LoRA for efficient fine-tuning.",
@@ -3837,9 +3535,7 @@
       "type": "paper",
       "name": "Direct Preference Optimization",
       "vertical": "research",
-      "verticals_secondary": [
-        "safety_alignment"
-      ],
+      "verticals_secondary": ["safety_alignment"],
       "status": "ga",
       "significance": 0.72,
       "summary": "Simplified RLHF alternative.",
@@ -3860,9 +3556,7 @@
       "type": "paper",
       "name": "Training Language Models with Human Feedback",
       "vertical": "research",
-      "verticals_secondary": [
-        "safety_alignment"
-      ],
+      "verticals_secondary": ["safety_alignment"],
       "status": "ga",
       "significance": 0.78,
       "summary": "Foundational RLHF paper.",
@@ -3883,9 +3577,7 @@
       "type": "paper",
       "name": "Mamba: Linear-Time Sequence Modeling",
       "vertical": "research",
-      "verticals_secondary": [
-        "foundation_models"
-      ],
+      "verticals_secondary": ["foundation_models"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Selective state space model paper.",
@@ -3906,9 +3598,7 @@
       "type": "paper",
       "name": "Mixtral of Experts",
       "vertical": "research",
-      "verticals_secondary": [
-        "foundation_models"
-      ],
+      "verticals_secondary": ["foundation_models"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Sparse MoE architecture paper.",
@@ -3929,9 +3619,7 @@
       "type": "dataset",
       "name": "FineWeb",
       "vertical": "data_infrastructure",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Hugging Face's 15T token web dataset.",
@@ -3952,9 +3640,7 @@
       "type": "dataset",
       "name": "RedPajama",
       "vertical": "data_infrastructure",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Open reproduction of LLaMA training data.",
@@ -3975,9 +3661,7 @@
       "type": "dataset",
       "name": "LAION-5B",
       "vertical": "data_infrastructure",
-      "verticals_secondary": [
-        "creative_tools"
-      ],
+      "verticals_secondary": ["creative_tools"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Large-scale image-text dataset.",
@@ -3998,9 +3682,7 @@
       "type": "dataset",
       "name": "ImageNet",
       "vertical": "data_infrastructure",
-      "verticals_secondary": [
-        "evaluation"
-      ],
+      "verticals_secondary": ["evaluation"],
       "status": "ga",
       "significance": 0.6,
       "summary": "Foundational image classification dataset.",
@@ -4021,9 +3703,7 @@
       "type": "dataset",
       "name": "OpenAssistant",
       "vertical": "data_infrastructure",
-      "verticals_secondary": [
-        "open_source"
-      ],
+      "verticals_secondary": ["open_source"],
       "status": "ga",
       "significance": 0.4,
       "summary": "Open conversation dataset for RLHF.",
@@ -4044,9 +3724,7 @@
       "type": "product",
       "name": "NVIDIA A100",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "ga",
       "significance": 0.8,
       "summary": "NVIDIA's Ampere data center GPU.",
@@ -4067,10 +3745,7 @@
       "type": "product",
       "name": "NVIDIA H200",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training",
-        "inference"
-      ],
+      "verticals_secondary": ["training", "inference"],
       "status": "ga",
       "significance": 0.75,
       "summary": "H100 variant with more HBM3e memory.",
@@ -4091,9 +3766,7 @@
       "type": "product",
       "name": "NVIDIA GB300",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "announced",
       "significance": 0.7,
       "summary": "Next-gen Blackwell Ultra GPU.",
@@ -4114,10 +3787,7 @@
       "type": "product",
       "name": "Google TPU v5e",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training",
-        "inference"
-      ],
+      "verticals_secondary": ["training", "inference"],
       "status": "ga",
       "significance": 0.55,
       "summary": "Google's efficient TPU for inference.",
@@ -4138,10 +3808,7 @@
       "type": "product",
       "name": "AMD MI300X",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training",
-        "inference"
-      ],
+      "verticals_secondary": ["training", "inference"],
       "status": "ga",
       "significance": 0.6,
       "summary": "AMD's AI accelerator with 192GB HBM3.",
@@ -4162,9 +3829,7 @@
       "type": "product",
       "name": "Groq LPU",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "inference"
-      ],
+      "verticals_secondary": ["inference"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Groq's Language Processing Unit for fast inference.",
@@ -4185,9 +3850,7 @@
       "type": "product",
       "name": "Cerebras CS-3",
       "vertical": "hardware",
-      "verticals_secondary": [
-        "training"
-      ],
+      "verticals_secondary": ["training"],
       "status": "announced",
       "significance": 0.45,
       "summary": "Third-gen wafer-scale engine.",
@@ -4208,9 +3871,7 @@
       "type": "initiative",
       "name": "AI Safety Summit",
       "vertical": "governance_policy",
-      "verticals_secondary": [
-        "safety_alignment"
-      ],
+      "verticals_secondary": ["safety_alignment"],
       "status": "ga",
       "significance": 0.6,
       "summary": "UK-hosted AI safety summit series.",
@@ -4231,9 +3892,7 @@
       "type": "initiative",
       "name": "Frontier Model Forum",
       "vertical": "governance_policy",
-      "verticals_secondary": [
-        "safety_alignment"
-      ],
+      "verticals_secondary": ["safety_alignment"],
       "status": "ga",
       "significance": 0.5,
       "summary": "Industry consortium for AI safety.",
@@ -4275,9 +3934,7 @@
       "type": "standard",
       "name": "California SB 1047",
       "vertical": "governance_policy",
-      "verticals_secondary": [
-        "safety_alignment"
-      ],
+      "verticals_secondary": ["safety_alignment"],
       "status": "ga",
       "significance": 0.55,
       "summary": "California AI safety bill (vetoed).",

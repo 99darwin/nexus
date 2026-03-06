@@ -107,9 +107,7 @@ export function TemporalSlider({ minDate, maxDate, value, from, onChange }: Temp
               style={{
                 ...presetButtonStyle,
                 backgroundColor:
-                  activePreset === preset.label
-                    ? theme.accent.primaryMuted
-                    : theme.bg.surface,
+                  activePreset === preset.label ? theme.accent.primaryMuted : theme.bg.surface,
               }}
             >
               {preset.label}

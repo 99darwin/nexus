@@ -140,10 +140,9 @@ export async function queryNodeById(
   session: Session,
   id: string,
 ): Promise<{ node: NodeResult | null; edges: EdgeResult[] }> {
-  const nodeResult = await session.run(
-    "MATCH (n:Entity {id: $id}) RETURN properties(n) as props",
-    { id },
-  );
+  const nodeResult = await session.run("MATCH (n:Entity {id: $id}) RETURN properties(n) as props", {
+    id,
+  });
 
   if (nodeResult.records.length === 0) return { node: null, edges: [] };
 
@@ -191,7 +190,9 @@ export async function queryNeighborhood(
     "MATCH (n:Entity {id: $id}) RETURN properties(n) as props",
     { id },
   );
-  const centerNode = centerResult.records[0] ? parseNode(centerResult.records[0].get("props")) : undefined;
+  const centerNode = centerResult.records[0]
+    ? parseNode(centerResult.records[0].get("props"))
+    : undefined;
   const nodes = centerNode ? [centerNode, ...neighborNodes] : neighborNodes;
 
   // Get edges between these nodes

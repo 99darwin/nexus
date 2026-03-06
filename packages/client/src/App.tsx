@@ -21,7 +21,7 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState(false);
   const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
-  const [showMobileFeed, setShowMobileFeed] = useState(false);
+  const [showMobileFeed, setShowMobileFeed] = useState(true);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   // Load data + auto-refresh every 5 minutes
@@ -124,11 +124,19 @@ export function App() {
     if (from && !to && Math.abs(from.getTime() - todayStart.getTime()) < 1000) return "Today";
     // "Yesterday": from = yesterdayStart, to = todayStart
     const yesterdayStart = new Date(todayStart.getTime() - ONE_DAY);
-    if (from && to && Math.abs(from.getTime() - yesterdayStart.getTime()) < 1000 && Math.abs(to.getTime() - todayStart.getTime()) < 1000) return "Yesterday";
+    if (
+      from &&
+      to &&
+      Math.abs(from.getTime() - yesterdayStart.getTime()) < 1000 &&
+      Math.abs(to.getTime() - todayStart.getTime()) < 1000
+    )
+      return "Yesterday";
     // "This Week": from = 7d ago, to = null
-    if (from && !to && Math.abs(from.getTime() - (Date.now() - 7 * ONE_DAY)) < 2000) return "This Week";
+    if (from && !to && Math.abs(from.getTime() - (Date.now() - 7 * ONE_DAY)) < 2000)
+      return "This Week";
     // "This Month": from = 30d ago, to = null
-    if (from && !to && Math.abs(from.getTime() - (Date.now() - 30 * ONE_DAY)) < 2000) return "This Month";
+    if (from && !to && Math.abs(from.getTime() - (Date.now() - 30 * ONE_DAY)) < 2000)
+      return "This Month";
     // "Older": from = null, to = 30d ago
     if (!from && to && Math.abs(to.getTime() - (Date.now() - 30 * ONE_DAY)) < 2000) return "Older";
 
@@ -166,7 +174,15 @@ export function App() {
 
   if (error) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", color: "#ff6b6b" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          color: "#ff6b6b",
+        }}
+      >
         Failed to load graph data: {error}
       </div>
     );
@@ -174,7 +190,15 @@ export function App() {
 
   if (loading) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", color: "#888" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          color: "#888",
+        }}
+      >
         Loading graph...
       </div>
     );
@@ -203,9 +227,7 @@ export function App() {
       <div style={splitContainer}>
         {/* Activity Feed — left panel (desktop) */}
         {!isMobile && (
-          <div style={{ width: FEED_WIDTH, flexShrink: 0, height: "100%" }}>
-            {feedElement}
-          </div>
+          <div style={{ width: FEED_WIDTH, flexShrink: 0, height: "100%" }}>{feedElement}</div>
         )}
 
         {/* 3D Force Graph — fills remaining space */}
@@ -214,7 +236,9 @@ export function App() {
             data={store.filteredData}
             onNodeClick={handleNodeClick}
             focusNodeId={focusNodeId}
-            highlightNodeIds={store.comparisonNodeIds.size >= 2 ? store.comparisonNodeIds : undefined}
+            highlightNodeIds={
+              store.comparisonNodeIds.size >= 2 ? store.comparisonNodeIds : undefined
+            }
             hoveredNodeId={store.hoveredNodeId}
           />
 
@@ -226,8 +250,7 @@ export function App() {
 
           {/* Node/edge count */}
           <div style={statsStyle}>
-            {store.filteredData.nodes.length} nodes &middot;{" "}
-            {store.filteredData.links.length} edges
+            {store.filteredData.nodes.length} nodes &middot; {store.filteredData.links.length} edges
             {store.comparisonNodeIds.size > 0 && (
               <span style={{ marginLeft: 8, color: theme.accent.amber }}>
                 {store.comparisonNodeIds.size} comparing
@@ -261,9 +284,7 @@ export function App() {
       {isMobile && showMobileFeed && (
         <div style={mobileFeedOverlay}>
           <div style={mobileFeedBackdrop} onClick={() => setShowMobileFeed(false)} />
-          <div style={mobileFeedDrawer}>
-            {feedElement}
-          </div>
+          <div style={mobileFeedDrawer}>{feedElement}</div>
         </div>
       )}
 

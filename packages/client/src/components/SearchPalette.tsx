@@ -42,7 +42,10 @@ export function SearchPalette({ nodes, onSelect, onClose, fullscreen }: SearchPa
 
   return (
     <div style={overlayStyle} onClick={onClose}>
-      <div style={fullscreen ? fullscreenPaletteStyle : paletteStyle} onClick={(e) => e.stopPropagation()}>
+      <div
+        style={fullscreen ? fullscreenPaletteStyle : paletteStyle}
+        onClick={(e) => e.stopPropagation()}
+      >
         <input
           ref={inputRef}
           type="text"

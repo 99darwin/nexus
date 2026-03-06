@@ -15,28 +15,24 @@ const SCHEMA_STATEMENTS = [
 ];
 
 export async function schemaRoutes(app: FastifyInstance): Promise<void> {
-  app.post(
-    "/api/admin/schema",
-    { onRequest: requireApiKey },
-    async () => {
-      const session = getSession();
-      const results: Array<{ statement: string; status: string }> = [];
+  app.post("/api/admin/schema", { onRequest: requireApiKey }, async () => {
+    const session = getSession();
+    const results: Array<{ statement: string; status: string }> = [];
 
-      try {
-        for (const statement of SCHEMA_STATEMENTS) {
-          try {
-            await session.run(statement);
-            results.push({ statement: statement.split("\n")[0].trim(), status: "ok" });
-          } catch (err) {
-            const message = err instanceof Error ? err.message : String(err);
-            results.push({ statement: statement.split("\n")[0].trim(), status: message });
-          }
+    try {
+      for (const statement of SCHEMA_STATEMENTS) {
+        try {
+          await session.run(statement);
+          results.push({ statement: statement.split("\n")[0].trim(), status: "ok" });
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          results.push({ statement: statement.split("\n")[0].trim(), status: message });
         }
-
-        return { applied: results.filter((r) => r.status === "ok").length, results };
-      } finally {
-        await session.close();
       }
-    },
-  );
+
+      return { applied: results.filter((r) => r.status === "ok").length, results };
+    } finally {
+      await session.close();
+    }
+  });
 }
