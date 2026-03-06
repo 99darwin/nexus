@@ -44,13 +44,17 @@ function parseNode(raw: Record<string, unknown>): NodeResult {
 
 export async function queryFullGraph(
   session: Session,
-  options: { since?: string; cursor?: string; limit?: number; significance_min?: number },
+  options: { since?: string; offset?: number; limit?: number; significance_min?: number },
 ): Promise<{ nodes: NodeResult[]; edges: EdgeResult[]; cursor: string | null }> {
   const limit = options.limit ?? 100;
-  const sigMin = options.significance_min ?? 0.1;
+  const sigMin = options.significance_min ?? 0.4;
+  const offset = options.offset ?? 0;
 
   const conditions: string[] = [];
-  const params: Record<string, unknown> = { limit: neo4j.int(limit) };
+  const params: Record<string, unknown> = {
+    limit: neo4j.int(limit),
+    offset: neo4j.int(offset),
+  };
 
   // Always apply significance floor to avoid shipping thousands of noise nodes
   conditions.push("n.significance >= $sig_min");
@@ -60,22 +64,22 @@ export async function queryFullGraph(
     conditions.push("n.updated_at >= $since");
     params.since = options.since;
   }
-  if (options.cursor) {
-    conditions.push("n.id > $cursor");
-    params.cursor = options.cursor;
-  }
 
   const where = conditions.length > 0 ? ` WHERE ${conditions.join(" AND ")}` : "";
-  const nodeQuery = `MATCH (n:Entity)${where} RETURN properties(n) as props ORDER BY n.id LIMIT $limit`;
+  const nodeQuery = `MATCH (n:Entity)${where} RETURN properties(n) as props ORDER BY n.significance DESC, n.id SKIP $offset LIMIT $limit`;
 
   const nodeResult = await session.run(nodeQuery, params);
   const nodes = nodeResult.records.map((r) => parseNode(r.get("props")));
 
+  // Scope edges to only the returned node IDs
+  const nodeIds = nodes.map((n) => n.id);
   const edgeResult = await session.run(
     `MATCH (a:Entity)-[r:RELATES_TO]->(b:Entity)
+     WHERE a.id IN $nodeIds AND b.id IN $nodeIds
      RETURN a.id as source_id, b.id as target_id,
             r.relationship as relationship, r.discovered_at as discovered_at,
             r.confidence as confidence, r.evidence as evidence`,
+    { nodeIds },
   );
   const edges = edgeResult.records.map((r) => ({
     source_id: r.get("source_id") as string,
@@ -86,7 +90,7 @@ export async function queryFullGraph(
     evidence: r.get("evidence") as string,
   }));
 
-  const nextCursor = nodes.length === limit ? nodes[nodes.length - 1].id : null;
+  const nextCursor = nodes.length === limit ? String(offset + limit) : null;
 
   return { nodes, edges, cursor: nextCursor };
 }

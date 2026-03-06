@@ -30,7 +30,26 @@ export async function deduplicateItems(items: RawItem[], pool: PgPool): Promise<
 
     const existingTitles = new Set<string>(fuzzyResult.rows.map((r: { title: string }) => r.title));
 
-    return newItems.filter((item) => !existingTitles.has(item.title));
+    const afterTitle = newItems.filter((item) => !existingTitles.has(item.title));
+
+    // arXiv ID dedup: filter items whose arXiv ID already exists in the database
+    const arxivItems = afterTitle.filter((item) => item.raw_metadata?.arxiv_id);
+    if (arxivItems.length > 0) {
+      const arxivIds = arxivItems.map((item) => item.raw_metadata.arxiv_id as string);
+      const arxivResult = await pool.query(
+        `SELECT raw_metadata->>'arxiv_id' as arxiv_id FROM raw_items
+         WHERE raw_metadata->>'arxiv_id' = ANY($1)`,
+        [arxivIds],
+      );
+      const existingArxivIds = new Set<string>(
+        arxivResult.rows.map((r: { arxiv_id: string }) => r.arxiv_id),
+      );
+      return afterTitle.filter(
+        (item) => !item.raw_metadata?.arxiv_id || !existingArxivIds.has(item.raw_metadata.arxiv_id as string),
+      );
+    }
+
+    return afterTitle;
   }
 
   return newItems;

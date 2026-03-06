@@ -12,7 +12,12 @@ async function fetchJson<T>(path: string, params?: Record<string, string>): Prom
   return response.json();
 }
 
-export async function fetchGraph(options?: { since?: string; cursor?: string; limit?: number }) {
+export async function fetchGraph(options?: {
+  since?: string;
+  cursor?: string;
+  limit?: number;
+  significance_min?: string;
+}) {
   return fetchJson<{
     nodes: Record<string, unknown>[];
     edges: Record<string, unknown>[];
@@ -21,6 +26,7 @@ export async function fetchGraph(options?: { since?: string; cursor?: string; li
     since: options?.since ?? "",
     cursor: options?.cursor ?? "",
     limit: options?.limit?.toString() ?? "",
+    significance_min: options?.significance_min ?? "",
   });
 }
 
