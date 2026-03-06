@@ -110,9 +110,10 @@ describe("TwitterAdapter", () => {
       status: 429,
       statusText: "Too Many Requests",
       headers: mockHeaders,
+      text: async () => "Too Many Requests",
     });
 
-    await expect(adapter.poll()).rejects.toThrow("X API request failed: 429");
+    await expect(adapter.poll()).rejects.toThrow("X API 429");
   });
 
   it("does not retry auth errors (401/403)", async () => {
@@ -121,9 +122,10 @@ describe("TwitterAdapter", () => {
       status: 401,
       statusText: "Unauthorized",
       headers: mockHeaders,
+      text: async () => "Unauthorized",
     });
 
-    await expect(adapter.poll()).rejects.toThrow("X API request failed: 401");
+    await expect(adapter.poll()).rejects.toThrow("X API 401");
     // Should only call fetch once (no retries for auth errors)
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });

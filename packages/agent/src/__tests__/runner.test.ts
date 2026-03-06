@@ -75,8 +75,11 @@ describe("runExtraction", () => {
   });
 
   it("processes valid items and returns AgentOutput", async () => {
+    // Response omits leading "{" since the code prefills it
+    const responseText = JSON.stringify(VALID_AGENT_OUTPUT).slice(1);
     mockCreate.mockResolvedValue({
-      content: [{ type: "text", text: JSON.stringify(VALID_AGENT_OUTPUT) }],
+      content: [{ type: "text", text: responseText }],
+      stop_reason: "end_turn",
       usage: { input_tokens: 1500, output_tokens: 800 },
     });
 
@@ -91,7 +94,10 @@ describe("runExtraction", () => {
     expect(mockCreate).toHaveBeenCalledWith(
       expect.objectContaining({
         model: "claude-sonnet-4-20250514",
-        messages: [{ role: "user", content: expect.stringContaining("Anthropic launches Claude 4") }],
+        messages: [
+          { role: "user", content: expect.stringContaining("Anthropic launches Claude 4") },
+          { role: "assistant", content: "{" },
+        ],
       }),
     );
   });
@@ -106,10 +112,14 @@ describe("runExtraction", () => {
   });
 
   it("handles JSON wrapped in markdown code blocks", async () => {
-    const wrappedResponse = `Here is the extracted data:\n\n\`\`\`json\n${JSON.stringify(VALID_AGENT_OUTPUT, null, 2)}\n\`\`\``;
+    const fullJson = JSON.stringify(VALID_AGENT_OUTPUT, null, 2);
+    // Model returns a code block containing full JSON; prefill "{" + this
+    // won't parse directly, so falls through to code block extraction
+    const wrappedResponse = `\n\n\`\`\`json\n${fullJson}\n\`\`\``;
 
     mockCreate.mockResolvedValue({
       content: [{ type: "text", text: wrappedResponse }],
+      stop_reason: "end_turn",
       usage: { input_tokens: 1200, output_tokens: 600 },
     });
 
@@ -137,7 +147,8 @@ describe("runExtraction", () => {
     };
 
     mockCreate.mockResolvedValue({
-      content: [{ type: "text", text: JSON.stringify(invalidOutput) }],
+      content: [{ type: "text", text: JSON.stringify(invalidOutput).slice(1) }],
+      stop_reason: "end_turn",
       usage: { input_tokens: 1000, output_tokens: 400 },
     });
 
