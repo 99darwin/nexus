@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import type { ForceNode } from "../graph/types";
 import { theme } from "../theme";
 
@@ -52,6 +52,8 @@ export function VerticalSidebar({
   onClearFilter,
 }: VerticalSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [width, setWidth] = useState(200);
+  const [isResizing, setIsResizing] = useState(false);
 
   const verticals = useMemo(() => {
     const counts = new Map<string, number>();
@@ -83,6 +85,42 @@ export function VerticalSidebar({
     [onVerticalToggle],
   );
 
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, Math.min(500, e.clientX));
+      setWidth(newWidth);
+    },
+    [isResizing],
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  useEffect(() => {
+    if (isResizing) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    } else {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isResizing, handleMouseMove, handleMouseUp]);
+
   if (collapsed) {
     return (
       <div style={collapsedStyle}>
@@ -106,7 +144,7 @@ export function VerticalSidebar({
   }
 
   return (
-    <div style={containerStyle}>
+    <div style={{ ...containerStyle, width }}>
       <div style={headerStyle}>
         <span
           style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}
@@ -147,6 +185,7 @@ export function VerticalSidebar({
         })}
       </div>
       <div style={hintStyle}>Shift+click to multi-select</div>
+      <div style={resizeHandleStyle} onMouseDown={handleMouseDown} />
     </div>
   );
 }
@@ -270,4 +309,15 @@ const hintStyle: React.CSSProperties = {
   fontSize: 10,
   opacity: 0.3,
   borderTop: "1px solid rgba(255,255,255,0.05)",
+};
+
+const resizeHandleStyle: React.CSSProperties = {
+  position: "absolute",
+  top: 0,
+  right: 0,
+  bottom: 0,
+  width: 4,
+  cursor: "col-resize",
+  backgroundColor: "transparent",
+  transition: "background-color 0.15s",
 };
