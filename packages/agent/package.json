@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "dev": "tsx watch src/index.ts",
+    "start": "node dist/start.js",
+    "dev": "tsx watch src/start.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

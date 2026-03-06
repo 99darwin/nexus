@@ -215,7 +215,7 @@ The agent pipeline (`packages/agent`) ingests live data from sources (HackerNews
 ### Run as a Railway service
 
 1. Create a new service from the same repo
-2. Set the start command: `node packages/agent/dist/index.js`
+2. Set the start command: `node packages/agent/dist/start.js`
 3. Add environment variables:
    ```
    ANTHROPIC_API_KEY=sk-ant-...
