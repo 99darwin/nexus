@@ -1,6 +1,6 @@
 import { Worker } from "bullmq";
 import type { RawItem, SourceAdapter } from "../sources/types.js";
-import { createIngestionQueue, enqueueItems } from "./ingestion-queue.js";
+import { createIngestionQueue, enqueueItems, parseRedisUrl } from "./ingestion-queue.js";
 import type { PipelineConfig } from "../pipeline.js";
 import { runPipeline } from "../pipeline.js";
 
@@ -51,7 +51,6 @@ export function createPollWorker(
 
 export function createProcessWorker(config: WorkerConfig): Worker<RawItem[]> {
   const redisUrl = config.redisUrl ?? process.env.REDIS_URL ?? "redis://localhost:6379";
-  const url = new URL(redisUrl);
 
   return new Worker<RawItem[]>(
     "ingestion",
@@ -67,10 +66,7 @@ export function createProcessWorker(config: WorkerConfig): Worker<RawItem[]> {
       }
     },
     {
-      connection: {
-        host: url.hostname,
-        port: parseInt(url.port || "6379", 10),
-      },
+      connection: parseRedisUrl(redisUrl),
       prefix: "nexus",
       concurrency: 2,
       limiter: {

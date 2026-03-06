@@ -6,15 +6,21 @@ export interface QueueConfig {
   prefix?: string;
 }
 
+export function parseRedisUrl(redisUrl: string) {
+  const url = new URL(redisUrl);
+  return {
+    host: url.hostname,
+    port: parseInt(url.port || "6379", 10),
+    ...(url.password ? { password: url.password } : {}),
+    ...(url.username && url.username !== "default" ? { username: url.username } : {}),
+  };
+}
+
 export function createIngestionQueue(config: QueueConfig = {}): Queue<RawItem[]> {
   const redisUrl = config.redisUrl ?? process.env.REDIS_URL ?? "redis://localhost:6379";
-  const url = new URL(redisUrl);
 
   return new Queue<RawItem[]>("ingestion", {
-    connection: {
-      host: url.hostname,
-      port: parseInt(url.port || "6379", 10),
-    },
+    connection: parseRedisUrl(redisUrl),
     prefix: config.prefix ?? "nexus",
     defaultJobOptions: {
       attempts: 3,
