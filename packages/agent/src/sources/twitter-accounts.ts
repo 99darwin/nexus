@@ -19,12 +19,12 @@ export const TWITTER_ACCOUNTS: TwitterAccount[] = [
   { handle: "DarioAmodei", category: "researcher", description: "CEO, Anthropic" },
   { handle: "sama", category: "researcher", description: "CEO, OpenAI" },
   { handle: "ylecun", category: "researcher", description: "Chief AI Scientist, Meta" },
-  { handle: "demaborishassabis", category: "researcher", description: "CEO, Google DeepMind" },
-  { handle: "jackclaborark", category: "researcher", description: "Co-founder, Anthropic" },
+  { handle: "demishassabis", category: "researcher", description: "CEO, Google DeepMind" },
+  { handle: "jackclarkSF", category: "researcher", description: "Co-founder, Anthropic" },
   { handle: "AndrejKarpathy", category: "researcher", description: "AI educator, ex-Tesla/OpenAI" },
   { handle: "karpathy", category: "researcher", description: "Andrej Karpathy — AI educator" },
   { handle: "jeffdean", category: "researcher", description: "Chief Scientist, Google DeepMind" },
-  { handle: "fcaborhollet", category: "researcher", description: "Keras creator, ARC Prize" },
+  { handle: "fchollet", category: "researcher", description: "Keras creator, ARC Prize" },
   { handle: "yanndubs", category: "researcher", description: "ML researcher" },
   { handle: "gdb", category: "researcher", description: "Greg Brockman — co-founder, OpenAI" },
   { handle: "rxwei", category: "researcher", description: "Richard Wei — ML compiler researcher" },
@@ -50,8 +50,8 @@ export const TWITTER_ACCOUNTS: TwitterAccount[] = [
 
   // Open Source
   { handle: "ggerganov", category: "oss", description: "llama.cpp creator" },
-  { handle: "OlssonOllama", category: "oss", description: "Ollama — local LLM runtime" },
-  { handle: "vaborellm_project", category: "oss", description: "vLLM — inference engine" },
+  { handle: "ollama", category: "oss", description: "Ollama — local LLM runtime" },
+  { handle: "vllm_project", category: "oss", description: "vLLM — inference engine" },
   { handle: "openclaw", category: "oss", description: "OpenClaw — open-source AI" },
 
   // Developers / Builders

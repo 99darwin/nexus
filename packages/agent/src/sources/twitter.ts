@@ -3,7 +3,7 @@ import { BaseAdapter } from "./base-adapter.js";
 import { TWITTER_ACCOUNTS } from "./twitter-accounts.js";
 
 const X_API_BASE = "https://api.x.com/2";
-const MAX_QUERY_LENGTH = 1024;
+const MAX_QUERY_LENGTH = 512;
 const CHUNK_DELAY_MS = 1000;
 const MAX_RESPONSE_BYTES = 10 * 1024 * 1024; // 10MB
 
