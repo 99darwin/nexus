@@ -5,6 +5,7 @@ export interface RawItem {
   content: string;
   published_at: string;
   raw_metadata: Record<string, unknown>;
+  skip_triage?: boolean;
 }
 
 export interface SourceAdapter {

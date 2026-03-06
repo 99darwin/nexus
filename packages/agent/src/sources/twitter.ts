@@ -1,6 +1,8 @@
 import type { RawItem } from "./types.js";
 import { BaseAdapter } from "./base-adapter.js";
-import { TWITTER_ACCOUNTS } from "./twitter-accounts.js";
+import { TWITTER_ACCOUNTS, type TwitterAccount } from "./twitter-accounts.js";
+
+const SKIP_TRIAGE_CATEGORIES = new Set<TwitterAccount["category"]>(["lab", "company"]);
 
 const X_API_BASE = "https://api.x.com/2";
 const MAX_QUERY_LENGTH = 512;
@@ -47,7 +49,7 @@ export class TwitterAdapter extends BaseAdapter {
   #bearerToken: string;
   private lookbackMs: number;
 
-  constructor(bearerToken: string, lookbackMs = 60 * 60 * 1000) {
+  constructor(bearerToken: string, lookbackMs = 2 * 60 * 60 * 1000) {
     super({ pollIntervalMs: 15 * 60 * 1000, rateLimitMs: 2000 });
     if (!bearerToken.trim()) {
       throw new Error("X_BEARER_TOKEN is required but was empty");
@@ -58,6 +60,9 @@ export class TwitterAdapter extends BaseAdapter {
 
   protected async fetchItems(): Promise<RawItem[]> {
     const chunks = this.buildQueryChunks();
+    const handleCategory = new Map(
+      TWITTER_ACCOUNTS.map((a) => [a.handle.toLowerCase(), a.category]),
+    );
     const items: RawItem[] = [];
 
     for (let i = 0; i < chunks.length; i++) {
@@ -104,10 +109,11 @@ export class TwitterAdapter extends BaseAdapter {
         if (!tweet.id || !TWEET_ID_RE.test(tweet.id)) continue;
 
         const user = userMap.get(tweet.author_id ?? "");
-        const handle = user?.username && USERNAME_RE.test(user.username)
-          ? user.username
-          : "unknown";
+        const handle =
+          user?.username && USERNAME_RE.test(user.username) ? user.username : "unknown";
         const content = this.expandUrls(tweet);
+        const category = handleCategory.get(handle.toLowerCase());
+        const skipTriage = category ? SKIP_TRIAGE_CATEGORIES.has(category) : false;
 
         items.push({
           source: "twitter",
@@ -115,6 +121,7 @@ export class TwitterAdapter extends BaseAdapter {
           title: `@${handle}: ${tweet.text.slice(0, 120)}`,
           content,
           published_at: tweet.created_at ?? new Date().toISOString(),
+          skip_triage: skipTriage,
           raw_metadata: {
             tweet_id: tweet.id,
             author_handle: handle,
