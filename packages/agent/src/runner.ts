@@ -32,8 +32,11 @@ function formatItemsPrompt(items: RawItem[]): string {
   });
 
   return [
-    `Analyze the following ${items.length} item(s) and extract graph mutations.\n`,
-    "Respond with a single JSON object matching the AgentOutput schema (mutations[] + analysis).\n",
+    `Analyze the following ${items.length} item(s) and extract graph mutations.`,
+    "",
+    "IMPORTANT: You MUST respond with ONLY a JSON object — no prose, no markdown, no explanation outside the JSON.",
+    'If no entities can be extracted, respond with: {"mutations": [], "analysis": "No extractable entities."}',
+    "",
     ...formatted,
   ].join("\n");
 }
