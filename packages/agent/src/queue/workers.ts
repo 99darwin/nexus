@@ -3,6 +3,7 @@ import type { RawItem, SourceAdapter } from "../sources/types.js";
 import { createIngestionQueue, enqueueItems, parseRedisUrl } from "./ingestion-queue.js";
 import type { PipelineConfig } from "../pipeline.js";
 import { runPipeline } from "../pipeline.js";
+import { deduplicateItems, recordItems } from "../dedup.js";
 
 const PRIORITY_MAP: Record<string, number> = { P0: 0, P1: 5, P2: 10 };
 
@@ -31,8 +32,12 @@ class SeenUrlCache {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type PgPool = any;
+
 export interface WorkerConfig {
   redisUrl?: string;
+  pgPool?: PgPool;
   pipelineConfig: PipelineConfig;
   onResult?: (result: Awaited<ReturnType<typeof runPipeline>>) => void;
   onError?: (error: Error) => void;
@@ -53,11 +58,27 @@ export function createPollWorker(
           try {
             seenCache.prune();
             const items = await adapter.poll();
-            const newItems = seenCache.filter(items);
+            let newItems = seenCache.filter(items);
+
+            // Persistent PostgreSQL dedup (URL + title + arXiv ID)
+            if (config.pgPool && newItems.length > 0) {
+              const beforeDedup = newItems.length;
+              newItems = await deduplicateItems(newItems, config.pgPool);
+              if (beforeDedup !== newItems.length) {
+                console.log(
+                  `[poll:${adapter.name}] pg-dedup removed=${beforeDedup - newItems.length}`,
+                );
+              }
+            }
+
             console.log(
               `[poll:${adapter.name}] fetched=${items.length} new=${newItems.length} deduped=${items.length - newItems.length}`,
             );
             if (newItems.length > 0) {
+              // Record items in PostgreSQL before enqueue so future polls dedup against them
+              if (config.pgPool) {
+                await recordItems(newItems, config.pgPool);
+              }
               await enqueueItems(queue, newItems, PRIORITY_MAP[adapter.priority]);
             }
           } catch (err) {

@@ -1,4 +1,5 @@
 import neo4jDriver from "neo4j-driver";
+import pg from "pg";
 import { HackerNewsAdapter } from "./sources/hackernews.js";
 import { ArxivAdapter } from "./sources/arxiv.js";
 import { GitHubTrendingAdapter } from "./sources/github.js";
@@ -35,6 +36,15 @@ if (neo4jAuth === "none" || neo4jAuth === "") {
 
 const driver = neo4jDriver.driver(neo4jUri, auth);
 
+// PostgreSQL connection for dedup
+const databaseUrl = process.env.DATABASE_URL;
+const pgPool = databaseUrl ? new pg.Pool({ connectionString: databaseUrl }) : null;
+if (pgPool) {
+  console.log("PostgreSQL dedup enabled");
+} else {
+  console.log("PostgreSQL dedup disabled (no DATABASE_URL)");
+}
+
 // Verify Neo4j connection
 try {
   const session = driver.session();
@@ -68,6 +78,7 @@ console.log(
 // Start poll worker (fetches from sources → enqueues to Redis)
 const pollWorker = createPollWorker(adapters, {
   redisUrl: process.env.REDIS_URL,
+  pgPool: pgPool ?? undefined,
   pipelineConfig: { apiKey },
   onError: (err) => console.error("[poll]", err.message),
 });
@@ -117,6 +128,7 @@ const shutdown = async () => {
   pollWorker.stop();
   await processWorker.close();
   await driver.close();
+  if (pgPool) await pgPool.end();
   process.exit(0);
 };
 

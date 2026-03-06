@@ -29,5 +29,6 @@ CREATE TABLE IF NOT EXISTS moderation_queue (
 
 CREATE INDEX IF NOT EXISTS idx_raw_items_source_url ON raw_items(source_url);
 CREATE INDEX IF NOT EXISTS idx_raw_items_ingested_at ON raw_items(ingested_at);
+CREATE INDEX IF NOT EXISTS idx_raw_items_arxiv_id ON raw_items((raw_metadata->>'arxiv_id'));
 CREATE INDEX IF NOT EXISTS idx_audit_log_applied_at ON audit_log(applied_at);
 CREATE INDEX IF NOT EXISTS idx_moderation_queue_status ON moderation_queue(status);
