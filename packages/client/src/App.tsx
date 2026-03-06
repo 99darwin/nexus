@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { ForceGraph } from "./graph/ForceGraph";
 import { loadSeedData } from "./data/load-seed-data";
+import { loadGraphData } from "./data/load-graph-data";
 import { useGraphStore } from "./data/graph-store";
 import { SearchPalette } from "./components/SearchPalette";
 import { NodePanel } from "./components/NodePanel";
@@ -22,14 +23,22 @@ export function App() {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
-    loadSeedData()
+    loadGraphData()
       .then((data) => {
         store.setData(data);
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message);
-        setLoading(false);
+        console.warn("API fetch failed, falling back to seed data:", err.message);
+        loadSeedData()
+          .then((data) => {
+            store.setData(data);
+            setLoading(false);
+          })
+          .catch((seedErr) => {
+            setError(seedErr.message);
+            setLoading(false);
+          });
       });
   }, []);
 
