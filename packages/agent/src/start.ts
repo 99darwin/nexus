@@ -1,13 +1,44 @@
+import neo4jDriver from "neo4j-driver";
 import { HackerNewsAdapter } from "./sources/hackernews.js";
 import { ArxivAdapter } from "./sources/arxiv.js";
 import { GitHubTrendingAdapter } from "./sources/github.js";
 import { TwitterAdapter } from "./sources/twitter.js";
 import { createPollWorker, createProcessWorker } from "./queue/workers.js";
+import { applyMutations } from "./mutations/engine.js";
 import type { SourceAdapter } from "./sources/types.js";
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey) {
   console.error("ANTHROPIC_API_KEY is required");
+  process.exit(1);
+}
+
+// Neo4j connection
+const neo4jUri = process.env.NEO4J_URI ?? "bolt://localhost:7687";
+const neo4jAuth = process.env.NEO4J_AUTH;
+
+let auth;
+if (neo4jAuth === "none" || neo4jAuth === "") {
+  auth = undefined;
+} else if (neo4jAuth && neo4jAuth.includes("/")) {
+  const [user, ...rest] = neo4jAuth.split("/");
+  auth = neo4jDriver.auth.basic(user, rest.join("/"));
+} else {
+  const user = process.env.NEO4J_USER ?? "neo4j";
+  const password = process.env.NEO4J_PASSWORD ?? "nexus-dev-password";
+  auth = neo4jDriver.auth.basic(user, password);
+}
+
+const driver = neo4jDriver.driver(neo4jUri, auth);
+
+// Verify Neo4j connection
+try {
+  const session = driver.session();
+  await session.run("RETURN 1");
+  await session.close();
+  console.log("Neo4j connected");
+} catch (err) {
+  console.error("Neo4j connection failed:", err instanceof Error ? err.message : err);
   process.exit(1);
 }
 
@@ -35,15 +66,37 @@ const pollWorker = createPollWorker(adapters, {
   onError: (err) => console.error("[poll]", err.message),
 });
 
-// Start process worker (dequeues from Redis → runs LLM pipeline)
+// Start process worker (dequeues from Redis → runs LLM pipeline → applies mutations)
 const processWorker = createProcessWorker({
   redisUrl: process.env.REDIS_URL,
   pipelineConfig: { apiKey },
-  onResult: (result) => {
+  onResult: async (result) => {
     console.log(
       `[pipeline] relevant=${result.triageResult.relevant.length} rejected=${result.triageResult.rejected.length} ` +
       `valid=${result.validMutations.length} invalid=${result.invalidMutations.length}`,
     );
+
+    if (result.validMutations.length > 0) {
+      const session = driver.session();
+      try {
+        const mutationResult = await applyMutations(result.validMutations, {
+          neo4jSession: session,
+        });
+        console.log(
+          `[mutations] applied=${mutationResult.applied} rejected=${mutationResult.rejected} ` +
+          `moderated=${mutationResult.moderated} errors=${mutationResult.errors.length}`,
+        );
+        if (mutationResult.errors.length > 0) {
+          for (const e of mutationResult.errors) {
+            console.warn(`[mutations] error: ${e.error}`);
+          }
+        }
+      } catch (err) {
+        console.error("[mutations]", err instanceof Error ? err.message : err);
+      } finally {
+        await session.close();
+      }
+    }
   },
   onError: (err) => console.error("[pipeline]", err.message),
 });
@@ -57,6 +110,7 @@ const shutdown = async () => {
   console.log("Shutting down...");
   pollWorker.stop();
   await processWorker.close();
+  await driver.close();
   process.exit(0);
 };
 
