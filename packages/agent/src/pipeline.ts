@@ -21,14 +21,23 @@ export interface PipelineResult {
   totalCost: { inputTokens: number; outputTokens: number };
 }
 
-export async function runPipeline(items: RawItem[], config: PipelineConfig): Promise<PipelineResult> {
-  // Stage 1: Triage
-  const triageResult = await runTriage(items, {
+export async function runPipeline(
+  items: RawItem[],
+  config: PipelineConfig,
+): Promise<PipelineResult> {
+  // Split pre-vetted items (skip triage) from items needing triage
+  const preVetted = items.filter((item) => item.skip_triage);
+  const needsTriage = items.filter((item) => !item.skip_triage);
+
+  // Stage 1: Triage (only for non-pre-vetted items)
+  const triageResult = await runTriage(needsTriage, {
     apiKey: config.apiKey,
     model: config.triageModel,
   });
 
-  if (triageResult.relevant.length === 0) {
+  const allRelevant = [...preVetted, ...triageResult.relevant];
+
+  if (allRelevant.length === 0) {
     return {
       triageResult,
       extractionResult: null,
@@ -45,7 +54,7 @@ export async function runPipeline(items: RawItem[], config: PipelineConfig): Pro
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      extractionResult = await runExtraction(triageResult.relevant, {
+      extractionResult = await runExtraction(allRelevant, {
         apiKey: config.apiKey,
         model: config.extractionModel,
       });
