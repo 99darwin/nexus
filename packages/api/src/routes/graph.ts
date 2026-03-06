@@ -12,7 +12,7 @@ export async function graphRoutes(app: FastifyInstance): Promise<void> {
       return await queryFullGraph(session, {
         since,
         cursor,
-        limit: limit ? parseInt(limit, 10) : 100,
+        limit: Math.max(1, Math.min(limit ? parseInt(limit, 10) || 100 : 100, 500)),
       });
     } finally {
       await session.close();

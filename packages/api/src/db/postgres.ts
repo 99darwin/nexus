@@ -6,14 +6,17 @@ let pool: pg.Pool | null = null;
 
 export function getPool(): pg.Pool {
   if (!pool) {
-    pool = new Pool({
-      host: process.env.POSTGRES_HOST ?? "localhost",
-      port: parseInt(process.env.POSTGRES_PORT ?? "5432", 10),
-      database: process.env.POSTGRES_DB ?? "nexus",
-      user: process.env.POSTGRES_USER ?? "nexus",
-      password: process.env.POSTGRES_PASSWORD ?? "nexus-dev-password",
-      max: 10,
-    });
+    const connectionString = process.env.DATABASE_URL;
+    pool = connectionString
+      ? new Pool({ connectionString, max: 10 })
+      : new Pool({
+          host: process.env.POSTGRES_HOST ?? "localhost",
+          port: parseInt(process.env.POSTGRES_PORT ?? "5432", 10),
+          database: process.env.POSTGRES_DB ?? "nexus",
+          user: process.env.POSTGRES_USER ?? "nexus",
+          password: process.env.POSTGRES_PASSWORD,
+          max: 10,
+        });
   }
   return pool;
 }

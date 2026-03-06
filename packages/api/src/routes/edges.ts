@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import neo4j from "neo4j-driver";
 import { getSession } from "../db/neo4j.js";
 
 export async function edgeRoutes(app: FastifyInstance): Promise<void> {
@@ -33,8 +34,8 @@ export async function edgeRoutes(app: FastifyInstance): Promise<void> {
     }
 
     const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-    const limit = q.limit ? parseInt(q.limit, 10) : 100;
-    params.limit = limit;
+    const limit = Math.max(1, Math.min(q.limit ? parseInt(q.limit, 10) || 100 : 100, 500));
+    params.limit = neo4j.int(limit);
 
     const session = getSession();
     try {

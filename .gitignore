@@ -22,6 +22,14 @@ coverage/
 *.swo
 .DS_Store
 
+# Secrets & credentials
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+
 # Build artifacts
 *.js.map
 *.d.ts.map

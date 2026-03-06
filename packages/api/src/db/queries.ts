@@ -24,11 +24,20 @@ export interface EdgeResult {
   evidence: string;
 }
 
+function safeParse(value: unknown, fallback: unknown): unknown {
+  if (typeof value !== "string") return value ?? fallback;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+}
+
 function parseNode(raw: Record<string, unknown>): NodeResult {
   return {
     ...raw,
-    events: typeof raw.events === "string" ? JSON.parse(raw.events) : (raw.events ?? []),
-    metadata: typeof raw.metadata === "string" ? JSON.parse(raw.metadata) : (raw.metadata ?? {}),
+    events: safeParse(raw.events, []),
+    metadata: safeParse(raw.metadata, {}),
     verticals_secondary: raw.verticals_secondary ?? [],
   } as NodeResult;
 }
@@ -167,8 +176,9 @@ export async function queryNeighborhood(
   id: string,
   depth: number = 1,
 ): Promise<{ nodes: NodeResult[]; edges: EdgeResult[] }> {
+  const safeDepth = Number.isFinite(depth) ? Math.max(1, Math.min(Math.floor(depth), 3)) : 1;
   const result = await session.run(
-    `MATCH path = (start:Entity {id: $id})-[r:RELATES_TO*1..${Math.min(depth, 3)}]-(neighbor:Entity)
+    `MATCH path = (start:Entity {id: $id})-[r:RELATES_TO*1..${safeDepth}]-(neighbor:Entity)
      WITH DISTINCT neighbor, r
      RETURN properties(neighbor) as props`,
     { id },
@@ -207,18 +217,23 @@ export async function queryNeighborhood(
   return { nodes, edges };
 }
 
+function sanitizeLucene(input: string): string {
+  return input.replace(/[+\-&|!(){}[\]^"~*?:\\/]/g, (ch) => `\\${ch}`);
+}
+
 export async function querySearch(
   session: Session,
   query: string,
   limit: number = 20,
 ): Promise<NodeResult[]> {
+  const safeLimit = Math.max(1, Math.min(limit, 100));
   const result = await session.run(
     `CALL db.index.fulltext.queryNodes("entity_search", $query)
      YIELD node, score
      RETURN properties(node) as props, score
      ORDER BY score DESC
      LIMIT $limit`,
-    { query: `${query}~`, limit: neo4j.int(limit) },
+    { query: `${sanitizeLucene(query)}~`, limit: neo4j.int(safeLimit) },
   );
 
   return result.records.map((r) => parseNode(r.get("props")));

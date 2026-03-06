@@ -25,7 +25,11 @@ if (neo4jAuth === "none" || neo4jAuth === "") {
   auth = neo4jDriver.auth.basic(user, rest.join("/"));
 } else {
   const user = process.env.NEO4J_USER ?? "neo4j";
-  const password = process.env.NEO4J_PASSWORD ?? "nexus-dev-password";
+  const password = process.env.NEO4J_PASSWORD;
+  if (!password) {
+    console.error("NEO4J_PASSWORD (or NEO4J_AUTH) must be set");
+    process.exit(1);
+  }
   auth = neo4jDriver.auth.basic(user, password);
 }
 

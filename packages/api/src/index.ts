@@ -18,8 +18,12 @@ import { closePool } from "./db/postgres.js";
 const server = Fastify({ logger: true });
 
 // Plugins
+const corsOrigin = process.env.CLIENT_ORIGIN ?? "*";
+if (corsOrigin === "*" && process.env.NODE_ENV === "production") {
+  server.log.warn("CLIENT_ORIGIN not set — CORS is open to all origins in production");
+}
 await server.register(cors, {
-  origin: process.env.CLIENT_ORIGIN ?? "*",
+  origin: corsOrigin,
 });
 
 await server.register(rateLimit, {
