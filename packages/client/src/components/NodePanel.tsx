@@ -72,7 +72,20 @@ export function NodePanel({ node, edges, allNodes, allLinks, onClose, onNavigate
                   <div style={{ fontSize: 11, opacity: 0.5 }}>
                     {new Date(event.timestamp).toLocaleDateString()} &middot; {event.event_type}
                   </div>
-                  <div style={{ fontSize: 13 }}>{event.summary}</div>
+                  <div style={{ fontSize: 13 }}>
+                    {event.source_url ? (
+                      <a
+                        href={event.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={sourceLinkStyle}
+                      >
+                        {event.summary}
+                      </a>
+                    ) : (
+                      event.summary
+                    )}
+                  </div>
                 </div>
               ))}
           </div>
@@ -178,7 +191,21 @@ function RelatedEvents({
               {new Date(item.event.timestamp).toLocaleDateString()}
             </span>
           </div>
-          <div style={{ fontSize: 13 }}>{item.event.summary}</div>
+          <div style={{ fontSize: 13 }}>
+            {item.event.source_url ? (
+              <a
+                href={item.event.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={sourceLinkStyle}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {item.event.summary}
+              </a>
+            ) : (
+              item.event.summary
+            )}
+          </div>
         </div>
       ))}
     </div>
@@ -288,6 +315,13 @@ const significanceBarFill: React.CSSProperties = {
   backgroundColor: theme.accent.primary,
   borderRadius: 3,
   transition: "width 0.3s",
+};
+
+const sourceLinkStyle: React.CSSProperties = {
+  color: theme.accent.primary,
+  textDecoration: "none",
+  borderBottom: `1px solid transparent`,
+  transition: "border-color 0.2s",
 };
 
 const fullscreenPanelStyle: React.CSSProperties = {
