@@ -17,6 +17,8 @@ interface VerticalSidebarProps {
   onClearFilter: () => void;
   width?: number;
   onWidthChange?: (width: number) => void;
+  collapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
 }
 
 const VERTICAL_META: Record<string, { label: string; color: string }> = {
@@ -47,6 +49,8 @@ const VERTICAL_ORDER = Object.keys(VERTICAL_META);
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
+const COLLAPSED_WIDTH = 32;
+
 export function VerticalSidebar({
   nodes,
   activeVerticals,
@@ -54,8 +58,12 @@ export function VerticalSidebar({
   onClearFilter,
   width: controlledWidth,
   onWidthChange,
+  collapsed: controlledCollapsed,
+  onCollapsedChange,
 }: VerticalSidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const collapsed = controlledCollapsed ?? internalCollapsed;
+  const setCollapsed = onCollapsedChange ?? setInternalCollapsed;
   const [internalWidth, setInternalWidth] = useState(200);
   const [isResizing, setIsResizing] = useState(false);
 
