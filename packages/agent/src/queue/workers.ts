@@ -120,24 +120,26 @@ export function createProcessWorker(config: WorkerConfig): Worker<RawItem[]> {
     {
       connection: parseRedisUrl(redisUrl),
       prefix: "nexus",
-      concurrency: 2,
+      concurrency: 1,
       limiter: {
-        max: 10,
+        max: 5,
         duration: 1000,
       },
     },
   );
 }
 
+const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+
 const ADAPTER_DEFAULTS: Record<string, number> = {
-  hackernews: 15 * 60 * 1000,
-  arxiv: 30 * 60 * 1000,
-  github: 60 * 60 * 1000,
-  twitter: 15 * 60 * 1000,
+  hackernews: TWO_HOURS_MS,
+  arxiv: TWO_HOURS_MS,
+  github: TWO_HOURS_MS,
+  twitter: TWO_HOURS_MS,
 };
 
 const MIN_POLL_INTERVAL_MS = 60_000;
-const FALLBACK_INTERVAL_MS = 30 * 60 * 1000;
+const FALLBACK_INTERVAL_MS = TWO_HOURS_MS;
 
 function getIntervalForAdapter(name: string): number {
   // Only read env vars for known adapter names to prevent arbitrary env var access

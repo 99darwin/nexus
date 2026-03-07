@@ -58,7 +58,7 @@ export class TwitterAdapter extends BaseAdapter {
   private lookbackMs: number;
 
   constructor(bearerToken: string, lookbackMs = 2 * 60 * 60 * 1000) {
-    super({ pollIntervalMs: 15 * 60 * 1000, rateLimitMs: 2000 });
+    super({ pollIntervalMs: 2 * 60 * 60 * 1000, rateLimitMs: 2000 });
     if (!bearerToken.trim()) {
       throw new Error("X_BEARER_TOKEN is required but was empty");
     }

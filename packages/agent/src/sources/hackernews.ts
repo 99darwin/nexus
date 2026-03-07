@@ -64,7 +64,7 @@ export class HackerNewsAdapter extends BaseAdapter {
   priority = "P0" as const;
 
   constructor() {
-    super({ pollIntervalMs: 15 * 60 * 1000, rateLimitMs: 2000 });
+    super({ pollIntervalMs: 2 * 60 * 60 * 1000, rateLimitMs: 2000 });
   }
 
   protected async fetchItems(): Promise<RawItem[]> {
