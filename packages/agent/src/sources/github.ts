@@ -19,7 +19,7 @@ export class GitHubTrendingAdapter extends BaseAdapter {
   private token?: string;
 
   constructor(token?: string) {
-    super({ pollIntervalMs: 60 * 60 * 1000, rateLimitMs: 5000 });
+    super({ pollIntervalMs: 2 * 60 * 60 * 1000, rateLimitMs: 5000 });
     this.token = token;
   }
 

@@ -8,7 +8,7 @@ export class ArxivAdapter extends BaseAdapter {
   priority = "P0" as const;
 
   constructor() {
-    super({ pollIntervalMs: 30 * 60 * 1000, rateLimitMs: 3000 });
+    super({ pollIntervalMs: 2 * 60 * 60 * 1000, rateLimitMs: 3000 });
   }
 
   protected async fetchItems(): Promise<RawItem[]> {
