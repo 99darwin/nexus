@@ -23,8 +23,8 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState(false);
   const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
-  const [showMobileFeed, setShowMobileFeed] = useState(true);
   const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [feedWidth, setFeedWidth] = useState(DEFAULT_FEED_WIDTH);
   const [isResizingFeed, setIsResizingFeed] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -67,7 +67,6 @@ export function App() {
         store.selectNode(null);
         store.clearComparison();
         setShowSearch(false);
-        setShowMobileFeed(false);
       }
     };
     window.addEventListener("keydown", handler);
@@ -267,75 +266,64 @@ export function App() {
           onClearFilter={store.clearAllFilters}
           width={sidebarWidth}
           onWidthChange={setSidebarWidth}
+          collapsed={sidebarCollapsed}
+          onCollapsedChange={setSidebarCollapsed}
         />
       )}
 
-      {/* Main split: feed left, graph right */}
-      <div style={{ ...splitContainer, marginLeft: isMobile ? 0 : sidebarWidth }}>
-        {/* Activity Feed — left panel (desktop) */}
-        {!isMobile && (
+      {isMobile ? (
+        /* Mobile: full-screen feed, no graph */
+        <div style={{ flex: 1, overflow: "hidden" }}>
+          {feedElement}
+        </div>
+      ) : (
+        /* Desktop: feed left, graph right */
+        <div style={{ ...splitContainer, marginLeft: sidebarCollapsed ? 32 : sidebarWidth }}>
           <div style={{ width: feedWidth, flexShrink: 0, height: "100%", position: "relative" }}>
             {feedElement}
             <div style={feedResizeHandleStyle} onMouseDown={handleFeedResizeStart} />
           </div>
-        )}
 
-        {/* 3D Force Graph — fills remaining space */}
-        <div style={{ flex: 1, position: "relative", height: "100%" }}>
-          <ForceGraph
-            data={store.filteredData}
-            onNodeClick={handleNodeClick}
-            focusNodeId={focusNodeId}
-            highlightNodeIds={
-              store.comparisonNodeIds.size >= 2 ? store.comparisonNodeIds : undefined
-            }
-            hoveredNodeId={store.hoveredNodeId}
-          />
+          {/* 3D Force Graph — fills remaining space */}
+          <div style={{ flex: 1, position: "relative", height: "100%" }}>
+            <ForceGraph
+              data={store.filteredData}
+              onNodeClick={handleNodeClick}
+              focusNodeId={focusNodeId}
+              highlightNodeIds={
+                store.comparisonNodeIds.size >= 2 ? store.comparisonNodeIds : undefined
+              }
+              hoveredNodeId={store.hoveredNodeId}
+            />
 
-          {/* Search hint — overlaid on graph area */}
-          <div style={searchHintStyle} onClick={() => setShowSearch(true)}>
-            <span style={{ opacity: 0.5 }}>Search</span>
-            <kbd style={kbdStyle}>{"\u2318"}K</kbd>
-          </div>
+            {/* Search hint — overlaid on graph area */}
+            <div style={searchHintStyle} onClick={() => setShowSearch(true)}>
+              <span style={{ opacity: 0.5 }}>Search</span>
+              <kbd style={kbdStyle}>{"\u2318"}K</kbd>
+            </div>
 
-          {/* Node/edge count */}
-          <div style={statsStyle}>
-            {store.filteredData.nodes.length} nodes &middot; {store.filteredData.links.length} edges
-            {store.comparisonNodeIds.size > 0 && (
-              <span style={{ marginLeft: 8, color: theme.accent.amber }}>
-                {store.comparisonNodeIds.size} comparing
-              </span>
-            )}
+            {/* Node/edge count */}
+            <div style={statsStyle}>
+              {store.filteredData.nodes.length} nodes &middot; {store.filteredData.links.length} edges
+              {store.comparisonNodeIds.size > 0 && (
+                <span style={{ marginLeft: 8, color: theme.accent.amber }}>
+                  {store.comparisonNodeIds.size} comparing
+                </span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Temporal Slider — spans full width at bottom */}
-      <TemporalSlider
-        minDate={dateRange.min}
-        maxDate={dateRange.max}
-        value={store.timeRange.to}
-        from={store.timeRange.from}
-        onChange={handleTimeChange}
-      />
-
-      {/* Mobile feed toggle button */}
-      {isMobile && (
-        <button
-          onClick={() => setShowMobileFeed((prev) => !prev)}
-          style={mobileFeedToggle}
-          aria-label="Toggle activity feed"
-        >
-          {showMobileFeed ? "\u2715" : "\u2261"}
-        </button>
       )}
 
-      {/* Mobile feed overlay */}
-      {isMobile && showMobileFeed && (
-        <div style={mobileFeedOverlay}>
-          <div style={mobileFeedBackdrop} onClick={() => setShowMobileFeed(false)} />
-          <div style={mobileFeedDrawer}>{feedElement}</div>
-        </div>
+      {/* Temporal Slider — spans full width at bottom (desktop only) */}
+      {!isMobile && (
+        <TemporalSlider
+          minDate={dateRange.min}
+          maxDate={dateRange.max}
+          value={store.timeRange.to}
+          from={store.timeRange.from}
+          onChange={handleTimeChange}
+        />
       )}
 
       {/* Overlays */}
@@ -423,49 +411,6 @@ const statsStyle: React.CSSProperties = {
   fontSize: 12,
   opacity: 0.4,
   zIndex: 50,
-};
-
-const mobileFeedToggle: React.CSSProperties = {
-  position: "fixed",
-  bottom: 64,
-  right: 16,
-  width: 44,
-  height: 44,
-  borderRadius: "50%",
-  backgroundColor: theme.accent.primary,
-  color: "#000",
-  border: "none",
-  fontSize: 20,
-  fontWeight: 700,
-  cursor: "pointer",
-  zIndex: 100,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  boxShadow: "0 2px 12px rgba(0,0,0,0.4)",
-};
-
-const mobileFeedOverlay: React.CSSProperties = {
-  position: "fixed",
-  inset: 0,
-  zIndex: 90,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "flex-end",
-};
-
-const mobileFeedBackdrop: React.CSSProperties = {
-  flex: 1,
-  minHeight: "30%",
-  backgroundColor: "rgba(0,0,0,0.4)",
-};
-
-const mobileFeedDrawer: React.CSSProperties = {
-  height: "70%",
-  backgroundColor: theme.bg.panelSolid,
-  borderTop: `1px solid ${theme.border.subtle}`,
-  borderRadius: "16px 16px 0 0",
-  overflow: "hidden",
 };
 
 const feedResizeHandleStyle: React.CSSProperties = {
