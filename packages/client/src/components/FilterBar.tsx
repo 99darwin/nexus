@@ -1,6 +1,7 @@
 import { useMemo, useState, useRef, useEffect } from "react";
 import type { ForceNode } from "../graph/types";
 import { nodeColor } from "../graph/visual-encoding";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import { theme } from "../theme";
 
 interface FilterBarProps {
@@ -54,6 +55,7 @@ export function FilterBar({
 }: FilterBarProps) {
   const [showVerticalDropdown, setShowVerticalDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const eventTypeCounts = useMemo(() => {
     const counts = new Map<string, number>();
@@ -86,9 +88,11 @@ export function FilterBar({
     return () => document.removeEventListener("mousedown", handler);
   }, [showVerticalDropdown]);
 
+  const chip = isMobile ? mobileChipStyle : chipStyle;
+
   return (
-    <div style={barStyle}>
-      <div style={chipsRow}>
+    <div style={isMobile ? mobileBarStyle : barStyle}>
+      <div style={isMobile ? mobileChipsRow : chipsRow}>
         {EVENT_TYPES.map(({ type, icon, label }) => {
           const count = eventTypeCounts.get(type) ?? 0;
           const isActive = activeEventTypes?.has(type) ?? false;
@@ -96,7 +100,7 @@ export function FilterBar({
             <button
               key={type}
               style={{
-                ...chipStyle,
+                ...chip,
                 backgroundColor: isActive ? theme.bg.surfaceActive : theme.bg.surface,
                 borderColor: isActive ? theme.border.chipActive : theme.border.subtle,
               }}
@@ -104,55 +108,57 @@ export function FilterBar({
             >
               <span>{icon}</span>
               <span>{label}</span>
-              {count > 0 && <span style={countBadge}>{count}</span>}
+              {count > 0 && <span style={isMobile ? mobileCountBadge : countBadge}>{count}</span>}
             </button>
           );
         })}
 
-        <div ref={dropdownRef} style={{ position: "relative" }}>
-          <button
-            style={{
-              ...chipStyle,
-              backgroundColor: activeVerticals ? theme.bg.surfaceActive : theme.bg.surface,
-              borderColor: activeVerticals ? theme.border.chipActive : theme.border.subtle,
-            }}
-            onClick={() => setShowVerticalDropdown((p) => !p)}
-          >
-            <span>Verticals</span>
-            <span style={{ fontSize: 8 }}>{showVerticalDropdown ? "\u25B2" : "\u25BC"}</span>
-            {activeVerticals && <span style={countBadge}>{activeVerticals.size}</span>}
-          </button>
+        {!isMobile && (
+          <div ref={dropdownRef} style={{ position: "relative" }}>
+            <button
+              style={{
+                ...chipStyle,
+                backgroundColor: activeVerticals ? theme.bg.surfaceActive : theme.bg.surface,
+                borderColor: activeVerticals ? theme.border.chipActive : theme.border.subtle,
+              }}
+              onClick={() => setShowVerticalDropdown((p) => !p)}
+            >
+              <span>Verticals</span>
+              <span style={{ fontSize: 8 }}>{showVerticalDropdown ? "\u25B2" : "\u25BC"}</span>
+              {activeVerticals && <span style={countBadge}>{activeVerticals.size}</span>}
+            </button>
 
-          {showVerticalDropdown && (
-            <div style={dropdownStyle}>
-              {Object.entries(VERTICAL_META).map(([key, label]) => {
-                const count = verticalCounts.get(key) ?? 0;
-                if (count === 0) return null;
-                const isActive = !activeVerticals || activeVerticals.has(key);
-                return (
-                  <div
-                    key={key}
-                    style={{
-                      ...dropdownItemStyle,
-                      opacity: isActive ? 1 : 0.4,
-                    }}
-                    onClick={(e) => {
-                      onVerticalToggle(key, e.shiftKey || e.ctrlKey || e.metaKey);
-                    }}
-                  >
-                    <span style={{ ...colorDot, backgroundColor: nodeColor(key) }} />
-                    <span style={{ flex: 1 }}>{label}</span>
-                    <span style={{ fontSize: 10, opacity: 0.5 }}>{count}</span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+            {showVerticalDropdown && (
+              <div style={dropdownStyle}>
+                {Object.entries(VERTICAL_META).map(([key, label]) => {
+                  const count = verticalCounts.get(key) ?? 0;
+                  if (count === 0) return null;
+                  const isActive = !activeVerticals || activeVerticals.has(key);
+                  return (
+                    <div
+                      key={key}
+                      style={{
+                        ...dropdownItemStyle,
+                        opacity: isActive ? 1 : 0.4,
+                      }}
+                      onClick={(e) => {
+                        onVerticalToggle(key, e.shiftKey || e.ctrlKey || e.metaKey);
+                      }}
+                    >
+                      <span style={{ ...colorDot, backgroundColor: nodeColor(key) }} />
+                      <span style={{ flex: 1 }}>{label}</span>
+                      <span style={{ fontSize: 10, opacity: 0.5 }}>{count}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         {hasFilters && (
-          <button style={{ ...chipStyle, ...clearChipStyle }} onClick={onClearFilters}>
-            Clear all
+          <button style={{ ...chip, ...clearChipStyle }} onClick={onClearFilters}>
+            Clear{!isMobile && " all"}
           </button>
         )}
       </div>
@@ -165,11 +171,26 @@ const barStyle: React.CSSProperties = {
   borderBottom: `1px solid ${theme.border.subtle}`,
 };
 
+const mobileBarStyle: React.CSSProperties = {
+  padding: "10px 0",
+  borderBottom: `1px solid ${theme.border.subtle}`,
+};
+
 const chipsRow: React.CSSProperties = {
   display: "flex",
   flexWrap: "wrap",
   gap: 6,
   alignItems: "center",
+};
+
+const mobileChipsRow: React.CSSProperties = {
+  display: "flex",
+  gap: 8,
+  alignItems: "center",
+  overflowX: "auto",
+  WebkitOverflowScrolling: "touch",
+  scrollbarWidth: "none",
+  padding: "0 14px",
 };
 
 const chipStyle: React.CSSProperties = {
@@ -186,6 +207,21 @@ const chipStyle: React.CSSProperties = {
   whiteSpace: "nowrap",
 };
 
+const mobileChipStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 6,
+  padding: "8px 14px",
+  borderRadius: 20,
+  border: `1px solid ${theme.border.default}`,
+  backgroundColor: theme.bg.surface,
+  color: theme.text.primary,
+  fontSize: 13,
+  cursor: "pointer",
+  whiteSpace: "nowrap",
+  flexShrink: 0,
+};
+
 const clearChipStyle: React.CSSProperties = {
   borderColor: "rgba(196,80,80,0.3)",
   color: theme.accent.red,
@@ -195,6 +231,14 @@ const countBadge: React.CSSProperties = {
   fontSize: 9,
   backgroundColor: theme.bg.badgeCount,
   padding: "1px 5px",
+  borderRadius: 8,
+  marginLeft: 2,
+};
+
+const mobileCountBadge: React.CSSProperties = {
+  fontSize: 10,
+  backgroundColor: theme.bg.badgeCount,
+  padding: "2px 6px",
   borderRadius: 8,
   marginLeft: 2,
 };
