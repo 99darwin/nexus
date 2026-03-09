@@ -3,11 +3,17 @@ import type { RawItem, SourceAdapter } from "../sources/types.js";
 import { createIngestionQueue, enqueueItems, parseRedisUrl } from "./ingestion-queue.js";
 import type { PipelineConfig } from "../pipeline.js";
 import { runPipeline } from "../pipeline.js";
-import { deduplicateItems, recordItems } from "../dedup.js";
+import {
+  deduplicateItems,
+  recordItems,
+  addContentFingerprints,
+  deduplicateByContent,
+} from "../dedup.js";
 
 const PRIORITY_MAP: Record<string, number> = { P0: 0, P1: 5, P2: 10 };
 
 class SeenUrlCache {
+  private static readonly MAX_SIZE = 50_000;
   private seen = new Map<string, number>();
   private ttlMs: number;
 
@@ -16,6 +22,7 @@ class SeenUrlCache {
   }
 
   filter(items: RawItem[]): RawItem[] {
+    if (this.seen.size > SeenUrlCache.MAX_SIZE) this.prune();
     const now = Date.now();
     return items.filter((item) => {
       if (this.seen.has(item.source_url)) return false;
@@ -67,6 +74,18 @@ export function createPollWorker(
               if (beforeDedup !== newItems.length) {
                 console.log(
                   `[poll:${adapter.name}] pg-dedup removed=${beforeDedup - newItems.length}`,
+                );
+              }
+            }
+
+            // Content-similarity dedup (within-batch + against recent DB items)
+            if (config.pgPool && newItems.length > 0) {
+              newItems = addContentFingerprints(newItems);
+              const beforeContent = newItems.length;
+              newItems = await deduplicateByContent(newItems, config.pgPool);
+              if (beforeContent !== newItems.length) {
+                console.log(
+                  `[poll:${adapter.name}] content-dedup removed=${beforeContent - newItems.length}`,
                 );
               }
             }
@@ -130,10 +149,11 @@ export function createProcessWorker(config: WorkerConfig): Worker<RawItem[]> {
 }
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
 const ADAPTER_DEFAULTS: Record<string, number> = {
   hackernews: TWO_HOURS_MS,
-  arxiv: TWO_HOURS_MS,
+  arxiv: TWENTY_FOUR_HOURS_MS,
   github: TWO_HOURS_MS,
   twitter: TWO_HOURS_MS,
 };
