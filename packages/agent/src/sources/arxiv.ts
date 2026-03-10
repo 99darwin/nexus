@@ -51,12 +51,22 @@ export class ArxivAdapter extends BaseAdapter {
     const response = await fetch(ARXIV_RSS_URL);
     if (!response.ok) throw new Error(`ArXiv RSS fetch failed: ${response.status}`);
 
-    const contentLength = parseInt(response.headers.get("content-length") ?? "0", 10);
-    if (contentLength > MAX_RSS_BYTES) {
-      throw new Error(`ArXiv RSS response too large: ${contentLength} bytes`);
+    // Stream body with size limit — Content-Length header may be absent (chunked encoding)
+    const reader = response.body?.getReader();
+    if (!reader) throw new Error("ArXiv RSS: no response body");
+    const chunks: Uint8Array[] = [];
+    let totalBytes = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      totalBytes += value.byteLength;
+      if (totalBytes > MAX_RSS_BYTES) {
+        reader.cancel();
+        throw new Error(`ArXiv RSS response too large: ${totalBytes}+ bytes`);
+      }
+      chunks.push(value);
     }
-
-    const xml = await response.text();
+    const xml = new TextDecoder().decode(Buffer.concat(chunks));
     const allItems = this.parseRss(xml);
     const relevant = allItems.filter((item) => isLikelyRelevant(item.title, item.content));
     console.log(`[arxiv] pre-filter: ${allItems.length} → ${relevant.length} relevant`);

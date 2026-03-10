@@ -3,45 +3,25 @@ import { BaseAdapter } from "./base-adapter.js";
 
 const HN_ALGOLIA_URL = "https://hn.algolia.com/api/v1/search";
 
+// Consolidated keyword list — fewer broader queries to reduce API calls.
+// "AI" and "LLM" already catch most items; model/company names catch the rest.
 const AI_KEYWORDS = [
-  "AI",
-  "artificial intelligence",
-  "machine learning",
-  "deep learning",
   "LLM",
   "GPT",
-  "ChatGPT",
-  "Claude",
-  "Gemini",
-  "Llama",
-  "transformer",
-  "neural network",
-  "NLP",
-  "computer vision",
-  "diffusion model",
+  "Claude AI",
+  "Gemini AI",
+  "Llama model",
+  "Mistral AI",
   "OpenAI",
   "Anthropic",
   "DeepMind",
-  "Mistral",
   "Hugging Face",
-  "NVIDIA",
-  "GPU",
-  "TPU",
-  "CUDA",
-  "fine-tuning",
-  "RLHF",
-  "langchain",
-  "vector database",
-  "RAG",
-  "embedding",
-  "autonomous agent",
-  "copilot",
-  "code generation",
-  "Grok",
-  "Perplexity",
+  "machine learning",
+  "diffusion model",
   "AI safety",
   "foundation model",
-  "open weight",
+  "AI agent",
+  "RAG retrieval",
 ];
 
 interface HNHit {
@@ -64,7 +44,7 @@ export class HackerNewsAdapter extends BaseAdapter {
   priority = "P0" as const;
 
   constructor() {
-    super({ pollIntervalMs: 2 * 60 * 60 * 1000, rateLimitMs: 2000 });
+    super({ pollIntervalMs: 4 * 60 * 60 * 1000, rateLimitMs: 2000 });
   }
 
   protected async fetchItems(): Promise<RawItem[]> {
@@ -109,7 +89,7 @@ export class HackerNewsAdapter extends BaseAdapter {
   }
 
   private getTimeCutoff(): number {
-    // Items from the last 2 hours
-    return Math.floor((Date.now() - 2 * 60 * 60 * 1000) / 1000);
+    // Items from the last 4 hours (matches poll interval)
+    return Math.floor((Date.now() - 4 * 60 * 60 * 1000) / 1000);
   }
 }

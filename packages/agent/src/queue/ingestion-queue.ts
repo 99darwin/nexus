@@ -41,8 +41,8 @@ export async function enqueueItems(
 ): Promise<void> {
   if (items.length === 0) return;
 
-  // Batch into chunks of 20
-  const batchSize = 20;
+  // Batch into chunks of 50 to amortize system prompt cost across more items
+  const batchSize = 50;
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize);
     await queue.add("process-batch", batch, {

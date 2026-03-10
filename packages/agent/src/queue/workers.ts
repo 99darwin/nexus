@@ -12,6 +12,9 @@ import {
 
 const PRIORITY_MAP: Record<string, number> = { P0: 0, P1: 5, P2: 10 };
 
+// Cap items per poll to prevent burst token spend from large feeds
+const MAX_ITEMS_PER_POLL = 30;
+
 class SeenUrlCache {
   private static readonly MAX_SIZE = 50_000;
   private seen = new Map<string, number>();
@@ -94,9 +97,16 @@ export function createPollWorker(
               `[poll:${adapter.name}] fetched=${items.length} new=${newItems.length} deduped=${items.length - newItems.length}`,
             );
             if (newItems.length > 0) {
-              // Record items in PostgreSQL before enqueue so future polls dedup against them
+              // Record ALL new items in PostgreSQL so future polls dedup against them
               if (config.pgPool) {
                 await recordItems(newItems, config.pgPool);
+              }
+              // Cap items sent to LLM pipeline to control token spend
+              if (newItems.length > MAX_ITEMS_PER_POLL) {
+                console.log(
+                  `[poll:${adapter.name}] capping ${newItems.length} items to ${MAX_ITEMS_PER_POLL}`,
+                );
+                newItems = newItems.slice(0, MAX_ITEMS_PER_POLL);
               }
               await enqueueItems(queue, newItems, PRIORITY_MAP[adapter.priority]);
             }
@@ -141,8 +151,8 @@ export function createProcessWorker(config: WorkerConfig): Worker<RawItem[]> {
       prefix: "nexus",
       concurrency: 1,
       limiter: {
-        max: 5,
-        duration: 1000,
+        max: 2,
+        duration: 60_000, // 2 jobs per minute to control token spend
       },
     },
   );
@@ -151,11 +161,13 @@ export function createProcessWorker(config: WorkerConfig): Worker<RawItem[]> {
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
+const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
+
 const ADAPTER_DEFAULTS: Record<string, number> = {
-  hackernews: TWO_HOURS_MS,
+  hackernews: FOUR_HOURS_MS,
   arxiv: TWENTY_FOUR_HOURS_MS,
-  github: TWO_HOURS_MS,
-  twitter: TWO_HOURS_MS,
+  github: FOUR_HOURS_MS,
+  twitter: FOUR_HOURS_MS,
 };
 
 const MIN_POLL_INTERVAL_MS = 60_000;

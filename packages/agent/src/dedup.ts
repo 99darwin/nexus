@@ -18,6 +18,57 @@ const STOP_WORDS = new Set([
 
 const CONTENT_SIMILARITY_THRESHOLD = 0.6;
 
+// ── Title entity dedup (cross-source) ──────────────────────────────────
+// Extracts proper nouns + dollar amounts from titles so stories reported
+// by multiple sources (different wording, same entities) get deduplicated.
+
+const MIN_ENTITY_OVERLAP = 2;
+
+const TITLE_COMMON_WORDS = new Set([
+  "the", "this", "that", "what", "when", "where", "which", "how", "why",
+  "new", "first", "last", "next", "big", "more", "most", "just", "now",
+  "after", "before", "into", "over", "from", "with", "about", "here",
+  "for", "and", "not", "all", "can", "has", "was", "are", "will", "get",
+  "its", "our", "his", "her", "may", "could", "should", "would", "been",
+  "says", "said", "according", "report", "sources", "via", "per", "use",
+  "former", "chief", "company", "startup", "launches", "announces", "takes",
+  "raises", "funding", "round", "series", "massive", "major", "top", "every",
+  "best", "latest", "breaking", "exclusive", "update", "year", "today",
+]);
+
+/** Extract named entities (proper nouns + dollar amounts) from a title. */
+export function extractTitleEntities(title: string): string[] {
+  const entities: string[] = [];
+
+  // Dollar amounts: "$1B", "$1 billion", "$500M" → normalized
+  for (const match of title.matchAll(
+    /\$\s*([\d,.]+)\s*(b|m|k|billion|million|thousand)?/gi,
+  )) {
+    const num = parseFloat(match[1].replace(/,/g, ""));
+    const s = (match[2] ?? "").charAt(0).toLowerCase();
+    if (s === "b") entities.push(`$${num}b`);
+    else if (s === "m") entities.push(`$${num}m`);
+    else if (s === "k" || s === "t") entities.push(`$${num}k`);
+    else entities.push(`$${num}`);
+  }
+
+  // Proper nouns: capitalized words that aren't common English
+  for (const word of title.split(/[^a-zA-Z0-9]+/)) {
+    if (word.length < 2) continue;
+    if (/^[A-Z]/.test(word) && !TITLE_COMMON_WORDS.has(word.toLowerCase())) {
+      entities.push(word.toLowerCase());
+    }
+  }
+
+  return [...new Set(entities)];
+}
+
+function entityOverlap(a: string[], b: string[]): number {
+  if (a.length === 0 || b.length === 0) return 0;
+  const setB = new Set(b);
+  return a.filter((e) => setB.has(e)).length;
+}
+
 /** Extract sorted significant words from text for Jaccard comparison. */
 export function contentFingerprint(text: string): string[] {
   const normalized = text
@@ -47,23 +98,25 @@ function jaccardSimilarity(a: string[], b: string[]): number {
   return union === 0 ? 0 : intersection / union;
 }
 
-/** Add content_fp to each item's raw_metadata (non-destructive copy). */
+/** Add content_fp and title_entities to each item's raw_metadata. */
 export function addContentFingerprints(items: RawItem[]): RawItem[] {
   return items.map((item) => ({
     ...item,
     raw_metadata: {
       ...item.raw_metadata,
       content_fp: contentFingerprint(`${item.title} ${item.content}`),
+      title_entities: extractTitleEntities(item.title),
     },
   }));
 }
 
 /**
- * Filter out items whose content is too similar to:
+ * Filter out items whose content or title entities match:
  *  1. another item in the same batch, or
- *  2. a recently-ingested item in PostgreSQL (24h window).
+ *  2. a recently-ingested item in PostgreSQL (72h window).
  *
- * Items must already have `content_fp` in raw_metadata (call addContentFingerprints first).
+ * Items must already have `content_fp` and `title_entities` in raw_metadata
+ * (call addContentFingerprints first).
  */
 export async function deduplicateByContent(
   items: RawItem[],
@@ -71,38 +124,57 @@ export async function deduplicateByContent(
 ): Promise<RawItem[]> {
   if (items.length === 0) return [];
 
-  // 1. Within-batch dedup — keep the first item in each similarity cluster
+  // Defensive cap — O(n²) pairwise comparison must stay bounded
+  const MAX_DEDUP_BATCH = 200;
+  if (items.length > MAX_DEDUP_BATCH) {
+    console.warn(`[dedup] capping ${items.length} items to ${MAX_DEDUP_BATCH}`);
+    items = items.slice(0, MAX_DEDUP_BATCH);
+  }
+
+  // 1. Within-batch dedup — content similarity OR title entity overlap
   const unique: RawItem[] = [];
   for (const item of items) {
     const fp = item.raw_metadata.content_fp as string[];
-    const isDup = unique.some((u) =>
-      jaccardSimilarity(fp, u.raw_metadata.content_fp as string[]) > CONTENT_SIMILARITY_THRESHOLD,
-    );
+    const entities = (item.raw_metadata.title_entities as string[]) ?? [];
+    const isDup = unique.some((u) => {
+      if (jaccardSimilarity(fp, u.raw_metadata.content_fp as string[]) > CONTENT_SIMILARITY_THRESHOLD) {
+        return true;
+      }
+      const uEntities = (u.raw_metadata.title_entities as string[]) ?? [];
+      return entityOverlap(entities, uEntities) >= MIN_ENTITY_OVERLAP;
+    });
     if (!isDup) unique.push(item);
   }
 
-  // 2. Against recent DB items (capped to prevent memory exhaustion)
-  const MAX_RECENT_FPS = 5000;
+  // 2. Against recent DB items (72h window for cross-source dedup)
+  const MAX_RECENT = 5000;
   const result = await pool.query(
-    `SELECT raw_metadata->'content_fp' AS fp FROM raw_items
-     WHERE ingested_at > NOW() - INTERVAL '24 hours'
+    `SELECT raw_metadata->'content_fp' AS fp,
+            raw_metadata->'title_entities' AS entities
+     FROM raw_items
+     WHERE ingested_at > NOW() - INTERVAL '72 hours'
        AND raw_metadata ? 'content_fp'
      ORDER BY ingested_at DESC
      LIMIT $1`,
-    [MAX_RECENT_FPS],
+    [MAX_RECENT],
   );
 
-  const recentFps: string[][] = result.rows
-    .map((r: { fp: string[] | null }) => r.fp)
-    .filter((fp: string[] | null): fp is string[] => Array.isArray(fp));
+  const recentItems: Array<{ fp: string[]; entities: string[] }> = result.rows.map(
+    (r: { fp: string[] | null; entities: string[] | null }) => ({
+      fp: Array.isArray(r.fp) ? r.fp : [],
+      entities: Array.isArray(r.entities) ? r.entities : [],
+    }),
+  );
 
-  if (recentFps.length === 0) return unique;
+  if (recentItems.length === 0) return unique;
 
   return unique.filter((item) => {
     const fp = item.raw_metadata.content_fp as string[];
-    return !recentFps.some(
-      (recent) => jaccardSimilarity(fp, recent) > CONTENT_SIMILARITY_THRESHOLD,
-    );
+    const entities = (item.raw_metadata.title_entities as string[]) ?? [];
+    return !recentItems.some((recent) => {
+      if (jaccardSimilarity(fp, recent.fp) > CONTENT_SIMILARITY_THRESHOLD) return true;
+      return entityOverlap(entities, recent.entities) >= MIN_ENTITY_OVERLAP;
+    });
   });
 }
 
