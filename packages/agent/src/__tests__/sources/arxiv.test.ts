@@ -4,6 +4,27 @@ import { ArxivAdapter } from "../../sources/arxiv.js";
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
+/** Create a mock Response with a streaming body from a string. */
+function mockResponse(text: string, ok = true, status = 200) {
+  return {
+    ok,
+    status,
+    body: {
+      getReader() {
+        let done = false;
+        return {
+          async read() {
+            if (done) return { done: true, value: undefined };
+            done = true;
+            return { done: false, value: new TextEncoder().encode(text) };
+          },
+          cancel() {},
+        };
+      },
+    },
+  };
+}
+
 const MOCK_RSS = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
@@ -17,9 +38,9 @@ const MOCK_RSS = `<?xml version="1.0" encoding="UTF-8"?>
       <category>cs.CL</category>
     </item>
     <item>
-      <title>Efficient Attention Mechanisms for Long Contexts</title>
+      <title>Efficient Transformer Attention for Long Contexts</title>
       <link>https://arxiv.org/abs/2501.12346</link>
-      <description>Novel attention mechanism enabling efficient processing of million-token contexts.</description>
+      <description>Novel LLM attention mechanism enabling efficient processing of million-token contexts.</description>
       <pubDate>Wed, 15 Jan 2025 01:00:00 GMT</pubDate>
       <category>cs.CL</category>
     </item>
@@ -35,14 +56,11 @@ describe("ArxivAdapter", () => {
 
   it("has correct name and priority", () => {
     expect(adapter.name).toBe("arxiv");
-    expect(adapter.priority).toBe("P0");
+    expect(adapter.priority).toBe("P1");
   });
 
   it("parses RSS XML into RawItems", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      text: async () => MOCK_RSS,
-    });
+    mockFetch.mockResolvedValue(mockResponse(MOCK_RSS));
 
     const items = await adapter.poll();
     expect(items).toHaveLength(2);
@@ -57,10 +75,9 @@ describe("ArxivAdapter", () => {
   });
 
   it("handles empty RSS feed", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      text: async () => '<?xml version="1.0"?><rss><channel><title>Empty</title></channel></rss>',
-    });
+    mockFetch.mockResolvedValue(
+      mockResponse('<?xml version="1.0"?><rss><channel><title>Empty</title></channel></rss>'),
+    );
 
     const items = await adapter.poll();
     expect(items).toHaveLength(0);
