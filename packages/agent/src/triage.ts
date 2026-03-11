@@ -69,8 +69,10 @@ export async function runTriage(items: RawItem[], config: TriageConfig): Promise
     indices = JSON.parse(cleaned);
     if (!Array.isArray(indices)) indices = [];
   } catch {
-    // If parsing fails, keep all items (fail open for triage)
-    indices = items.map((_, i) => i);
+    // Fail closed: reject all items when parsing fails to prevent
+    // prompt injection from bypassing triage to reach extraction
+    console.warn("[triage] Failed to parse response, rejecting all items");
+    indices = [];
   }
 
   const indexSet = new Set(indices);

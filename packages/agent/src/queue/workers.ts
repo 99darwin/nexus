@@ -161,13 +161,13 @@ export function createProcessWorker(config: WorkerConfig): Worker<RawItem[]> {
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
-const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
+const EIGHT_HOURS_MS = 8 * 60 * 60 * 1000;
 
 const ADAPTER_DEFAULTS: Record<string, number> = {
-  hackernews: FOUR_HOURS_MS,
+  hackernews: EIGHT_HOURS_MS,
   arxiv: TWENTY_FOUR_HOURS_MS,
-  github: FOUR_HOURS_MS,
-  twitter: FOUR_HOURS_MS,
+  github: EIGHT_HOURS_MS,
+  twitter: EIGHT_HOURS_MS,
 };
 
 const MIN_POLL_INTERVAL_MS = 60_000;
