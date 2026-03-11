@@ -44,7 +44,7 @@ export class HackerNewsAdapter extends BaseAdapter {
   priority = "P0" as const;
 
   constructor() {
-    super({ pollIntervalMs: 4 * 60 * 60 * 1000, rateLimitMs: 2000 });
+    super({ pollIntervalMs: 8 * 60 * 60 * 1000, rateLimitMs: 2000 });
   }
 
   protected async fetchItems(): Promise<RawItem[]> {
@@ -89,7 +89,7 @@ export class HackerNewsAdapter extends BaseAdapter {
   }
 
   private getTimeCutoff(): number {
-    // Items from the last 4 hours (matches poll interval)
-    return Math.floor((Date.now() - 4 * 60 * 60 * 1000) / 1000);
+    // Items from the last 8 hours (matches poll interval)
+    return Math.floor((Date.now() - 8 * 60 * 60 * 1000) / 1000);
   }
 }

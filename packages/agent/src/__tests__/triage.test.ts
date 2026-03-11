@@ -48,14 +48,15 @@ describe("runTriage", () => {
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
-  it("keeps all items if JSON parsing fails", async () => {
+  it("rejects all items if JSON parsing fails (fail closed)", async () => {
     mockCreate.mockResolvedValue({
       content: [{ type: "text", text: "I think items 0 and 2 are relevant" }],
       usage: { input_tokens: 50, output_tokens: 20 },
     });
     const items = [makeItem("AI news"), makeItem("Other news")];
     const result = await runTriage(items, { apiKey: "test-key" });
-    expect(result.relevant).toHaveLength(2); // fail open
+    expect(result.relevant).toHaveLength(0); // fail closed
+    expect(result.rejected).toHaveLength(2);
   });
 
   it("rejects all when none are relevant", async () => {

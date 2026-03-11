@@ -93,7 +93,14 @@ describe("runExtraction", () => {
     expect(mockCreate).toHaveBeenCalledOnce();
     expect(mockCreate).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 8192,
+        system: [
+          expect.objectContaining({
+            type: "text",
+            cache_control: { type: "ephemeral" },
+          }),
+        ],
         messages: [
           { role: "user", content: expect.stringContaining("Anthropic launches Claude 4") },
           { role: "assistant", content: "{" },
