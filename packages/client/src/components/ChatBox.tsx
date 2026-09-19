@@ -50,15 +50,20 @@ export function ChatBox({ active }: { active: boolean }) {
     return () => clearInterval(timer);
   }, [paused]);
 
-  // keep the newest line in view
+  // keep the newest line in view — on snapshot change, and on focus (the
+  // keyboard shrinking the viewport can leave the log scrolled somewhere odd)
   useEffect(() => {
     const log = logRef.current;
     if (log) log.scrollTop = log.scrollHeight;
-  }, [snapshot]);
+  }, [snapshot, isFocused]);
 
-  // preventScroll: focusing mid-slide would otherwise scroll the transform away
+  // preventScroll: focusing mid-slide would otherwise scroll the transform away.
+  // touch devices skip autofocus — it pops the keyboard over half the screen
+  // before the user has decided to type
   useEffect(() => {
-    if (active) inputRef.current?.focus({ preventScroll: true });
+    if (!active) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    inputRef.current?.focus({ preventScroll: true });
   }, [active]);
 
   const handleSubmit = useCallback(
@@ -96,7 +101,9 @@ export function ChatBox({ active }: { active: boolean }) {
           placeholder={PLACEHOLDER_PROMPTS[placeholderIndex]}
           maxLength={MAX_CHAT_INPUT_LENGTH}
           autoComplete="off"
+          autoCapitalize="none"
           spellCheck={false}
+          enterKeyHint="send"
           aria-label="ask about indexed ai news"
         />
         <button className="chat-send" type="submit" disabled={snapshot.awaiting}>
