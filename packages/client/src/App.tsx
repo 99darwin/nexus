@@ -3,6 +3,7 @@ import { useFeedStore } from "./data/feed-store";
 import { ActivityFeed } from "./components/ActivityFeed";
 import { ChatBox } from "./components/ChatBox";
 import { SearchPalette } from "./components/SearchPalette";
+import { useVisualViewportHeight } from "./hooks/use-visual-viewport";
 
 const SECTIONS = ["feed", "chat"] as const;
 type Section = (typeof SECTIONS)[number];
@@ -13,6 +14,8 @@ export function App() {
   const [showSearch, setShowSearch] = useState(false);
   /* `token` rises on every selection so picking the same row twice still scrolls */
   const [marked, setMarked] = useState<{ id: string; token: number }>({ id: "", token: 0 });
+
+  useVisualViewportHeight();
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
