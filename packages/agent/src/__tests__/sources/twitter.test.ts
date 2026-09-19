@@ -4,17 +4,23 @@ import { TwitterAdapter } from "../../sources/twitter.js";
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
-const mockHeaders = { get: () => null };
+/**
+ * A real `Response`, not an object with a `json()` on it.
+ *
+ * The adapter reads bodies through a byte-metered stream reader, so a fake
+ * without `body` exercises none of that path — and would let a regression in
+ * the size ceiling pass unnoticed. `new Response(...)` gives a genuine
+ * ReadableStream for the cost of one JSON.stringify.
+ */
+function jsonResponse(payload: unknown, status = 200): Response {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+}
 
-function makeApiResponse(tweets: unknown[], users: unknown[] = []) {
-  return {
-    ok: true,
-    headers: mockHeaders,
-    json: async () => ({
-      data: tweets,
-      includes: { users },
-    }),
-  };
+function makeApiResponse(tweets: unknown[], users: unknown[] = []): Response {
+  return jsonResponse({ data: tweets, includes: { users } });
 }
 
 const SAMPLE_TWEET = {
@@ -54,7 +60,7 @@ describe("TwitterAdapter", () => {
   });
 
   it("parses X API v2 response into RawItems", async () => {
-    mockFetch.mockResolvedValue(makeApiResponse([SAMPLE_TWEET], [SAMPLE_USER]));
+    mockFetch.mockImplementation(() => makeApiResponse([SAMPLE_TWEET], [SAMPLE_USER]));
 
     const items = await adapter.poll();
     expect(items.length).toBeGreaterThan(0);
@@ -76,7 +82,7 @@ describe("TwitterAdapter", () => {
   it("maps author_id to username via includes.users", async () => {
     const tweet = { ...SAMPLE_TWEET, author_id: "user_42" };
     const user = { id: "user_42", username: "OpenAI", name: "OpenAI" };
-    mockFetch.mockResolvedValue(makeApiResponse([tweet], [user]));
+    mockFetch.mockImplementation(() => makeApiResponse([tweet], [user]));
 
     const items = await adapter.poll();
     expect(items[0].source_url).toContain("OpenAI");
@@ -84,7 +90,7 @@ describe("TwitterAdapter", () => {
   });
 
   it("deduplicates by tweet URL", async () => {
-    mockFetch.mockResolvedValue(makeApiResponse([SAMPLE_TWEET, SAMPLE_TWEET], [SAMPLE_USER]));
+    mockFetch.mockImplementation(() => makeApiResponse([SAMPLE_TWEET, SAMPLE_TWEET], [SAMPLE_USER]));
 
     const items = await adapter.poll();
     const urls = items.map((i) => i.source_url);
@@ -92,36 +98,20 @@ describe("TwitterAdapter", () => {
   });
 
   it("handles empty response (no data field)", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      headers: mockHeaders,
-      json: async () => ({}),
-    });
+    mockFetch.mockImplementation(() => jsonResponse({}));
 
     const items = await adapter.poll();
     expect(items).toEqual([]);
   });
 
   it("throws on non-OK response", { timeout: 15000 }, async () => {
-    mockFetch.mockResolvedValue({
-      ok: false,
-      status: 429,
-      statusText: "Too Many Requests",
-      headers: mockHeaders,
-      text: async () => "Too Many Requests",
-    });
+    mockFetch.mockImplementation(() => new Response("Too Many Requests", { status: 429 }));
 
     await expect(adapter.poll()).rejects.toThrow("X API 429");
   });
 
   it("does not retry auth errors (401/403)", async () => {
-    mockFetch.mockResolvedValue({
-      ok: false,
-      status: 401,
-      statusText: "Unauthorized",
-      headers: mockHeaders,
-      text: async () => "Unauthorized",
-    });
+    mockFetch.mockImplementation(() => new Response("Unauthorized", { status: 401 }));
 
     await expect(adapter.poll()).rejects.toThrow("X API 401");
     // Should only call fetch once (no retries for auth errors)
@@ -130,7 +120,7 @@ describe("TwitterAdapter", () => {
 
   it("skips tweets with invalid IDs", async () => {
     const badTweet = { ...SAMPLE_TWEET, id: "../../malicious" };
-    mockFetch.mockResolvedValue(makeApiResponse([badTweet], [SAMPLE_USER]));
+    mockFetch.mockImplementation(() => makeApiResponse([badTweet], [SAMPLE_USER]));
 
     const items = await adapter.poll();
     expect(items).toHaveLength(0);

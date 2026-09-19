@@ -6,14 +6,79 @@ type PgPool = any;
 // ── Content-similarity dedup ────────────────────────────────────────────
 
 const STOP_WORDS = new Set([
-  "the", "and", "for", "are", "but", "not", "you", "all", "can", "had",
-  "her", "was", "one", "our", "out", "has", "have", "been", "some", "them",
-  "than", "its", "over", "also", "that", "other", "into", "then", "about",
-  "would", "this", "with", "from", "they", "will", "what", "when", "make",
-  "like", "just", "more", "these", "very", "after", "most", "made", "such",
-  "being", "their", "does", "could", "said", "each", "which", "she", "how",
-  "who", "get", "got", "use", "using", "used", "new", "great", "really",
-  "think", "know", "good", "much", "way", "even", "well", "here",
+  "the",
+  "and",
+  "for",
+  "are",
+  "but",
+  "not",
+  "you",
+  "all",
+  "can",
+  "had",
+  "her",
+  "was",
+  "one",
+  "our",
+  "out",
+  "has",
+  "have",
+  "been",
+  "some",
+  "them",
+  "than",
+  "its",
+  "over",
+  "also",
+  "that",
+  "other",
+  "into",
+  "then",
+  "about",
+  "would",
+  "this",
+  "with",
+  "from",
+  "they",
+  "will",
+  "what",
+  "when",
+  "make",
+  "like",
+  "just",
+  "more",
+  "these",
+  "very",
+  "after",
+  "most",
+  "made",
+  "such",
+  "being",
+  "their",
+  "does",
+  "could",
+  "said",
+  "each",
+  "which",
+  "she",
+  "how",
+  "who",
+  "get",
+  "got",
+  "use",
+  "using",
+  "used",
+  "new",
+  "great",
+  "really",
+  "think",
+  "know",
+  "good",
+  "much",
+  "way",
+  "even",
+  "well",
+  "here",
 ]);
 
 const CONTENT_SIMILARITY_THRESHOLD = 0.6;
@@ -25,15 +90,81 @@ const CONTENT_SIMILARITY_THRESHOLD = 0.6;
 const MIN_ENTITY_OVERLAP = 2;
 
 const TITLE_COMMON_WORDS = new Set([
-  "the", "this", "that", "what", "when", "where", "which", "how", "why",
-  "new", "first", "last", "next", "big", "more", "most", "just", "now",
-  "after", "before", "into", "over", "from", "with", "about", "here",
-  "for", "and", "not", "all", "can", "has", "was", "are", "will", "get",
-  "its", "our", "his", "her", "may", "could", "should", "would", "been",
-  "says", "said", "according", "report", "sources", "via", "per", "use",
-  "former", "chief", "company", "startup", "launches", "announces", "takes",
-  "raises", "funding", "round", "series", "massive", "major", "top", "every",
-  "best", "latest", "breaking", "exclusive", "update", "year", "today",
+  "the",
+  "this",
+  "that",
+  "what",
+  "when",
+  "where",
+  "which",
+  "how",
+  "why",
+  "new",
+  "first",
+  "last",
+  "next",
+  "big",
+  "more",
+  "most",
+  "just",
+  "now",
+  "after",
+  "before",
+  "into",
+  "over",
+  "from",
+  "with",
+  "about",
+  "here",
+  "for",
+  "and",
+  "not",
+  "all",
+  "can",
+  "has",
+  "was",
+  "are",
+  "will",
+  "get",
+  "its",
+  "our",
+  "his",
+  "her",
+  "may",
+  "could",
+  "should",
+  "would",
+  "been",
+  "says",
+  "said",
+  "according",
+  "report",
+  "sources",
+  "via",
+  "per",
+  "use",
+  "former",
+  "chief",
+  "company",
+  "startup",
+  "launches",
+  "announces",
+  "takes",
+  "raises",
+  "funding",
+  "round",
+  "series",
+  "massive",
+  "major",
+  "top",
+  "every",
+  "best",
+  "latest",
+  "breaking",
+  "exclusive",
+  "update",
+  "year",
+  "today",
 ]);
 
 /** Extract named entities (proper nouns + dollar amounts) from a title. */
@@ -41,9 +172,7 @@ export function extractTitleEntities(title: string): string[] {
   const entities: string[] = [];
 
   // Dollar amounts: "$1B", "$1 billion", "$500M" → normalized
-  for (const match of title.matchAll(
-    /\$\s*([\d,.]+)\s*(b|m|k|billion|million|thousand)?/gi,
-  )) {
+  for (const match of title.matchAll(/\$\s*([\d,.]+)\s*(b|m|k|billion|million|thousand)?/gi)) {
     const num = parseFloat(match[1].replace(/,/g, ""));
     const s = (match[2] ?? "").charAt(0).toLowerCase();
     if (s === "b") entities.push(`$${num}b`);
@@ -80,9 +209,7 @@ export function contentFingerprint(text: string): string[] {
     .replace(/\s+/g, " ")
     .trim();
 
-  const words = normalized
-    .split(" ")
-    .filter((w) => w.length > 1 && !STOP_WORDS.has(w));
+  const words = normalized.split(" ").filter((w) => w.length > 1 && !STOP_WORDS.has(w));
 
   return [...new Set(words)].sort();
 }
@@ -118,10 +245,7 @@ export function addContentFingerprints(items: RawItem[]): RawItem[] {
  * Items must already have `content_fp` and `title_entities` in raw_metadata
  * (call addContentFingerprints first).
  */
-export async function deduplicateByContent(
-  items: RawItem[],
-  pool: PgPool,
-): Promise<RawItem[]> {
+export async function deduplicateByContent(items: RawItem[], pool: PgPool): Promise<RawItem[]> {
   if (items.length === 0) return [];
 
   // Defensive cap — O(n²) pairwise comparison must stay bounded
@@ -137,7 +261,9 @@ export async function deduplicateByContent(
     const fp = item.raw_metadata.content_fp as string[];
     const entities = (item.raw_metadata.title_entities as string[]) ?? [];
     const isDup = unique.some((u) => {
-      if (jaccardSimilarity(fp, u.raw_metadata.content_fp as string[]) > CONTENT_SIMILARITY_THRESHOLD) {
+      if (
+        jaccardSimilarity(fp, u.raw_metadata.content_fp as string[]) > CONTENT_SIMILARITY_THRESHOLD
+      ) {
         return true;
       }
       const uEntities = (u.raw_metadata.title_entities as string[]) ?? [];
@@ -222,7 +348,9 @@ export async function deduplicateItems(items: RawItem[], pool: PgPool): Promise<
         arxivResult.rows.map((r: { arxiv_id: string }) => r.arxiv_id),
       );
       return afterTitle.filter(
-        (item) => !item.raw_metadata?.arxiv_id || !existingArxivIds.has(item.raw_metadata.arxiv_id as string),
+        (item) =>
+          !item.raw_metadata?.arxiv_id ||
+          !existingArxivIds.has(item.raw_metadata.arxiv_id as string),
       );
     }
 

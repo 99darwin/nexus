@@ -1,3 +1,6 @@
 packages:
   - "packages/*"
   - "scripts"
+allowBuilds:
+  esbuild: true
+  msgpackr-extract: true

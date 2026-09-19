@@ -1,0 +1,402 @@
+/* feed section — filter chips, hot rail, item blocks, search palette.
+ * consumes theme tokens only. hairlines, zero radius, no shadows. */
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 0;
+}
+
+/* ---- filter chips ---- */
+
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.chip-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: var(--space-1);
+  /* scrollbars are hidden to match the reference shell, so the trailing fade is
+     the only cue that 21 vertical chips continue past the right edge */
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
+}
+
+.chip-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* a mask would fade a focus ring on the row's last item — drop it while the
+   row holds focus so keyboard position is never ambiguous */
+.chip-row:focus-within,
+.hot-rail:focus-within {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.chip-row-label {
+  color: var(--ink-dim);
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+  min-width: 4.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  /* ~32px tall — as close to a thumb-sized target as the hairline shell allows */
+  padding: var(--space-2) 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink-dim);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip:hover {
+  color: var(--ink);
+}
+
+.chip[aria-pressed="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.chip-count {
+  color: var(--ink-dim);
+}
+
+.chip-swatch {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  /* squares, not dots — nothing in this system has a radius */
+}
+
+.chip-clear {
+  flex-shrink: 0;
+}
+
+/* ---- hot rail ---- */
+
+.hot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.section-label {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+
+.hot-rail {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: var(--space-1);
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
+}
+
+.hot-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.hot-card {
+  flex-shrink: 0;
+  width: 13rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border-left: 1px solid var(--line);
+  padding-left: var(--space-3);
+}
+
+.hot-card-title {
+  margin: 0;
+  /* departure mono ships 400 only — a ua bold here is synthesized and smears */
+  font-weight: 400;
+  font-size: var(--text-sm);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.hot-card-meta {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: var(--text-sm);
+}
+
+/* ---- item list ---- */
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.bucket-label {
+  margin: 0;
+  padding: var(--space-6) 0 var(--space-2);
+  color: var(--ink-dim);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+
+.feed-list > :first-child.bucket-label {
+  padding-top: 0;
+}
+
+.feed-item {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--line);
+}
+
+.feed-item-marked {
+  /* search / cmd-k focus target */
+  outline: 1px solid var(--accent);
+  outline-offset: var(--space-1);
+}
+
+.feed-item-swatch {
+  width: 6px;
+  height: 6px;
+  margin-top: 0.45rem;
+  flex-shrink: 0;
+}
+
+.feed-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.feed-item-title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 400;
+}
+
+.feed-item-meta {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: var(--text-sm);
+}
+
+.feed-item-excerpt {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: var(--text-sm);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* significance as a hairline meter — no fill, no radius */
+.sig-meter {
+  height: 1px;
+  width: 4rem;
+  background: var(--line);
+  margin-top: var(--space-1);
+}
+
+.sig-meter-fill {
+  height: 100%;
+  background: var(--accent);
+}
+
+/* ---- status lines ---- */
+
+.status-line {
+  margin: 0;
+  padding: var(--space-4) 0;
+  color: var(--ink-dim);
+}
+
+.load-more {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  margin-top: var(--space-4);
+  padding: var(--space-2) 0;
+  font: inherit;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+
+.load-more:hover:not(:disabled) {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.load-more:disabled {
+  cursor: default;
+}
+
+/* ---- cmd-k palette ---- */
+
+.palette-overlay {
+  position: fixed;
+  inset: 0;
+  /* derived from --ink so a token change carries through */
+  background: color-mix(in srgb, var(--ink) 40%, transparent);
+  display: flex;
+  justify-content: center;
+  padding: 10vh var(--space-4) var(--space-4);
+  z-index: 100;
+}
+
+.palette {
+  width: min(40rem, 100%);
+  max-height: 70vh;
+  background: var(--screen-bg);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.palette-head {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--line);
+}
+
+.palette-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+  padding: var(--space-3) var(--space-4);
+  font: inherit;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+
+.palette-close:hover {
+  color: var(--ink);
+}
+
+.palette-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: var(--space-3) var(--space-4);
+  font: inherit;
+  color: var(--ink);
+}
+
+.palette-input::placeholder {
+  color: var(--ink-dim);
+}
+
+.palette-input:focus {
+  outline: none;
+}
+
+.palette-input:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.palette-results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.palette-result {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: var(--space-2) var(--space-4);
+  padding-left: calc(var(--space-4) - 2px);
+  border-left: 2px solid transparent;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* the --line wash alone is ~1.4:1 against the screen — an accent rule carries
+   the selection at 3:1+ so it survives 1.4.11 and a grayscale display */
+.palette-result-active {
+  background: var(--line);
+  border-left-color: var(--accent);
+}
+
+.palette-result-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.palette-empty {
+  padding: var(--space-4);
+  color: var(--ink-dim);
+}
+
+@media (max-width: 760px) {
+  /* ios safari zooms focused inputs under 16px */
+  .palette-input {
+    font-size: 16px;
+  }
+
+  .palette-overlay {
+    padding: 0;
+  }
+
+  .palette {
+    width: 100%;
+    max-height: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .hot-card {
+    width: 11rem;
+  }
+}

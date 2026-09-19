@@ -1,0 +1,175 @@
+/* base layout — page, screen chrome. consumes theme tokens only. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* earth tone survives as the top strip, safe-area fill, and overscroll bg —
+   the screen itself is greyscale with the accent used sparingly */
+body {
+  background: var(--bg-earth);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  padding-top: calc(var(--space-1) + env(safe-area-inset-top));
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+#root {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+.screen {
+  background: var(--screen-bg);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- top chrome ---- */
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--text-base);
+  font-weight: 400;
+  color: var(--ink);
+  user-select: none;
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.nav button {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: var(--space-2) 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+
+.nav button:hover {
+  color: var(--ink);
+}
+
+.nav button[aria-current="page"] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: var(--space-1);
+}
+
+/* ---- viewport + section transition ---- */
+
+.viewport {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.section {
+  position: absolute;
+  inset: 0;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transition: transform var(--transition-duration) var(--transition-ease);
+  will-change: transform;
+}
+
+/* vertical slide — the inactive section parks one screen above or below */
+.section-below {
+  transform: translateY(100%);
+}
+
+.section-above {
+  transform: translateY(-100%);
+}
+
+/* ---- shared terminal-voice primitives ---- */
+
+.dim {
+  color: var(--ink-dim);
+}
+
+.meta {
+  color: var(--ink-dim);
+  font-size: var(--text-sm);
+}
+
+/* --ink + underline: --accent is ~4.0:1 on --screen-bg, below AA for text */
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: var(--space-1);
+}
+
+a:hover {
+  color: var(--ink-dim);
+}
+
+/* ---- focus ---- */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: var(--space-1);
+}
+
+/* ---- scroll surfaces keep the safe area clear ---- */
+
+.section {
+  padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 760px) {
+  .section {
+    padding: var(--space-4);
+    padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section {
+    transition: none;
+  }
+}

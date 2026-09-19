@@ -1,275 +1,100 @@
-import { useMemo, useState, useRef, useEffect } from "react";
-import type { ForceNode } from "../graph/types";
-import { nodeColor } from "../graph/visual-encoding";
-import { useMediaQuery } from "../hooks/useMediaQuery";
-import { theme } from "../theme";
+import type { FeedMeta } from "../data/feed-types";
+import { VERTICALS, nodeColor } from "../theme/vertical-colors";
+
+const EVENT_TYPES = [
+  "launch",
+  "release",
+  "funding",
+  "acquisition",
+  "paper",
+  "update",
+  "shutdown",
+] as const;
 
 interface FilterBarProps {
-  nodes: ForceNode[];
-  activeEventTypes: Set<string> | null;
-  activeVerticals: Set<string> | null;
-  onEventTypeToggle: (type: string) => void;
-  onVerticalToggle: (vertical: string, multi: boolean) => void;
+  meta: FeedMeta | null;
+  activeVertical: string | null;
+  activeEventType: string | null;
+  onVerticalToggle: (vertical: string) => void;
+  onEventTypeToggle: (eventType: string) => void;
   onClearFilters: () => void;
 }
 
-const EVENT_TYPES: { type: string; icon: string; label: string }[] = [
-  { type: "launch", icon: "\u{1F680}", label: "Launch" },
-  { type: "update", icon: "\u{1F504}", label: "Update" },
-  { type: "paper", icon: "\u{1F4C4}", label: "Paper" },
-  { type: "funding", icon: "\u{1F4B0}", label: "Funding" },
-  { type: "acquisition", icon: "\u{1F3E2}", label: "Acquisition" },
-];
-
-const VERTICAL_META: Record<string, string> = {
-  foundation_models: "Foundation Models",
-  inference: "Inference",
-  training: "Training",
-  agents: "Agents",
-  code_generation: "Code Generation",
-  multimodal: "Multimodal",
-  safety_alignment: "Safety & Alignment",
-  evaluation: "Evaluation",
-  developer_tooling: "Developer Tooling",
-  enterprise_platforms: "Enterprise Platforms",
-  data_infrastructure: "Data Infrastructure",
-  open_source: "Open Source",
-  hardware: "Hardware",
-  consumer_products: "Consumer Products",
-  creative_tools: "Creative Tools",
-  search_retrieval: "Search & Retrieval",
-  robotics: "Robotics",
-  healthcare: "Healthcare",
-  finance: "Finance",
-  research: "Research",
-  governance_policy: "Governance & Policy",
-};
-
+/** Facets are single-select per row: the api takes one `vertical` and one
+ * `event_type`, so the chips map 1:1 onto query params. */
 export function FilterBar({
-  nodes,
-  activeEventTypes,
-  activeVerticals,
-  onEventTypeToggle,
+  meta,
+  activeVertical,
+  activeEventType,
   onVerticalToggle,
+  onEventTypeToggle,
   onClearFilters,
 }: FilterBarProps) {
-  const [showVerticalDropdown, setShowVerticalDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const hasFilters = activeVertical !== null || activeEventType !== null;
 
-  const eventTypeCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const node of nodes) {
-      for (const event of node.events) {
-        counts.set(event.event_type, (counts.get(event.event_type) ?? 0) + 1);
-      }
-    }
-    return counts;
-  }, [nodes]);
-
-  const verticalCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const node of nodes) {
-      counts.set(node.vertical, (counts.get(node.vertical) ?? 0) + 1);
-    }
-    return counts;
-  }, [nodes]);
-
-  const hasFilters = activeEventTypes !== null || activeVerticals !== null;
-
-  useEffect(() => {
-    if (!showVerticalDropdown) return;
-    const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setShowVerticalDropdown(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [showVerticalDropdown]);
-
-  const chip = isMobile ? mobileChipStyle : chipStyle;
+  // an unindexed facet has nothing to show; keep an active chip visible so it
+  // can always be switched off
+  const verticals = VERTICALS.filter(
+    (v) => (meta?.verticals[v.vertical] ?? 0) > 0 || v.vertical === activeVertical,
+  );
+  const eventTypes = EVENT_TYPES.filter(
+    (type) => (meta?.event_types[type] ?? 0) > 0 || type === activeEventType,
+  );
 
   return (
-    <div style={isMobile ? mobileBarStyle : barStyle}>
-      <div style={isMobile ? mobileChipsRow : chipsRow}>
-        {EVENT_TYPES.map(({ type, icon, label }) => {
-          const count = eventTypeCounts.get(type) ?? 0;
-          const isActive = activeEventTypes?.has(type) ?? false;
-          return (
+    <div className="filter-bar">
+      {eventTypes.length > 0 && (
+        <div className="chip-row" role="group" aria-label="filter by event type">
+          <span className="chip-row-label">type</span>
+          {eventTypes.map((type) => (
             <button
               key={type}
-              style={{
-                ...chip,
-                backgroundColor: isActive ? theme.bg.surfaceActive : theme.bg.surface,
-                borderColor: isActive ? theme.border.chipActive : theme.border.subtle,
-              }}
+              type="button"
+              className="chip"
+              aria-pressed={activeEventType === type}
               onClick={() => onEventTypeToggle(type)}
             >
-              <span>{icon}</span>
-              <span>{label}</span>
-              {count > 0 && <span style={isMobile ? mobileCountBadge : countBadge}>{count}</span>}
+              <span>{type}</span>
+              {meta?.event_types[type] ? (
+                <span className="chip-count">{meta.event_types[type]}</span>
+              ) : null}
             </button>
-          );
-        })}
+          ))}
+        </div>
+      )}
 
-        {!isMobile && (
-          <div ref={dropdownRef} style={{ position: "relative" }}>
+      {verticals.length > 0 && (
+        <div className="chip-row" role="group" aria-label="filter by vertical">
+          <span className="chip-row-label">vertical</span>
+          {verticals.map((v) => (
             <button
-              style={{
-                ...chipStyle,
-                backgroundColor: activeVerticals ? theme.bg.surfaceActive : theme.bg.surface,
-                borderColor: activeVerticals ? theme.border.chipActive : theme.border.subtle,
-              }}
-              onClick={() => setShowVerticalDropdown((p) => !p)}
+              key={v.vertical}
+              type="button"
+              className="chip"
+              aria-pressed={activeVertical === v.vertical}
+              onClick={() => onVerticalToggle(v.vertical)}
             >
-              <span>Verticals</span>
-              <span style={{ fontSize: 8 }}>{showVerticalDropdown ? "\u25B2" : "\u25BC"}</span>
-              {activeVerticals && <span style={countBadge}>{activeVerticals.size}</span>}
+              <span
+                className="chip-swatch"
+                style={{ background: nodeColor(v.vertical) }}
+                aria-hidden="true"
+              />
+              <span>{v.label}</span>
+              {meta?.verticals[v.vertical] ? (
+                <span className="chip-count">{meta.verticals[v.vertical]}</span>
+              ) : null}
             </button>
+          ))}
+        </div>
+      )}
 
-            {showVerticalDropdown && (
-              <div style={dropdownStyle}>
-                {Object.entries(VERTICAL_META).map(([key, label]) => {
-                  const count = verticalCounts.get(key) ?? 0;
-                  if (count === 0) return null;
-                  const isActive = !activeVerticals || activeVerticals.has(key);
-                  return (
-                    <div
-                      key={key}
-                      style={{
-                        ...dropdownItemStyle,
-                        opacity: isActive ? 1 : 0.4,
-                      }}
-                      onClick={(e) => {
-                        onVerticalToggle(key, e.shiftKey || e.ctrlKey || e.metaKey);
-                      }}
-                    >
-                      <span style={{ ...colorDot, backgroundColor: nodeColor(key) }} />
-                      <span style={{ flex: 1 }}>{label}</span>
-                      <span style={{ fontSize: 10, opacity: 0.5 }}>{count}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-
-        {hasFilters && (
-          <button style={{ ...chip, ...clearChipStyle }} onClick={onClearFilters}>
-            Clear{!isMobile && " all"}
+      {hasFilters && (
+        <div className="chip-row">
+          <button type="button" className="chip chip-clear" onClick={onClearFilters}>
+            clear filters
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
-
-const barStyle: React.CSSProperties = {
-  padding: "10px 14px",
-  borderBottom: `1px solid ${theme.border.subtle}`,
-};
-
-const mobileBarStyle: React.CSSProperties = {
-  padding: "10px 0",
-  borderBottom: `1px solid ${theme.border.subtle}`,
-};
-
-const chipsRow: React.CSSProperties = {
-  display: "flex",
-  flexWrap: "wrap",
-  gap: 6,
-  alignItems: "center",
-};
-
-const mobileChipsRow: React.CSSProperties = {
-  display: "flex",
-  gap: 8,
-  alignItems: "center",
-  overflowX: "auto",
-  WebkitOverflowScrolling: "touch",
-  scrollbarWidth: "none",
-  padding: "0 14px",
-};
-
-const chipStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: 4,
-  padding: "4px 10px",
-  borderRadius: 14,
-  border: `1px solid ${theme.border.default}`,
-  backgroundColor: theme.bg.surface,
-  color: theme.text.primary,
-  fontSize: 11,
-  cursor: "pointer",
-  whiteSpace: "nowrap",
-};
-
-const mobileChipStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: 6,
-  padding: "8px 14px",
-  borderRadius: 20,
-  border: `1px solid ${theme.border.default}`,
-  backgroundColor: theme.bg.surface,
-  color: theme.text.primary,
-  fontSize: 13,
-  cursor: "pointer",
-  whiteSpace: "nowrap",
-  flexShrink: 0,
-};
-
-const clearChipStyle: React.CSSProperties = {
-  borderColor: "rgba(196,80,80,0.3)",
-  color: theme.accent.red,
-};
-
-const countBadge: React.CSSProperties = {
-  fontSize: 9,
-  backgroundColor: theme.bg.badgeCount,
-  padding: "1px 5px",
-  borderRadius: 8,
-  marginLeft: 2,
-};
-
-const mobileCountBadge: React.CSSProperties = {
-  fontSize: 10,
-  backgroundColor: theme.bg.badgeCount,
-  padding: "2px 6px",
-  borderRadius: 8,
-  marginLeft: 2,
-};
-
-const dropdownStyle: React.CSSProperties = {
-  position: "absolute",
-  top: "100%",
-  left: 0,
-  marginTop: 4,
-  width: 220,
-  maxHeight: 320,
-  overflowY: "auto",
-  backgroundColor: theme.bg.panelSolid,
-  border: `1px solid ${theme.border.default}`,
-  borderRadius: 8,
-  padding: "4px 0",
-  zIndex: 200,
-};
-
-const dropdownItemStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: 8,
-  padding: "6px 12px",
-  cursor: "pointer",
-  fontSize: 12,
-};
-
-const colorDot: React.CSSProperties = {
-  width: 8,
-  height: 8,
-  borderRadius: "50%",
-  flexShrink: 0,
-};

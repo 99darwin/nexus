@@ -12,6 +12,9 @@ neo4j-data/
 postgres-data/
 redis-data/
 
+# One-shot Neo4j archive dump (scripts/export-graph.ts) — internal graph data, not source
+archive/
+
 # Coverage
 coverage/
 
@@ -33,3 +36,5 @@ credentials/
 # Build artifacts
 *.js.map
 *.d.ts.map
+.vercel
+.env*

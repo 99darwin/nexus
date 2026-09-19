@@ -1,5 +1,6 @@
 import type { RawItem } from "./types.js";
 import { BaseAdapter } from "./base-adapter.js";
+import { discardBody, readBoundedJson } from "./http.js";
 
 const GITHUB_TRENDING_API = "https://api.github.com/search/repositories";
 
@@ -23,21 +24,27 @@ export class GitHubTrendingAdapter extends BaseAdapter {
     this.token = token;
   }
 
-  protected async fetchItems(): Promise<RawItem[]> {
+  protected async fetchItems(signal?: AbortSignal): Promise<RawItem[]> {
     const items: RawItem[] = [];
     const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
 
     for (const topic of AI_TOPICS.slice(0, 3)) {
+      signal?.throwIfAborted();
       const query = `topic:${topic} created:>${oneWeekAgo} stars:>10`;
       const url = `${GITHUB_TRENDING_API}?q=${encodeURIComponent(query)}&sort=stars&order=desc&per_page=10`;
 
       const headers: Record<string, string> = { Accept: "application/vnd.github.v3+json" };
       if (this.token) headers.Authorization = `Bearer ${this.token}`;
 
-      const response = await fetch(url, { headers });
-      if (!response.ok) continue;
+      const response = await fetch(url, { headers, signal });
+      if (!response.ok) {
+        await discardBody(response);
+        continue;
+      }
 
-      const data = (await response.json()) as { items: GitHubRepo[] };
+      const data = await readBoundedJson<{ items: GitHubRepo[] }>(response, {
+        label: "github search",
+      });
 
       for (const repo of data.items ?? []) {
         items.push({

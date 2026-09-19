@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.16.0",
   "scripts": {
     "build": "pnpm -r build",
     "dev:api": "pnpm --filter @nexus/api dev",
@@ -10,9 +11,9 @@
     "test": "pnpm -r test",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "seed": "tsx scripts/seed.ts",
-    "backfill": "tsx scripts/backfill.ts",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "export-graph": "tsx scripts/export-graph.ts",
+    "backfill-feed": "tsx scripts/backfill-feed.ts"
   },
   "devDependencies": {
     "@types/node": "^22.13.0",

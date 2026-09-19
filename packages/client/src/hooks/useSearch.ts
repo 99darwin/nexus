@@ -1,28 +1,29 @@
-import { useMemo, useState, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Fuse from "fuse.js";
-import type { ForceNode } from "../graph/types";
+import type { FeedItem } from "../data/feed-types";
 
 export interface SearchResult {
-  item: ForceNode;
+  item: FeedItem;
   score: number;
 }
 
-export function useSearch(nodes: ForceNode[]) {
+/** Client-side fuzzy search over the items already loaded into the feed. */
+export function useSearch(items: FeedItem[]) {
   const [query, setQuery] = useState("");
 
   const fuse = useMemo(
     () =>
-      new Fuse(nodes, {
+      new Fuse(items, {
         keys: [
-          { name: "name", weight: 2 },
-          { name: "summary", weight: 1 },
-          { name: "type", weight: 0.5 },
+          { name: "title", weight: 2 },
+          { name: "excerpt", weight: 1 },
+          { name: "source", weight: 0.5 },
           { name: "vertical", weight: 0.5 },
         ],
         threshold: 0.4,
         includeScore: true,
       }),
-    [nodes],
+    [items],
   );
 
   const results = useMemo(() => {
@@ -33,7 +34,7 @@ export function useSearch(nodes: ForceNode[]) {
     }));
   }, [fuse, query]);
 
-  const search = useCallback((q: string) => setQuery(q), []);
+  const search = useCallback((next: string) => setQuery(next), []);
   const clear = useCallback(() => setQuery(""), []);
 
   return { query, results, search, clear };

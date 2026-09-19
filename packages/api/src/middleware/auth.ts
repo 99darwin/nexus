@@ -1,9 +1,19 @@
-import { timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import type { FastifyRequest, FastifyReply } from "fastify";
 
+/**
+ * Constant-time comparison via fixed-width digests.
+ *
+ * Comparing raw buffers required a length guard first, and a JavaScript
+ * string length is UTF-16 units while the buffer is UTF-8 bytes: a multibyte
+ * header of the same character length produced buffers of different byte
+ * lengths, which makes timingSafeEqual throw. That turned into a 500 where a
+ * wrong key gives a 401 — an oracle for the configured key's length. Digests
+ * are always 32 bytes, so the comparison is total and the length is hidden.
+ */
 function safeCompare(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
+  const digest = (value: string): Buffer => createHash("sha256").update(value, "utf8").digest();
+  return timingSafeEqual(digest(a), digest(b));
 }
 
 export async function requireApiKey(request: FastifyRequest, reply: FastifyReply): Promise<void> {
@@ -11,7 +21,9 @@ export async function requireApiKey(request: FastifyRequest, reply: FastifyReply
   const expectedKey = process.env.API_KEY;
 
   if (!expectedKey) {
-    reply.code(500).send({ error: "API key not configured on server" });
+    // Opaque to the caller — server configuration state is not theirs to read.
+    request.log.error("API_KEY is not configured; admin routes are unavailable");
+    reply.code(500).send({ error: "internal error" });
     return;
   }
 

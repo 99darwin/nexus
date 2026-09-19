@@ -1,0 +1,37 @@
+/* theme tokens — the single source of truth for color, type, and space */
+
+@font-face {
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* color */
+  --bg-earth: #b08d64;
+  --screen-bg: #e8e6e1;
+  --ink: #1a1815;
+  --ink-dim: #645f58;
+  --line: #c9c5bc;
+  --accent: #b3541e;
+
+  /* type */
+  --font: "Departure Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --text-sm: 0.75rem;
+  --text-base: 0.875rem;
+  --text-lg: 1.25rem;
+
+  /* space */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* motion */
+  --transition-duration: 450ms;
+  --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}

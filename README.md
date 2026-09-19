@@ -1,25 +1,41 @@
 # Nexus
 
-**Real-time 3D knowledge graph mapping the AI ecosystem.**
+**A Jev-powered AI news feed.**
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)
-![Neo4j](https://img.shields.io/badge/Neo4j-5-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Docker](https://img.shields.io/badge/Docker-Compose-blue)
 
-Nexus ingests AI news from multiple sources, classifies entities and relationships using a multi-stage LLM pipeline (Haiku &rarr; Sonnet &rarr; Opus), and renders the result as an interactive 3D force-directed graph you can explore through time.
+Nexus ingests AI news from multiple sources, dedupes it, classifies each item with a single [Jev](https://typesafe.ai) (TypeSafe System One) call, and serves the result as a reverse-chronological feed with filters and a guarded, extractive chat search. No graph database, no generative LLM in the request path.
 
 ```
-Sources ──► BullMQ/Redis ──► Agent (Claude API) ──► Mutation Engine ──► Neo4j ──► Fastify API ──► 3D Client
-                                                          │
-                                                     PostgreSQL
-                                                   (audit + raw content)
+Sources (arxiv, hackernews, github, twitter, rss)
+   │
+   ▼
+dedup.ts (URL → title → arXiv-id → Jaccard + entity fingerprints)
+   │
+   ▼
+PostgreSQL raw_items
+   │
+   ▼
+Jev enrichment (TypeSafe System One, model jev-latest, 1 call/item)
+   relevant? (Noul) · vertical (Choice) · event_type (Choice) · significance (Score)
+   │
+   ▼
+PostgreSQL feed_items (reverse-chron, indexed)
+   │
+   ▼
+Fastify API — GET /api/feed · GET /api/feed/meta · POST /api/chat
+   │
+   ▼
+React feed client — ActivityFeed, FilterBar, HotCards, guarded ChatBox
 ```
 
 ## Quick Start
 
 ```bash
-# 1. Start infrastructure (Neo4j, PostgreSQL, Redis)
+# 1. Start infrastructure (PostgreSQL)
 docker compose up -d
 
 # 2. Install dependencies
@@ -28,28 +44,28 @@ pnpm install
 # 3. Build all packages
 pnpm build
 
-# 4. Seed the graph with 50 curated nodes
-pnpm seed
-
-# 5. Start API and client dev servers (separate terminals)
+# 4. Start API and client dev servers (separate terminals)
 pnpm dev:api
 pnpm dev:client
+
+# 5. Run the agent (source polling + Jev enrichment) separately
+pnpm --filter @nexus/agent start
 ```
 
-The client opens at `http://localhost:5173` and the API serves at `http://localhost:3000`.
+The client opens at `http://localhost:5173` and the API serves at `http://localhost:3001`.
 
 ## Monorepo Layout
 
 | Package | Path | Description |
 |---------|------|-------------|
 | `@nexus/shared` | `packages/shared` | TypeScript interfaces, enums, constants, validation — imported by all packages |
-| `@nexus/agent` | `packages/agent` | Source adapters + 3-stage LLM processing pipeline (triage/extract/recalibrate) |
-| `@nexus/api` | `packages/api` | Fastify REST + WebSocket server for graph data and real-time mutation streaming |
-| `@nexus/client` | `packages/client` | 3D force-directed graph visualization (Vite + React + Three.js) |
+| `@nexus/agent` | `packages/agent` | Source adapters + dedup + Jev enrichment |
+| `@nexus/api` | `packages/api` | Fastify REST server for the feed and chat search |
+| `@nexus/client` | `packages/client` | React feed UI (Vite) |
 
 ## Adding a Source Adapter
 
-The primary contribution path is adding new data sources. Every adapter feeds raw items into the LLM pipeline, which handles entity extraction and graph mutations automatically.
+The primary contribution path is adding new data sources. Every adapter feeds raw items into the dedup + Jev enrichment pipeline, which classifies and inserts them into the feed automatically.
 
 ### The `RawItem` Interface
 
@@ -59,7 +75,7 @@ interface RawItem {
   source: string;        // adapter name, e.g. "arxiv"
   source_url: string;    // canonical URL for deduplication
   title: string;         // headline / paper title
-  content: string;       // body text for LLM extraction
+  content: string;       // body text (Jev classifies, excerpt is sliced from here)
   published_at: string;  // ISO 8601 timestamp
   raw_metadata: Record<string, unknown>; // source-specific fields
 }
@@ -112,6 +128,7 @@ export class MySourceAdapter extends BaseAdapter {
 | `HackerNewsAdapter` | HN Algolia API | P0 | 15 min | None |
 | `GitHubTrendingAdapter` | GitHub Search API | P0 | 60 min | Optional `GITHUB_TOKEN` |
 | `TwitterAdapter` | X/Twitter API v2 | P1 | 15 min | `X_BEARER_TOKEN` required |
+| `RssAdapter` | Company blogs, TechCrunch AI, The Verge AI, Simon Willison | P1 | 2h (default) | None |
 
 ### Register Your Adapter
 
@@ -132,23 +149,34 @@ const adapters: SourceAdapter[] = [
 
 3. Run tests: `pnpm --filter @nexus/agent test`
 
+## Jev Enrichment
+
+Every deduped `RawItem` gets exactly one call to TypeSafe's System One API (`POST https://api.typesafe.ai/v1/systemone`, model `jev-latest`, Bearer `TYPESAFE_API_KEY`). Jev is a decision model — it answers typed questions (`Noul`, `Choice`, `Score`) against structured JSON, it does not generate text. One call answers all four questions for an item:
+
+- `is_ai_relevant` (`Noul`) — dropped if confidence < 0.6
+- `vertical` (`Choice`) — one of the 21 `Vertical` values, or `none`
+- `event_type` (`Choice`) — `launch | funding | release | acquisition | paper | update | shutdown | other`
+- `significance` (`Score`) — a 5-point rubric mapped to 0.2–1.0
+
+The excerpt shown in the feed is the first 280 characters of the source content — never an LLM summary, so it can't hallucinate.
+
+## Chat Search
+
+`POST /api/chat` is a guarded, extractive search box, not a chatbot. It classifies the query with one Jev call (on-topic check, vertical/event-type/timeframe extraction), then returns real rows from `feed_items` via Postgres trigram search. There is no generative model anywhere in the chat path — there's nothing for a prompt injection to talk to.
+
 ## Data Model
 
-### Node Types
+### `feed_items`
 
-`model` | `product` | `company` | `paper` | `person` | `framework` | `dataset` | `benchmark` | `standard` | `initiative`
+`id` (uuid) · `title` · `url` (unique) · `source` · `published_at` · `excerpt` · `vertical` · `event_type` · `significance` (0.0–1.0) · `created_at`
 
-### Edge (Relationship) Types
+### Verticals
 
-`built_on` | `competes_with` | `forked_from` | `integrates_with` | `acquired_by` | `funded_by` | `authored_by` | `benchmarked_on` | `succeeded_by` | `part_of` | `inspired_by` | `partners_with`
+21 spatial-cluster categories, defined in `packages/shared/src/types.ts` (e.g. `foundation_models`, `agents`, `safety_alignment`, `consumer_products`, ...).
 
-### ID Convention
+### Event Types
 
-Node IDs are deterministic slugs in `company/product` format:
-
-```
-anthropic/claude-4    openai/gpt-4o    meta/llama-3
-```
+`launch` | `funding` | `release` | `acquisition` | `paper` | `update` | `shutdown` | `other`
 
 ## Contributing
 
@@ -168,27 +196,31 @@ pnpm typecheck     # tsc --noEmit
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `ANTHROPIC_API_KEY` | Yes | — | Claude API key for the agent pipeline |
-| `NEO4J_URI` | No | `bolt://localhost:7687` | Neo4j connection URI |
-| `NEO4J_AUTH` | No | — | Neo4j auth in `user/password` format (set to `none` to disable) |
-| `NEO4J_USER` | No | `neo4j` | Neo4j username (used if `NEO4J_AUTH` is not set) |
-| `NEO4J_PASSWORD` | Yes* | — | Neo4j password (*required unless `NEO4J_AUTH` is set) |
-| `REDIS_URL` | No | `redis://localhost:6379` | Redis connection URL for BullMQ |
-| `POSTGRES_URL` | No | — | PostgreSQL connection URL for audit logs |
+| `TYPESAFE_API_KEY` | Yes | — | TypeSafe API key for Jev (System One) enrichment and chat classification |
+| `POSTGRES_HOST` | No | `localhost` | PostgreSQL host |
+| `POSTGRES_PORT` | No | `5432` | PostgreSQL port |
+| `POSTGRES_DB` | No | `nexus` | PostgreSQL database name |
+| `POSTGRES_USER` | No | `nexus` | PostgreSQL user |
+| `POSTGRES_PASSWORD` | Yes | — | PostgreSQL password |
 | `X_BEARER_TOKEN` | No | — | X/Twitter API bearer token (enables Twitter adapter) |
 | `GITHUB_TOKEN` | No | — | GitHub PAT (raises rate limits for GitHub adapter) |
-| `API_KEY` | No | — | API key for write endpoints |
+| `API_KEY` | No | — | API key for write/admin endpoints |
+| `API_PORT` | No | `3001` | API server port |
+| `API_HOST` | No | `0.0.0.0` | API server bind address |
+| `CLIENT_PORT` | No | `5173` | Client dev server port |
 
 ## Tech Stack
 
-- **Graph DB** — Neo4j 5 (Cypher)
-- **Metadata DB** — PostgreSQL 16 (audit logs, raw content)
-- **Queue** — BullMQ on Redis 7
-- **API** — Fastify + @fastify/websocket
-- **Client** — Vite + React + 3d-force-graph + Three.js
-- **Search** — fuse.js (client), pg_trgm (server)
-- **Agent** — @anthropic-ai/sdk with Haiku/Sonnet/Opus routing
-- **Deploy** — Docker Compose &rarr; GCP Cloud Run
+- **Database** — PostgreSQL 16 (`raw_items`, `feed_items`, pg_trgm search)
+- **API** — Fastify
+- **Client** — Vite + React
+- **Search** — Fuse.js (client-side, loaded items), pg_trgm (server, chat + feed search)
+- **Agent** — TypeSafe Jev (System One) for enrichment and chat classification
+- **Deploy** — Railway (Postgres + API) + Vercel (client)
+
+## Cost
+
+Enrichment is roughly 1 Jev call per new deduped item, at ~50–100 items/day across all sources, plus 1 Jev call per chat query. There is no Neo4j, no Redis, and no generative LLM anywhere in the pipeline — that's the entire compute bill.
 
 ## License
 

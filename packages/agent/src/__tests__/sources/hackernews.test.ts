@@ -4,6 +4,20 @@ import { HackerNewsAdapter } from "../../sources/hackernews.js";
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
+/**
+ * A real `Response`, not an object with a `json()` on it.
+ *
+ * The adapter reads bodies through a byte-metered stream reader, so a fake
+ * without `body` exercises none of that path. Each call must build a fresh one:
+ * a Response body is single-use, and this adapter fetches once per keyword.
+ */
+function jsonResponse(payload: unknown, status = 200): Response {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+}
+
 describe("HackerNewsAdapter", () => {
   const adapter = new HackerNewsAdapter();
 
@@ -17,9 +31,7 @@ describe("HackerNewsAdapter", () => {
   });
 
   it("parses HN Algolia API response into RawItems", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
+    mockFetch.mockImplementation(() => jsonResponse({
         hits: [
           {
             objectID: "12345",
@@ -42,8 +54,7 @@ describe("HackerNewsAdapter", () => {
             author: "gpufan",
           },
         ],
-      }),
-    });
+      }));
 
     const items = await adapter.poll();
     expect(items.length).toBeGreaterThan(0);
@@ -57,9 +68,7 @@ describe("HackerNewsAdapter", () => {
   });
 
   it("deduplicates items by source_url", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
+    mockFetch.mockImplementation(() => jsonResponse({
         hits: [
           {
             objectID: "100",
@@ -82,8 +91,7 @@ describe("HackerNewsAdapter", () => {
             author: "user2",
           },
         ],
-      }),
-    });
+      }));
 
     const items = await adapter.poll();
     const urls = items.map((i) => i.source_url);
@@ -92,9 +100,7 @@ describe("HackerNewsAdapter", () => {
   });
 
   it("skips items without url or story_text", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
+    mockFetch.mockImplementation(() => jsonResponse({
         hits: [
           {
             objectID: "999",
@@ -107,8 +113,7 @@ describe("HackerNewsAdapter", () => {
             author: "nobody",
           },
         ],
-      }),
-    });
+      }));
 
     const items = await adapter.poll();
     expect(items.length).toBe(0);

@@ -1,18 +1,19 @@
 import type { FastifyInstance } from "fastify";
-import { checkNeo4jHealth } from "../db/neo4j.js";
 import { checkPostgresHealth } from "../db/postgres.js";
 
 export async function healthRoutes(app: FastifyInstance): Promise<void> {
-  app.get("/api/health", async () => {
-    const [neo4j, postgres] = await Promise.allSettled([checkNeo4jHealth(), checkPostgresHealth()]);
+  app.get("/api/health", async (_request, reply) => {
+    const postgres = await checkPostgresHealth();
+
+    // Postgres is the only datastore — without it every route 500s. A 200
+    // here would keep load balancers and container healthchecks sending
+    // traffic to an instance that cannot serve any of it.
+    if (!postgres) reply.code(503);
 
     return {
-      status: "ok",
+      status: postgres ? "ok" : "degraded",
       timestamp: new Date().toISOString(),
-      services: {
-        neo4j: neo4j.status === "fulfilled" ? neo4j.value : false,
-        postgres: postgres.status === "fulfilled" ? postgres.value : false,
-      },
+      services: { postgres },
     };
   });
 }
