@@ -30,26 +30,21 @@ const RECENCY_DECAY_SECONDS = 30 * 24 * 60 * 60;
 const CURSOR_KEY_COLUMN = `to_char(published_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS cursor_key`;
 
 /**
- * Trigram floor for `q` searches. The default 0.3 drops almost every
- * multi-word query, so we lower it per-transaction (see withTrigramThreshold).
+ * Full-text search over the generated `search_tsv` column (migration 003,
+ * GIN-indexed). websearch_to_tsquery gives user-facing semantics — bare
+ * terms AND, "quotes" phrase, OR and - work — and ts_rank orders.
+ *
+ * This replaces the original pg_trgm approach: plain similarity() scores
+ * ~0.03 for a short query against long title+excerpt text (the trigram
+ * union explodes with haystack length), below any `%` threshold that
+ * doesn't also flood the result set. FTS stems ("funding" ~ "funded") and
+ * handles multi-word queries, which is exactly the chat workload.
  */
-const SIMILARITY_FLOOR = 0.08;
+const ftsMatch = (queryParam: string): string =>
+  `search_tsv @@ websearch_to_tsquery('english', ${queryParam})`;
 
-/**
- * Must match the GIN index expression exactly
- * (idx_feed_items_title_excerpt_trgm, gin_trgm_ops) or the index is skipped.
- */
-const TRIGRAM_HAYSTACK = "title || ' ' || coalesce(excerpt, '')";
-
-/**
- * Index-usable match predicate. Only the `%` operator consults the GIN
- * trigram index — a bare `similarity(...) > x` comparison forces a seq scan —
- * so `%` filters and `similarity()` ranks.
- */
-const matchExpr = (queryParam: string): string => `${TRIGRAM_HAYSTACK} % ${queryParam}`;
-
-const similarityExpr = (queryParam: string): string =>
-  `similarity(${TRIGRAM_HAYSTACK}, ${queryParam})`;
+const ftsRank = (queryParam: string): string =>
+  `ts_rank(search_tsv, websearch_to_tsquery('english', ${queryParam}))`;
 
 /**
  * `greatest(..., 0)` clamps the age floor at zero: a future-dated row would
@@ -84,38 +79,6 @@ export function rowToFeedItem(row: FeedRow): FeedItem {
     event_type: (row.event_type as EventType | null) ?? null,
     significance: row.significance === null ? null : Number(row.significance),
   };
-}
-
-/**
- * Runs a `%`-filtered query with the trigram threshold lowered.
- *
- * The threshold is a GUC, so it has to be set on the same connection the
- * query runs on. `set_config(..., true)` makes it transaction-local: it
- * reverts at COMMIT and never leaks to the next borrower of this pooled
- * connection.
- */
-async function withTrigramThreshold(
-  pool: pg.Pool,
-  sql: string,
-  params: unknown[],
-): Promise<FeedRow[]> {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN READ ONLY");
-    await client.query("SELECT set_config('pg_trgm.similarity_threshold', $1, true)", [
-      String(SIMILARITY_FLOOR),
-    ]);
-    const result = await client.query<FeedRow>(sql, params);
-    await client.query("COMMIT");
-    return result.rows;
-  } catch (error) {
-    await client.query("ROLLBACK").catch(() => {
-      /* connection is already unusable — the original error is what matters */
-    });
-    throw error;
-  } finally {
-    client.release();
-  }
 }
 
 export interface FeedCursor {
@@ -162,8 +125,8 @@ export async function queryFeed(pool: pg.Pool, query: FeedQuery): Promise<FeedPa
 
   if (query.q) {
     const queryParam = bind(query.q);
-    conditions.push(matchExpr(queryParam));
-    orderBy = `${similarityExpr(queryParam)} * 0.7 + ${RECENCY_EXPR} * 0.3 DESC, published_at DESC, id DESC`;
+    conditions.push(ftsMatch(queryParam));
+    orderBy = `${ftsRank(queryParam)} * 0.7 + ${RECENCY_EXPR} * 0.3 DESC, published_at DESC, id DESC`;
   } else if (query.cursor) {
     // Tuple comparison keeps the keyset stable across ties on published_at.
     const ts = bind(query.cursor.publishedAt);
@@ -180,9 +143,7 @@ export async function queryFeed(pool: pg.Pool, query: FeedQuery): Promise<FeedPa
      ORDER BY ${orderBy}
      LIMIT ${limitParam}`;
 
-  const rows = query.q
-    ? await withTrigramThreshold(pool, sql, params)
-    : (await pool.query<FeedRow>(sql, params)).rows;
+  const rows = (await pool.query<FeedRow>(sql, params)).rows;
 
   const items = rows.map(rowToFeedItem);
 
@@ -248,8 +209,16 @@ export interface FeedSearch {
 }
 
 /**
- * Extractive search used by /api/chat: trigram relevance blended with
- * recency, constrained by the facets Jev extracted from the query.
+ * Extractive search used by /api/chat.
+ *
+ * Pass 1: FTS text match (+ optional timeframe floor), with the facets Jev
+ * extracted as rank *bonuses* rather than hard filters. Hard-filtering on
+ * facets loses queries like "funding rounds" where the matching rows say
+ * "raised $100M" — the words differ, but the facet is exactly right.
+ *
+ * Pass 2 (only when pass 1 is empty and at least one facet was extracted):
+ * facet filters alone, ranked by significance + recency. Vocabulary mismatch
+ * means the text query contributes nothing, so the facets carry the answer.
  */
 export async function searchFeedItems(pool: pg.Pool, search: FeedSearch): Promise<FeedItem[]> {
   const params: unknown[] = [];
@@ -259,25 +228,62 @@ export async function searchFeedItems(pool: pg.Pool, search: FeedSearch): Promis
   };
 
   const queryParam = bind(search.q);
-  const conditions = [matchExpr(queryParam)];
+  const conditions = [ftsMatch(queryParam)];
 
-  if (search.vertical) conditions.push(`vertical = ${bind(search.vertical)}`);
-  if (search.eventType) conditions.push(`event_type = ${bind(search.eventType)}`);
   if (search.withinDays !== undefined) {
     conditions.push(`published_at >= now() - (${bind(search.withinDays)}::int * interval '1 day')`);
   }
 
+  const bonuses: string[] = [];
+  if (search.vertical) bonuses.push(`(vertical = ${bind(search.vertical)})::int * 0.15`);
+  if (search.eventType) bonuses.push(`(event_type = ${bind(search.eventType)})::int * 0.15`);
+
   const limitParam = bind(search.limit);
+  const rankExpr =
+    `${ftsRank(queryParam)} * 0.5 + ${RECENCY_EXPR} * 0.2` +
+    (bonuses.length > 0 ? ` + ${bonuses.join(" + ")}` : "");
 
-  const rows = await withTrigramThreshold(
-    pool,
-    `SELECT ${FEED_COLUMNS}
-     FROM feed_items
-     WHERE ${conditions.join(" AND ")}
-     ORDER BY ${similarityExpr(queryParam)} * 0.7 + ${RECENCY_EXPR} * 0.3 DESC, published_at DESC, id DESC
-     LIMIT ${limitParam}`,
-    params,
-  );
+  const rows = (
+    await pool.query<FeedRow>(
+      `SELECT ${FEED_COLUMNS}
+       FROM feed_items
+       WHERE ${conditions.join(" AND ")}
+       ORDER BY ${rankExpr} DESC, published_at DESC, id DESC
+       LIMIT ${limitParam}`,
+      params,
+    )
+  ).rows;
 
-  return rows.map(rowToFeedItem);
+  if (rows.length > 0 || (!search.vertical && !search.eventType)) {
+    return rows.map(rowToFeedItem);
+  }
+
+  // Pass 2: rebuild the parameter list — pass-1 binds ($1 = q) don't apply here.
+  const fallbackParams: unknown[] = [];
+  const bindFallback = (value: unknown): string => {
+    fallbackParams.push(value);
+    return `$${fallbackParams.length}`;
+  };
+
+  const fallbackConditions: string[] = [];
+  if (search.vertical) fallbackConditions.push(`vertical = ${bindFallback(search.vertical)}`);
+  if (search.eventType) fallbackConditions.push(`event_type = ${bindFallback(search.eventType)}`);
+  if (search.withinDays !== undefined) {
+    fallbackConditions.push(
+      `published_at >= now() - (${bindFallback(search.withinDays)}::int * interval '1 day')`,
+    );
+  }
+
+  const fallbackRows = (
+    await pool.query<FeedRow>(
+      `SELECT ${FEED_COLUMNS}
+       FROM feed_items
+       WHERE ${fallbackConditions.join(" AND ")}
+       ORDER BY coalesce(significance, 0) * 0.6 + ${RECENCY_EXPR} * 0.4 DESC, published_at DESC, id DESC
+       LIMIT ${bindFallback(search.limit)}`,
+      fallbackParams,
+    )
+  ).rows;
+
+  return fallbackRows.map(rowToFeedItem);
 }

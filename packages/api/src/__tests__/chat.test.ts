@@ -333,8 +333,8 @@ describe("POST /api/chat search", () => {
     });
 
     const [sql, params] = callWith("FROM feed_items");
-    expect(sql).toContain("coalesce(excerpt, '') % $1");
-    expect(sql).toContain("ORDER BY similarity(");
+    expect(sql).toContain("search_tsv @@ websearch_to_tsquery('english', $1)");
+    expect(sql).toContain("ORDER BY ts_rank(");
     expect(params).toContain("funding rounds this week");
     expect(params).toContain("foundation_models");
     expect(params).toContain(7);

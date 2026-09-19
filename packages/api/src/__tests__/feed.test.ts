@@ -250,7 +250,7 @@ describe("GET /api/feed", () => {
     ]);
   });
 
-  it("filters on the indexable trigram operator and ranks by similarity", async () => {
+  it("matches on the indexed tsvector and ranks by ts_rank", async () => {
     mockQuery.mockResolvedValue({ rows: [row(UUID_A, "2026-09-18T10:00:00.000Z", "one")] });
 
     const response = await app.inject({
@@ -263,21 +263,17 @@ describe("GET /api/feed", () => {
     expect(response.json().next_cursor).toBeNull();
 
     const [sql, params] = callWith("FROM feed_items");
-    // `%` is the only form that consults the GIN trigram index.
-    expect(sql).toContain("coalesce(excerpt, '') % $1");
-    expect(sql).toContain("ORDER BY similarity(");
+    // @@ against the GIN-indexed search_tsv column is the index-usable form.
+    expect(sql).toContain("search_tsv @@ websearch_to_tsquery('english', $1)");
+    expect(sql).toContain("ORDER BY ts_rank(");
     expect(params).toContain("funding round");
 
-    // The lowered threshold must be transaction-local, not leaked to the pool.
-    const [thresholdSql, thresholdParams] = callWith("set_config");
-    expect(thresholdSql).toContain("pg_trgm.similarity_threshold");
-    expect(thresholdParams).toEqual(["0.08"]);
-    expect(allSql()).toContain("BEGIN READ ONLY");
-    expect(allSql()).toContain("COMMIT");
-    expect(mockRelease).toHaveBeenCalledTimes(1);
+    // Plain pooled query — no transaction, no GUC setup, no client checkout.
+    expect(allSql()).toHaveLength(1);
+    expect(mockRelease).not.toHaveBeenCalled();
   });
 
-  it("releases the pooled client and hides db detail when a search fails", async () => {
+  it("hides db detail when a search fails", async () => {
     mockQuery.mockImplementation(async (sql: string) => {
       if (sql.includes("FROM feed_items")) {
         throw new Error("relation feed_items does not exist at 10.0.0.4:5432");
@@ -290,8 +286,6 @@ describe("GET /api/feed", () => {
     expect(response.statusCode).toBe(500);
     expect(response.json()).toEqual({ error: "internal error" });
     expect(response.body).not.toContain("10.0.0.4");
-    expect(allSql()).toContain("ROLLBACK");
-    expect(mockRelease).toHaveBeenCalledTimes(1);
   });
 
   it.each([
