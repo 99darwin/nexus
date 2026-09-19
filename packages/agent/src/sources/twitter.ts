@@ -1,6 +1,7 @@
 import type { RawItem } from "./types.js";
 import { BaseAdapter } from "./base-adapter.js";
 import { TWITTER_ACCOUNTS, type TwitterAccount } from "./twitter-accounts.js";
+import { discardBody, readBoundedJson, readBoundedText } from "./http.js";
 
 const SKIP_TRIAGE_CATEGORIES = new Set<TwitterAccount["category"]>(["lab", "company"]);
 
@@ -8,6 +9,9 @@ const X_API_BASE = "https://api.x.com/2";
 const MAX_QUERY_LENGTH = 512;
 const CHUNK_DELAY_MS = 1000;
 const MAX_RESPONSE_BYTES = 10 * 1024 * 1024; // 10MB
+/** Error bodies are diagnostics, not data — read and keep far less of them. */
+const MAX_ERROR_BODY_BYTES = 64 * 1024;
+const MAX_ERROR_BODY_CHARS = 500;
 
 const TWEET_ID_RE = /^\d{1,20}$/;
 const USERNAME_RE = /^[A-Za-z0-9_]{1,15}$/;
@@ -66,7 +70,7 @@ export class TwitterAdapter extends BaseAdapter {
     this.lookbackMs = lookbackMs;
   }
 
-  protected async fetchItems(): Promise<RawItem[]> {
+  protected async fetchItems(signal?: AbortSignal): Promise<RawItem[]> {
     const chunks = this.buildQueryChunks();
     const handleCategory = new Map(
       TWITTER_ACCOUNTS.map((a) => [a.handle.toLowerCase(), a.category]),
@@ -74,7 +78,7 @@ export class TwitterAdapter extends BaseAdapter {
     const items: RawItem[] = [];
 
     for (let i = 0; i < chunks.length; i++) {
-      if (i > 0) await this.sleep(CHUNK_DELAY_MS);
+      if (i > 0) await this.sleep(CHUNK_DELAY_MS, signal);
 
       const startTime = new Date(Date.now() - this.lookbackMs).toISOString();
       const params = new URLSearchParams({
@@ -88,11 +92,19 @@ export class TwitterAdapter extends BaseAdapter {
       const url = `${X_API_BASE}/tweets/search/recent?${params}`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${this.#bearerToken}` },
+        signal,
       });
 
       if (!response.ok) {
-        const body = await response.text().catch(() => "");
-        const msg = `X API ${response.status}: ${body || response.statusText}`;
+        // An error body is still an untrusted body: bound it like any other, and
+        // keep only a short prefix in the message. X echoes request context in
+        // some error payloads, and this string reaches the logs.
+        const body = await readBoundedText(response, {
+          maxBytes: MAX_ERROR_BODY_BYTES,
+          label: "X API error",
+        }).catch(() => "");
+        const detail = body.slice(0, MAX_ERROR_BODY_CHARS) || response.statusText;
+        const msg = `X API ${response.status}: ${detail}`;
         if (NON_RETRYABLE_STATUSES.has(response.status)) {
           const err = new Error(msg);
           err.name = "NonRetryableError";
@@ -101,13 +113,19 @@ export class TwitterAdapter extends BaseAdapter {
         throw new Error(msg);
       }
 
-      // Guard against oversized responses
-      const contentLength = parseInt(response.headers.get("content-length") ?? "0", 10);
-      if (contentLength > MAX_RESPONSE_BYTES) {
+      // Content-Length is an early rejection only — it is absent under chunked
+      // encoding and is a claim by the server either way. readBoundedJson is
+      // what actually enforces the ceiling, while reading.
+      const contentLength = Number(response.headers.get("content-length") ?? "0");
+      if (Number.isFinite(contentLength) && contentLength > MAX_RESPONSE_BYTES) {
+        await discardBody(response);
         throw new Error(`X API response too large: ${contentLength} bytes`);
       }
 
-      const data = (await response.json()) as XSearchResponse;
+      const data = await readBoundedJson<XSearchResponse>(response, {
+        maxBytes: MAX_RESPONSE_BYTES,
+        label: "X API",
+      });
 
       // Surface API-level errors returned with 200 status
       if (data.errors && !data.data) {

@@ -5,30 +5,13 @@ export type {
   EventType,
   NodeEvent,
   GraphNode,
-  RelationshipType,
-  GraphEdge,
-  MutationOp,
-  AgentOutput,
+  FeedItem,
+  RawItem,
 } from "./types.js";
 
-export {
-  VERTICALS,
-  VERTICAL_RING_STIFFNESS,
-  RING_RADIUS,
-  NODE_TYPES,
-  NODE_STATUSES,
-  RELATIONSHIP_TYPES,
-  EVENT_TYPES,
-  SIGNIFICANCE,
-  VISUAL,
-} from "./constants.js";
+export { VERTICALS, NODE_TYPES, NODE_STATUSES, EVENT_TYPES, SIGNIFICANCE } from "./constants.js";
 
-export type { Ring, VerticalMeta } from "./constants.js";
+export type { VerticalMeta } from "./constants.js";
 export type { ValidationResult } from "./validation.js";
 
-export {
-  validateGraphNode,
-  validateGraphEdge,
-  validateMutationOp,
-  validateAgentOutput,
-} from "./validation.js";
+export { validateGraphNode, validateFeedItem } from "./validation.js";

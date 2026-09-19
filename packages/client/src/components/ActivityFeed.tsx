@@ -1,276 +1,133 @@
-import { useMemo, useRef, useEffect, useState, useCallback } from "react";
-import type { ForceNode, ForceLink } from "../graph/types";
+import { useEffect, useMemo, useRef } from "react";
+import type { FeedItem as FeedItemData, FeedMeta } from "../data/feed-types";
+import { BUCKET_ORDER, dateBucket, type DateBucket } from "../data/time";
+import { FeedItem } from "./FeedItem";
 import { FilterBar } from "./FilterBar";
 import { HotCards } from "./HotCards";
-import { FeedItem } from "./FeedItem";
-import { theme } from "../theme";
-
-const INITIAL_RENDER_LIMIT = 80;
-const LOAD_MORE_INCREMENT = 60;
 
 interface ActivityFeedProps {
-  nodes: ForceNode[];
-  links: ForceLink[];
-  activeVerticals: Set<string> | null;
-  activeEventTypes: Set<string> | null;
-  onHoverNode: (id: string | null) => void;
-  onSelectNode: (id: string) => void;
-  onVerticalToggle: (vertical: string, multi: boolean) => void;
-  onEventTypeToggle: (type: string) => void;
+  items: FeedItemData[];
+  hot: FeedItemData[];
+  meta: FeedMeta | null;
+  status: "loading" | "ready" | "error";
+  loadingMore: boolean;
+  hasMore: boolean;
+  hasFilters: boolean;
+  activeVertical: string | null;
+  activeEventType: string | null;
+  markedItemId: string | null;
+  /** increments on every palette selection so re-picking the same row still scrolls */
+  markToken: number;
+  onVerticalToggle: (vertical: string) => void;
+  onEventTypeToggle: (eventType: string) => void;
   onClearFilters: () => void;
-  highlightedNodeId: string | null;
-  onBucketSelect?: (from: Date | null, to: Date | null) => void;
-  activeBucketName?: string | null;
+  onLoadMore: () => void;
+  onRetry: () => void;
 }
-
-interface FlatEvent {
-  node: ForceNode;
-  event: ForceNode["events"][number];
-  ts: number;
-}
-
-const ONE_DAY = 86400000;
-
-function dateBucket(ts: number): string {
-  const now = Date.now();
-  const diff = now - ts;
-  const todayStart = new Date().setHours(0, 0, 0, 0);
-  const yesterdayStart = todayStart - ONE_DAY;
-
-  if (ts >= todayStart) return "Today";
-  if (ts >= yesterdayStart) return "Yesterday";
-  if (diff < 7 * ONE_DAY) return "This Week";
-  if (diff < 30 * ONE_DAY) return "This Month";
-  return "Older";
-}
-
-function bucketDateRange(bucket: string): { from: Date | null; to: Date | null } {
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-
-  switch (bucket) {
-    case "Today":
-      return { from: todayStart, to: null };
-    case "Yesterday": {
-      const yesterdayStart = new Date(todayStart.getTime() - ONE_DAY);
-      return { from: yesterdayStart, to: todayStart };
-    }
-    case "This Week":
-      return { from: new Date(Date.now() - 7 * ONE_DAY), to: null };
-    case "This Month":
-      return { from: new Date(Date.now() - 30 * ONE_DAY), to: null };
-    case "Older":
-      return { from: null, to: new Date(Date.now() - 30 * ONE_DAY) };
-    default:
-      return { from: null, to: null };
-  }
-}
-
-const BUCKET_ORDER = ["Today", "Yesterday", "This Week", "This Month", "Older"];
 
 export function ActivityFeed({
-  nodes,
-  links,
-  activeVerticals,
-  activeEventTypes,
-  onHoverNode,
-  onSelectNode,
+  items,
+  hot,
+  meta,
+  status,
+  loadingMore,
+  hasMore,
+  hasFilters,
+  activeVertical,
+  activeEventType,
+  markedItemId,
+  markToken,
   onVerticalToggle,
   onEventTypeToggle,
   onClearFilters,
-  highlightedNodeId,
-  onBucketSelect,
-  activeBucketName,
+  onLoadMore,
+  onRetry,
 }: ActivityFeedProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeBucket, setActiveBucket] = useState<string | null>(null);
-  const [renderLimit, setRenderLimit] = useState(INITIAL_RENDER_LIMIT);
+  const listRef = useRef<HTMLDivElement>(null);
 
-  // Sync internal state with external prop
-  const currentBucket = activeBucketName !== undefined ? activeBucketName : activeBucket;
-
-  // Flatten all events from all nodes, sorted by timestamp
-  const flatEvents = useMemo(() => {
-    const flat: FlatEvent[] = [];
-    for (const node of nodes) {
-      for (const event of node.events) {
-        if (activeEventTypes && !activeEventTypes.has(event.event_type)) continue;
-        flat.push({ node, event, ts: new Date(event.timestamp).getTime() });
-      }
+  // items arrive reverse-chron from the api; bucket without re-sorting
+  const buckets = useMemo(() => {
+    const grouped = new Map<DateBucket, FeedItemData[]>();
+    for (const item of items) {
+      const bucket = dateBucket(item.published_at);
+      const existing = grouped.get(bucket);
+      if (existing) existing.push(item);
+      else grouped.set(bucket, [item]);
     }
-    flat.sort((a, b) => b.ts - a.ts);
-    return flat;
-  }, [nodes, activeEventTypes]);
+    return grouped;
+  }, [items]);
 
-  // Group only the items we'll render (capped by renderLimit)
-  const { groupedEvents, totalCount, renderedCount } = useMemo(() => {
-    const capped = flatEvents.slice(0, renderLimit);
-    const groups = new Map<string, FlatEvent[]>();
-    for (const item of capped) {
-      const bucket = dateBucket(item.ts);
-      const arr = groups.get(bucket);
-      if (arr) {
-        arr.push(item);
-      } else {
-        groups.set(bucket, [item]);
-      }
-    }
-    return { groupedEvents: groups, totalCount: flatEvents.length, renderedCount: capped.length };
-  }, [flatEvents, renderLimit]);
-
-  // Reset render limit when filters change
+  /* cmd-k selection scrolls the chosen item into view. `items` stays a dep so a
+   * row that has not rendered yet still gets scrolled to once it arrives, but the
+   * token guard fires at most once per selection — without it every load-more and
+   * every 5-minute refresh would yank the viewport back to an old pick. */
+  const lastMarkedRef = useRef(0);
   useEffect(() => {
-    setRenderLimit(INITIAL_RENDER_LIMIT);
-  }, [activeEventTypes, nodes]);
-
-  // Load more on scroll near bottom
-  const handleScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el || renderedCount >= totalCount) return;
-    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 200) {
-      setRenderLimit((prev) => prev + LOAD_MORE_INCREMENT);
-    }
-  }, [renderedCount, totalCount]);
-
-  // Auto-scroll to highlighted node's events when graph click sets highlightedNodeId
-  useEffect(() => {
-    if (!highlightedNodeId || !scrollRef.current) return;
-    const el = scrollRef.current.querySelector(`[data-node-id="${highlightedNodeId}"]`);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, [highlightedNodeId]);
-
-  const handleBucketClick = (bucket: string) => {
-    if (currentBucket === bucket) {
-      // Deselect
-      setActiveBucket(null);
-      onBucketSelect?.(null, null);
-    } else {
-      setActiveBucket(bucket);
-      const range = bucketDateRange(bucket);
-      onBucketSelect?.(range.from, range.to);
-    }
-  };
+    if (!markedItemId || lastMarkedRef.current === markToken) return;
+    const target = listRef.current?.querySelector(`[data-item-id="${CSS.escape(markedItemId)}"]`);
+    if (!(target instanceof HTMLElement)) return; // not loaded yet — retry on the next page
+    lastMarkedRef.current = markToken;
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    target.focus({ preventScroll: true });
+  }, [markedItemId, markToken, items]);
 
   return (
-    <div style={feedContainer}>
+    <div className="feed">
       <FilterBar
-        nodes={nodes}
-        activeEventTypes={activeEventTypes}
-        activeVerticals={activeVerticals}
-        onEventTypeToggle={onEventTypeToggle}
+        meta={meta}
+        activeVertical={activeVertical}
+        activeEventType={activeEventType}
         onVerticalToggle={onVerticalToggle}
+        onEventTypeToggle={onEventTypeToggle}
         onClearFilters={onClearFilters}
       />
 
-      <HotCards
-        nodes={nodes}
-        highlightedNodeId={highlightedNodeId}
-        onHover={onHoverNode}
-        onClick={onSelectNode}
-      />
+      <HotCards items={hot} />
 
-      <div ref={scrollRef} style={eventListStyle} onScroll={handleScroll}>
+      <div className="feed-list" ref={listRef}>
+        {/* above the rows, not below them: after a failed filter change the rows on
+            screen are the *previous* query's, and a notice hundreds of rows down is
+            a notice nobody reads. the live region is mounted empty and filled —
+            screen readers announce changes inside a region, not a region that
+            appears with its text already in place. */}
+        <div role="status" aria-live="polite">
+          {status === "error" && (
+            <p className="status-line">
+              feed unavailable —{" "}
+              <button type="button" className="chip" onClick={onRetry}>
+                retry
+              </button>
+            </p>
+          )}
+        </div>
+
         {BUCKET_ORDER.map((bucket) => {
-          const events = groupedEvents.get(bucket);
-          if (!events || events.length === 0) return null;
-          const isActive = currentBucket === bucket;
+          const bucketItems = buckets.get(bucket);
+          if (!bucketItems || bucketItems.length === 0) return null;
           return (
-            <div key={bucket}>
-              <div
-                style={{
-                  ...bucketLabel,
-                  ...(isActive ? activeBucketLabel : {}),
-                  cursor: onBucketSelect ? "pointer" : "default",
-                }}
-                onClick={() => onBucketSelect && handleBucketClick(bucket)}
-              >
-                {bucket}
-                {isActive && <span style={activeDot} />}
-              </div>
-              {events.map((item, i) => (
-                <FeedItem
-                  key={`${item.node.id}-${item.event.timestamp}-${i}`}
-                  node={item.node}
-                  event={item.event}
-                  isHighlighted={highlightedNodeId === item.node.id}
-                  onHover={onHoverNode}
-                  onClick={onSelectNode}
-                />
+            <section key={bucket} aria-label={bucket}>
+              <h2 className="bucket-label">{bucket}</h2>
+              {bucketItems.map((item) => (
+                <FeedItem key={item.id} item={item} isMarked={item.id === markedItemId} />
               ))}
-            </div>
+            </section>
           );
         })}
-        {groupedEvents.size === 0 && <div style={emptyState}>No events match current filters</div>}
-        {renderedCount < totalCount && (
-          <div style={loadMoreStyle}>
-            {renderedCount} of {totalCount.toLocaleString()} events
-          </div>
+
+        {status === "loading" && items.length === 0 && <p className="status-line">loading…</p>}
+
+        {status === "ready" && items.length === 0 && (
+          <p className="status-line">
+            {hasFilters ? "no items match these filters" : "no items indexed yet"}
+          </p>
+        )}
+
+        {hasMore && (
+          <button type="button" className="load-more" onClick={onLoadMore} disabled={loadingMore}>
+            {loadingMore ? "loading…" : "load more"}
+          </button>
         )}
       </div>
     </div>
   );
 }
-
-const feedContainer: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  height: "100%",
-  backgroundColor: theme.bg.panel,
-  backdropFilter: theme.glass.blur,
-  WebkitBackdropFilter: theme.glass.blur,
-  borderRight: `1px solid ${theme.border.subtle}`,
-  overflow: "hidden",
-};
-
-const eventListStyle: React.CSSProperties = {
-  flex: 1,
-  overflowY: "auto",
-  overflowX: "hidden",
-};
-
-const bucketLabel: React.CSSProperties = {
-  fontSize: 10,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: 1.5,
-  opacity: 0.35,
-  padding: "12px 14px 4px",
-  position: "sticky",
-  top: 0,
-  backgroundColor: theme.bg.panel,
-  zIndex: 1,
-  display: "flex",
-  alignItems: "center",
-  gap: 6,
-  transition: "opacity 0.15s, color 0.15s",
-  userSelect: "none",
-};
-
-const activeBucketLabel: React.CSSProperties = {
-  opacity: 1,
-  color: theme.accent.primary,
-};
-
-const activeDot: React.CSSProperties = {
-  width: 5,
-  height: 5,
-  borderRadius: "50%",
-  backgroundColor: theme.accent.primary,
-  display: "inline-block",
-};
-
-const emptyState: React.CSSProperties = {
-  padding: 24,
-  textAlign: "center",
-  fontSize: 13,
-  opacity: 0.4,
-};
-
-const loadMoreStyle: React.CSSProperties = {
-  padding: "12px 14px",
-  textAlign: "center",
-  fontSize: 11,
-  opacity: 0.35,
-};

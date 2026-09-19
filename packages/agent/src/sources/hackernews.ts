@@ -1,5 +1,6 @@
 import type { RawItem } from "./types.js";
 import { BaseAdapter } from "./base-adapter.js";
+import { discardBody, readBoundedJson } from "./http.js";
 
 const HN_ALGOLIA_URL = "https://hn.algolia.com/api/v1/search";
 
@@ -47,17 +48,23 @@ export class HackerNewsAdapter extends BaseAdapter {
     super({ pollIntervalMs: 8 * 60 * 60 * 1000, rateLimitMs: 2000 });
   }
 
-  protected async fetchItems(): Promise<RawItem[]> {
+  protected async fetchItems(signal?: AbortSignal): Promise<RawItem[]> {
     const items: RawItem[] = [];
 
     for (const keyword of this.getSearchQueries()) {
+      // One keyword per request: check between them so a cancelled cycle stops
+      // at the next boundary instead of working through the whole list.
+      signal?.throwIfAborted();
       const url = `${HN_ALGOLIA_URL}?query=${encodeURIComponent(keyword)}&tags=story&hitsPerPage=20&numericFilters=created_at_i>${this.getTimeCutoff()}`;
-      const response = await fetch(url);
-      if (!response.ok) continue;
+      const response = await fetch(url, { signal });
+      if (!response.ok) {
+        await discardBody(response);
+        continue;
+      }
 
-      const data = (await response.json()) as HNResponse;
+      const data = await readBoundedJson<HNResponse>(response, { label: "hn algolia" });
 
-      for (const hit of data.hits) {
+      for (const hit of data.hits ?? []) {
         if (!hit.url && !hit.story_text) continue;
         items.push({
           source: "hackernews",

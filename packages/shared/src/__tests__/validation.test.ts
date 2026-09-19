@@ -1,11 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  validateGraphNode,
-  validateGraphEdge,
-  validateMutationOp,
-  validateAgentOutput,
-} from "../validation.js";
-import type { GraphNode, GraphEdge } from "../types.js";
+import { validateGraphNode, validateFeedItem } from "../validation.js";
+import type { GraphNode, FeedItem } from "../types.js";
 
 const validNode: GraphNode = {
   id: "anthropic/claude-4",
@@ -29,13 +24,16 @@ const validNode: GraphNode = {
   metadata: { parameters: "unknown" },
 };
 
-const validEdge: GraphEdge = {
-  source_id: "anthropic/claude-4",
-  target_id: "anthropic",
-  relationship: "authored_by",
-  discovered_at: "2025-06-01T00:00:00Z",
-  confidence: 0.99,
-  evidence: "Anthropic built Claude 4. https://anthropic.com",
+const validFeedItem: FeedItem = {
+  id: "anthropic/claude-4/launch",
+  title: "Claude 4 general availability",
+  url: "https://anthropic.com/claude-4",
+  source: "anthropic-blog",
+  published_at: "2025-06-01T00:00:00Z",
+  excerpt: "Anthropic's flagship frontier model is now generally available.",
+  vertical: "foundation_models",
+  event_type: "launch",
+  significance: 0.95,
 };
 
 describe("validateGraphNode", () => {
@@ -87,101 +85,131 @@ describe("validateGraphNode", () => {
     expect(result.isValid).toBe(false);
     expect(result.errors.length).toBeGreaterThanOrEqual(3);
   });
+
+  it("rejects a non-object event without throwing", () => {
+    const result = validateGraphNode({ ...validNode, events: [null] });
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("events[0] must be an object");
+  });
+
+  it("rejects a non-ISO date string that Date can still parse", () => {
+    const result = validateGraphNode({ ...validNode, discovered_at: "March 4, 2026" });
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("discovered_at must be a valid ISO timestamp");
+  });
+
+  it("rejects a javascript: event source_url", () => {
+    const result = validateGraphNode({
+      ...validNode,
+      events: [{ ...validNode.events[0], source_url: "javascript:alert(1)" }],
+    });
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("events[0].source_url must be a non-empty http(s) URL");
+  });
 });
 
-describe("validateGraphEdge", () => {
-  it("accepts a valid edge", () => {
-    const result = validateGraphEdge(validEdge);
+describe("validateFeedItem", () => {
+  it("accepts a valid feed item", () => {
+    const result = validateFeedItem(validFeedItem);
     expect(result.isValid).toBe(true);
     expect(result.errors).toHaveLength(0);
   });
 
+  it("accepts nullable fields set to null", () => {
+    const result = validateFeedItem({
+      ...validFeedItem,
+      excerpt: null,
+      vertical: null,
+      event_type: null,
+      significance: null,
+    });
+    expect(result.isValid).toBe(true);
+  });
+
+  it("accepts an empty-string excerpt", () => {
+    const result = validateFeedItem({ ...validFeedItem, excerpt: "" });
+    expect(result.isValid).toBe(true);
+  });
+
+  it("accepts significance boundary values 0 and 1", () => {
+    expect(validateFeedItem({ ...validFeedItem, significance: 0 }).isValid).toBe(true);
+    expect(validateFeedItem({ ...validFeedItem, significance: 1 }).isValid).toBe(true);
+  });
+
   it("rejects null input", () => {
-    const result = validateGraphEdge(null);
+    const result = validateFeedItem(null);
     expect(result.isValid).toBe(false);
   });
 
-  it("rejects invalid relationship", () => {
-    const result = validateGraphEdge({ ...validEdge, relationship: "hates" });
+  it("rejects a non-object primitive input", () => {
+    const result = validateFeedItem("not an object");
     expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("FeedItem must be an object");
   });
 
-  it("rejects confidence out of range", () => {
-    const result = validateGraphEdge({ ...validEdge, confidence: -0.1 });
+  it("rejects missing id", () => {
+    const result = validateFeedItem({ ...validFeedItem, id: "" });
     expect(result.isValid).toBe(false);
-  });
-});
-
-describe("validateMutationOp", () => {
-  it("validates upsert_node", () => {
-    const result = validateMutationOp({ op: "upsert_node", node: validNode });
-    expect(result.isValid).toBe(true);
+    expect(result.errors).toContain("id must be a non-empty string");
   });
 
-  it("validates upsert_edge", () => {
-    const result = validateMutationOp({ op: "upsert_edge", edge: validEdge });
-    expect(result.isValid).toBe(true);
-  });
-
-  it("validates update_status", () => {
-    const result = validateMutationOp({
-      op: "update_status",
-      id: "anthropic/claude-4",
-      status: "deprecated",
-      event: {
-        timestamp: "2026-01-01T00:00:00Z",
-        event_type: "shutdown",
-        summary: "Model deprecated",
-        source_url: "https://example.com",
-      },
-    });
-    expect(result.isValid).toBe(true);
-  });
-
-  it("validates update_significance", () => {
-    const result = validateMutationOp({
-      op: "update_significance",
-      id: "anthropic/claude-4",
-      significance: 0.8,
-    });
-    expect(result.isValid).toBe(true);
-  });
-
-  it("rejects unknown op", () => {
-    const result = validateMutationOp({ op: "delete_node", id: "test" });
+  it("rejects missing title", () => {
+    const result = validateFeedItem({ ...validFeedItem, title: "" });
     expect(result.isValid).toBe(false);
-    expect(result.errors[0]).toMatch(/unknown op/);
-  });
-});
-
-describe("validateAgentOutput", () => {
-  it("accepts valid output", () => {
-    const result = validateAgentOutput({
-      mutations: [
-        { op: "upsert_node", node: validNode },
-        { op: "upsert_edge", edge: validEdge },
-      ],
-      analysis: "Added Claude 4 and its authorship edge.",
-    });
-    expect(result.isValid).toBe(true);
+    expect(result.errors).toContain("title must be a non-empty string");
   });
 
-  it("rejects missing analysis", () => {
-    const result = validateAgentOutput({ mutations: [], analysis: "" });
+  it("rejects missing source", () => {
+    const result = validateFeedItem({ ...validFeedItem, source: "" });
     expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("source must be a non-empty string");
   });
 
-  it("rejects non-object", () => {
-    const result = validateAgentOutput("not an object");
+  it("rejects missing url", () => {
+    const result = validateFeedItem({ ...validFeedItem, url: "" });
     expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("url must be a non-empty http(s) URL");
   });
 
-  it("reports nested mutation errors", () => {
-    const result = validateAgentOutput({
-      mutations: [{ op: "upsert_node", node: { id: "" } }],
-      analysis: "test",
-    });
+  it("rejects a javascript: URL", () => {
+    const result = validateFeedItem({ ...validFeedItem, url: "javascript:alert(1)" });
     expect(result.isValid).toBe(false);
-    expect(result.errors.some((e) => e.includes("mutations[0]"))).toBe(true);
+    expect(result.errors).toContain("url must be a non-empty http(s) URL");
+  });
+
+  it("rejects a data: URL", () => {
+    const result = validateFeedItem({ ...validFeedItem, url: "data:text/html,<script>1</script>" });
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("url must be a non-empty http(s) URL");
+  });
+
+  it("rejects a non-string, non-null excerpt", () => {
+    const result = validateFeedItem({ ...validFeedItem, excerpt: 42 });
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("excerpt must be a string or null");
+  });
+
+  it("rejects invalid published_at", () => {
+    const result = validateFeedItem({ ...validFeedItem, published_at: "not-a-date" });
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("published_at must be a valid ISO timestamp");
+  });
+
+  it("rejects invalid vertical", () => {
+    const result = validateFeedItem({ ...validFeedItem, vertical: "unknown" });
+    expect(result.isValid).toBe(false);
+    expect(result.errors[0]).toMatch(/vertical must be null or one of/);
+  });
+
+  it("rejects invalid event_type", () => {
+    const result = validateFeedItem({ ...validFeedItem, event_type: "unknown" });
+    expect(result.isValid).toBe(false);
+    expect(result.errors[0]).toMatch(/event_type must be null or one of/);
+  });
+
+  it("rejects significance out of range", () => {
+    const result = validateFeedItem({ ...validFeedItem, significance: 1.5 });
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toContain("significance must be null or a number between 0 and 1");
   });
 });

@@ -1,7 +1,8 @@
 # Stage 1: Build
 FROM node:20-slim AS builder
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# pnpm version comes from the root package.json packageManager field
+RUN corepack enable
 
 WORKDIR /app
 
@@ -25,7 +26,7 @@ RUN pnpm --filter @nexus/shared build && \
 # Stage 2: Production
 FROM node:20-slim AS production
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable
 
 WORKDIR /app
 

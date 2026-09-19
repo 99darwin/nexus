@@ -12,25 +12,61 @@ const MAX_RSS_BYTES = 10 * 1024 * 1024; // 10 MB
  */
 const RELEVANCE_PATTERNS = [
   // Model families & architectures
-  /\bgpt[-\s]?\d/i, /\bclaude\b/i, /\bgemini\b/i, /\bllama\b/i, /\bmistral\b/i,
-  /\bdeepseek\b/i, /\bqwen\b/i, /\bphi[-\s]?\d/i, /\bcommand[\s-]?r/i,
-  /\bllm\b/i, /\blarge language model/i, /\bfoundation model/i,
-  /\btransformer\b/i, /\bdiffusion model/i, /\bmultimodal/i,
+  /\bgpt[-\s]?\d/i,
+  /\bclaude\b/i,
+  /\bgemini\b/i,
+  /\bllama\b/i,
+  /\bmistral\b/i,
+  /\bdeepseek\b/i,
+  /\bqwen\b/i,
+  /\bphi[-\s]?\d/i,
+  /\bcommand[\s-]?r/i,
+  /\bllm\b/i,
+  /\blarge language model/i,
+  /\bfoundation model/i,
+  /\btransformer\b/i,
+  /\bdiffusion model/i,
+  /\bmultimodal/i,
   // Companies & orgs
-  /\bopenai\b/i, /\banthropic\b/i, /\bdeep\s?mind\b/i, /\bmeta\s+ai\b/i,
-  /\bnvidia\b/i, /\bhugging\s?face\b/i, /\bstability\s?ai\b/i, /\bcohere\b/i,
+  /\bopenai\b/i,
+  /\banthropic\b/i,
+  /\bdeep\s?mind\b/i,
+  /\bmeta\s+ai\b/i,
+  /\bnvidia\b/i,
+  /\bhugging\s?face\b/i,
+  /\bstability\s?ai\b/i,
+  /\bcohere\b/i,
   // Ecosystem concepts
-  /\bagent\b/i, /\balignment\b/i, /\brlhf\b/i, /\breinforcement learning from human/i,
-  /\bsafety\b/i, /\bbenchmark/i, /\binstruction[\s-]?tun/i, /\bfine[\s-]?tun/i,
-  /\bpre[\s-]?train/i, /\bscaling law/i, /\bchain[\s-]?of[\s-]?thought/i,
-  /\breasoning\b/i, /\bcode gen/i, /\bchat\s?bot\b/i,
-  /\btext[\s-]?to[\s-]?(image|video|speech|audio)/i, /\bgenerative ai\b/i,
-  /\bopen[\s-]?source\b.*\bmodel\b/i, /\bmodel\b.*\bopen[\s-]?source\b/i,
+  /\bagent\b/i,
+  /\balignment\b/i,
+  /\brlhf\b/i,
+  /\breinforcement learning from human/i,
+  /\bsafety\b/i,
+  /\bbenchmark/i,
+  /\binstruction[\s-]?tun/i,
+  /\bfine[\s-]?tun/i,
+  /\bpre[\s-]?train/i,
+  /\bscaling law/i,
+  /\bchain[\s-]?of[\s-]?thought/i,
+  /\breasoning\b/i,
+  /\bcode gen/i,
+  /\bchat\s?bot\b/i,
+  /\btext[\s-]?to[\s-]?(image|video|speech|audio)/i,
+  /\bgenerative ai\b/i,
+  /\bopen[\s-]?source\b.*\bmodel\b/i,
+  /\bmodel\b.*\bopen[\s-]?source\b/i,
   // Infrastructure
-  /\binference\b/i, /\bserving\b/i, /\bquantiz/i, /\bdeployment\b/i,
-  /\bgpu\b/i, /\btpu\b/i,
+  /\binference\b/i,
+  /\bserving\b/i,
+  /\bquantiz/i,
+  /\bdeployment\b/i,
+  /\bgpu\b/i,
+  /\btpu\b/i,
   // Frameworks & tools
-  /\blangchain\b/i, /\bllamaindex\b/i, /\bvllm\b/i, /\brag\b/i,
+  /\blangchain\b/i,
+  /\bllamaindex\b/i,
+  /\bvllm\b/i,
+  /\brag\b/i,
   /\bretrieval[\s-]?augmented/i,
 ];
 
@@ -47,8 +83,10 @@ export class ArxivAdapter extends BaseAdapter {
     super({ pollIntervalMs: TWENTY_FOUR_HOURS_MS, rateLimitMs: 3000 });
   }
 
-  protected async fetchItems(): Promise<RawItem[]> {
-    const response = await fetch(ARXIV_RSS_URL);
+  protected async fetchItems(signal?: AbortSignal): Promise<RawItem[]> {
+    // The signal also covers the streamed body read below: aborting a fetch
+    // rejects its reader, so a stalled transfer settles instead of hanging.
+    const response = await fetch(ARXIV_RSS_URL, { signal });
     if (!response.ok) throw new Error(`ArXiv RSS fetch failed: ${response.status}`);
 
     // Stream body with size limit — Content-Length header may be absent (chunked encoding)

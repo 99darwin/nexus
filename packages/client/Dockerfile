@@ -1,7 +1,8 @@
 # Stage 1: Build
 FROM node:20-slim AS builder
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# pnpm version comes from the root package.json packageManager field
+RUN corepack enable
 
 WORKDIR /app
 
@@ -25,11 +26,14 @@ RUN pnpm --filter @nexus/shared build && \
 # Stage 2: Serve with nginx
 FROM nginx:alpine AS production
 
-# Remove default nginx config
-RUN rm /etc/nginx/conf.d/default.conf
+# Upstream for the /api/ proxy — the nginx entrypoint envsubstitutes this into
+# the template below. Compose/local default; Railway overrides via service var.
+ENV API_UPSTREAM=http://api:3001
 
-# Copy custom nginx config for SPA routing
-COPY packages/client/nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx config as an envsubst template — the official image renders
+# /etc/nginx/templates/*.template into /etc/nginx/conf.d/ at startup,
+# replacing the default server block (same target filename).
+COPY packages/client/nginx.conf /etc/nginx/templates/default.conf.template
 
 # Copy built static assets
 COPY --from=builder /app/packages/client/dist /usr/share/nginx/html

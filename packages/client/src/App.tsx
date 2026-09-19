@@ -1,426 +1,115 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { ForceGraph } from "./graph/ForceGraph";
-import { loadSeedData } from "./data/load-seed-data";
-import { loadGraphData } from "./data/load-graph-data";
-import { useGraphStore } from "./data/graph-store";
-import { SearchPalette } from "./components/SearchPalette";
-import { NodePanel } from "./components/NodePanel";
-import { TemporalSlider } from "./components/TemporalSlider";
-import { ComparisonPanel } from "./components/ComparisonPanel";
+import { useCallback, useEffect, useState } from "react";
+import { useFeedStore } from "./data/feed-store";
 import { ActivityFeed } from "./components/ActivityFeed";
-import { VerticalSidebar } from "./components/VerticalSidebar";
-import { useMediaQuery } from "./hooks/useMediaQuery";
-import { theme } from "./theme";
-import type { ForceNode } from "./graph/types";
+import { ChatBox } from "./components/ChatBox";
+import { SearchPalette } from "./components/SearchPalette";
 
-const DEFAULT_FEED_WIDTH = 380;
-const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
-const DEFAULT_SIDEBAR_WIDTH = 200;
+const SECTIONS = ["feed", "chat"] as const;
+type Section = (typeof SECTIONS)[number];
 
 export function App() {
-  const store = useGraphStore();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const store = useFeedStore();
+  const [section, setSection] = useState<Section>("feed");
   const [showSearch, setShowSearch] = useState(false);
-  const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
-  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [feedWidth, setFeedWidth] = useState(DEFAULT_FEED_WIDTH);
-  const [isResizingFeed, setIsResizingFeed] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  /* `token` rises on every selection so picking the same row twice still scrolls */
+  const [marked, setMarked] = useState<{ id: string; token: number }>({ id: "", token: 0 });
 
-  // Load data + auto-refresh every 5 minutes
   useEffect(() => {
-    const fetchData = () => {
-      loadGraphData()
-        .then((data) => {
-          store.setData(data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.warn("API fetch failed, falling back to seed data:", err.message);
-          loadSeedData()
-            .then((data) => {
-              store.setData(data);
-              setLoading(false);
-            })
-            .catch((seedErr) => {
-              setError(seedErr.message);
-              setLoading(false);
-            });
-        });
-    };
-
-    fetchData();
-    const interval = setInterval(fetchData, REFRESH_INTERVAL);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
+    const handler = (event: KeyboardEvent) => {
+      // caps lock / shift produce "K"; the shortcut is the same either way
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
         setShowSearch((prev) => !prev);
+        return;
       }
-      if (e.key === "Escape") {
-        store.selectNode(null);
-        store.clearComparison();
-        setShowSearch(false);
-      }
+      if (event.key === "Escape") setShowSearch(false);
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [store]);
-
-  const handleNodeClick = useCallback(
-    (node: ForceNode, event?: MouseEvent) => {
-      if (event?.shiftKey) {
-        store.toggleComparison(node.id);
-      } else {
-        store.selectNode(node.id);
-        setFocusNodeId(node.id);
-      }
-    },
-    [store],
-  );
-
-  const handleSearchSelect = useCallback(
-    (nodeId: string) => {
-      setFocusNodeId(nodeId);
-      store.selectNode(nodeId);
-    },
-    [store],
-  );
-
-  const handleFeedSelect = useCallback(
-    (nodeId: string) => {
-      setFocusNodeId(nodeId);
-      store.selectNode(nodeId);
-    },
-    [store],
-  );
-
-  const handleBucketSelect = useCallback(
-    (from: Date | null, to: Date | null) => {
-      store.setTimeRange(from, to);
-    },
-    [store],
-  );
-
-  const handleTimeChange = useCallback(
-    (from: Date | null, to: Date | null) => {
-      store.setTimeRange(from, to);
-    },
-    [store],
-  );
-
-  // Derive active bucket name from store.timeRange for highlighting sync
-  const activeBucketName = useMemo(() => {
-    const { from, to } = store.timeRange;
-    if (!from && !to) return null;
-
-    const ONE_DAY = 86400000;
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-
-    // "Today": from = todayStart, to = null
-    if (from && !to && Math.abs(from.getTime() - todayStart.getTime()) < 1000) return "Today";
-    // "Yesterday": from = yesterdayStart, to = todayStart
-    const yesterdayStart = new Date(todayStart.getTime() - ONE_DAY);
-    if (
-      from &&
-      to &&
-      Math.abs(from.getTime() - yesterdayStart.getTime()) < 1000 &&
-      Math.abs(to.getTime() - todayStart.getTime()) < 1000
-    )
-      return "Yesterday";
-    // "This Week": from = 7d ago, to = null
-    if (from && !to && Math.abs(from.getTime() - (Date.now() - 7 * ONE_DAY)) < 2000)
-      return "This Week";
-    // "This Month": from = 30d ago, to = null
-    if (from && !to && Math.abs(from.getTime() - (Date.now() - 30 * ONE_DAY)) < 2000)
-      return "This Month";
-    // "Older": from = null, to = 30d ago
-    if (!from && to && Math.abs(to.getTime() - (Date.now() - 30 * ONE_DAY)) < 2000) return "Older";
-
-    return null;
-  }, [store.timeRange]);
-
-  const selectedNode = useMemo(() => {
-    if (!store.selectedNodeId) return null;
-    return store.filteredData.nodes.find((n) => n.id === store.selectedNodeId) ?? null;
-  }, [store.selectedNodeId, store.filteredData.nodes]);
-
-  const selectedEdges = useMemo(() => {
-    if (!store.selectedNodeId) return [];
-    return store.filteredData.links.filter((link) => {
-      const sourceId = typeof link.source === "string" ? link.source : link.source.id;
-      const targetId = typeof link.target === "string" ? link.target : link.target.id;
-      return sourceId === store.selectedNodeId || targetId === store.selectedNodeId;
-    });
-  }, [store.selectedNodeId, store.filteredData.links]);
-
-  const comparisonNodes = useMemo(() => {
-    if (store.comparisonNodeIds.size < 2) return [];
-    return store.filteredData.nodes.filter((n) => store.comparisonNodeIds.has(n.id));
-  }, [store.comparisonNodeIds, store.filteredData.nodes]);
-
-  const dateRange = useMemo(() => {
-    const dates = store.data.nodes.map((n) => new Date(n.discovered_at).getTime());
-    return {
-      min: new Date(Math.min(...dates, Date.now() - 365 * 24 * 60 * 60 * 1000)),
-      max: new Date(),
-    };
-  }, [store.data.nodes]);
-
-  const showComparison = comparisonNodes.length >= 2;
-
-  const handleFeedResizeStart = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizingFeed(true);
   }, []);
 
-  useEffect(() => {
-    if (!isResizingFeed) return;
+  const handleSearchSelect = useCallback((itemId: string) => {
+    setSection("feed");
+    setMarked((prev) => ({ id: itemId, token: prev.token + 1 }));
+  }, []);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const newWidth = Math.max(280, Math.min(600, e.clientX - sidebarWidth));
-      setFeedWidth(newWidth);
-    };
-
-    const handleMouseUp = () => {
-      setIsResizingFeed(false);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    };
-  }, [isResizingFeed, sidebarWidth]);
-
-  if (error) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-          color: "#ff6b6b",
-        }}
-      >
-        Failed to load graph data: {error}
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-          color: "#888",
-        }}
-      >
-        Loading graph...
-      </div>
-    );
-  }
-
-  const feedElement = (
-    <ActivityFeed
-      nodes={store.filteredData.nodes}
-      links={store.filteredData.links}
-      activeVerticals={store.activeVerticals}
-      activeEventTypes={store.activeEventTypes}
-      onHoverNode={store.setHoveredNode}
-      onSelectNode={handleFeedSelect}
-      onVerticalToggle={store.toggleVertical}
-      onEventTypeToggle={store.toggleEventType}
-      onClearFilters={store.clearAllFilters}
-      highlightedNodeId={store.selectedNodeId}
-      onBucketSelect={handleBucketSelect}
-      activeBucketName={activeBucketName}
-    />
-  );
+  const activeIndex = SECTIONS.indexOf(section);
 
   return (
-    <div style={rootStyle}>
-      {/* Vertical Sidebar — fixed left (desktop only) */}
-      {!isMobile && (
-        <VerticalSidebar
-          nodes={store.filteredData.nodes}
-          activeVerticals={store.activeVerticals}
-          onVerticalToggle={store.toggleVertical}
-          onClearFilter={store.clearAllFilters}
-          width={sidebarWidth}
-          onWidthChange={setSidebarWidth}
-          collapsed={sidebarCollapsed}
-          onCollapsedChange={setSidebarCollapsed}
-        />
-      )}
+    <div className="screen">
+      <header className="chrome">
+        <h1 className="wordmark">nexus</h1>
+        {/* labelled "primary", not "sections": search opens a dialog rather than
+            switching section, so it is nav but not one of the two panels */}
+        <nav className="nav" aria-label="primary">
+          {/* cmd-k is invisible on touch and to anyone who does not know it exists */}
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            aria-keyshortcuts="Meta+K Control+K"
+            onClick={() => setShowSearch(true)}
+          >
+            search
+          </button>
+          {SECTIONS.map((name) => (
+            <button
+              key={name}
+              type="button"
+              aria-current={section === name ? "page" : undefined}
+              onClick={() => setSection(name)}
+            >
+              {name}
+            </button>
+          ))}
+        </nav>
+      </header>
 
-      {isMobile ? (
-        /* Mobile: full-screen feed, no graph */
-        <div style={{ flex: 1, overflow: "hidden" }}>
-          {feedElement}
-        </div>
-      ) : (
-        /* Desktop: feed left, graph right */
-        <div style={{ ...splitContainer, marginLeft: sidebarCollapsed ? 32 : sidebarWidth }}>
-          <div style={{ width: feedWidth, flexShrink: 0, height: "100%", position: "relative" }}>
-            {feedElement}
-            <div style={feedResizeHandleStyle} onMouseDown={handleFeedResizeStart} />
-          </div>
-
-          {/* 3D Force Graph — fills remaining space */}
-          <div style={{ flex: 1, position: "relative", height: "100%" }}>
-            <ForceGraph
-              data={store.filteredData}
-              onNodeClick={handleNodeClick}
-              focusNodeId={focusNodeId}
-              highlightNodeIds={
-                store.comparisonNodeIds.size >= 2 ? store.comparisonNodeIds : undefined
-              }
-              hoveredNodeId={store.hoveredNodeId}
-            />
-
-            {/* Search hint — overlaid on graph area */}
-            <div style={searchHintStyle} onClick={() => setShowSearch(true)}>
-              <span style={{ opacity: 0.5 }}>Search</span>
-              <kbd style={kbdStyle}>{"\u2318"}K</kbd>
-            </div>
-
-            {/* Node/edge count */}
-            <div style={statsStyle}>
-              {store.filteredData.nodes.length} nodes &middot; {store.filteredData.links.length} edges
-              {store.comparisonNodeIds.size > 0 && (
-                <span style={{ marginLeft: 8, color: theme.accent.amber }}>
-                  {store.comparisonNodeIds.size} comparing
-                </span>
+      <div className="viewport">
+        {SECTIONS.map((name, index) => {
+          const offset = index - activeIndex;
+          const position = offset === 0 ? "" : offset > 0 ? " section-below" : " section-above";
+          return (
+            <section
+              key={name}
+              className={`section${position}`}
+              aria-label={name}
+              aria-hidden={offset !== 0}
+              inert={offset !== 0}
+            >
+              {name === "feed" ? (
+                <ActivityFeed
+                  items={store.items}
+                  hot={store.hot}
+                  meta={store.meta}
+                  status={store.status}
+                  loadingMore={store.loadingMore}
+                  hasMore={store.hasMore}
+                  hasFilters={store.hasFilters}
+                  activeVertical={store.activeVertical}
+                  activeEventType={store.activeEventType}
+                  markedItemId={marked.id || null}
+                  markToken={marked.token}
+                  onVerticalToggle={store.toggleVertical}
+                  onEventTypeToggle={store.toggleEventType}
+                  onClearFilters={store.clearFilters}
+                  onLoadMore={store.loadMore}
+                  onRetry={store.retry}
+                />
+              ) : (
+                <ChatBox active={section === "chat"} />
               )}
-            </div>
-          </div>
-        </div>
-      )}
+            </section>
+          );
+        })}
+      </div>
 
-      {/* Temporal Slider — spans full width at bottom (desktop only) */}
-      {!isMobile && (
-        <TemporalSlider
-          minDate={dateRange.min}
-          maxDate={dateRange.max}
-          value={store.timeRange.to}
-          from={store.timeRange.from}
-          onChange={handleTimeChange}
-        />
-      )}
-
-      {/* Overlays */}
       {showSearch && (
         <SearchPalette
-          nodes={store.data.nodes}
+          items={store.items}
           onSelect={handleSearchSelect}
           onClose={() => setShowSearch(false)}
-          fullscreen={isMobile}
-        />
-      )}
-
-      {selectedNode && !showComparison && (
-        <NodePanel
-          node={selectedNode}
-          edges={selectedEdges}
-          allNodes={store.filteredData.nodes}
-          allLinks={store.filteredData.links}
-          onClose={() => store.selectNode(null)}
-          onNavigate={(id) => {
-            setFocusNodeId(id);
-            store.selectNode(id);
-          }}
-          fullscreen={isMobile}
-        />
-      )}
-
-      {showComparison && (
-        <ComparisonPanel
-          selectedNodes={comparisonNodes}
-          allLinks={store.filteredData.links}
-          allNodes={store.filteredData.nodes}
-          onClose={() => store.clearComparison()}
-          onNavigate={(id) => {
-            setFocusNodeId(id);
-            store.selectNode(id);
-          }}
         />
       )}
     </div>
   );
 }
-
-const rootStyle: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  height: "100vh",
-  overflow: "hidden",
-};
-
-const splitContainer: React.CSSProperties = {
-  display: "flex",
-  flex: 1,
-  overflow: "hidden",
-};
-
-const searchHintStyle: React.CSSProperties = {
-  position: "absolute",
-  top: 16,
-  left: "50%",
-  transform: "translateX(-50%)",
-  display: "flex",
-  alignItems: "center",
-  gap: 8,
-  padding: "6px 14px",
-  backgroundColor: theme.bg.surface,
-  borderRadius: 8,
-  border: `1px solid ${theme.border.subtle}`,
-  cursor: "pointer",
-  fontSize: 13,
-  zIndex: 50,
-};
-
-const kbdStyle: React.CSSProperties = {
-  padding: "1px 6px",
-  backgroundColor: theme.bg.surface,
-  borderRadius: 4,
-  fontSize: 11,
-};
-
-const statsStyle: React.CSSProperties = {
-  position: "absolute",
-  bottom: 8,
-  left: 16,
-  fontSize: 12,
-  opacity: 0.4,
-  zIndex: 50,
-};
-
-const feedResizeHandleStyle: React.CSSProperties = {
-  position: "absolute",
-  top: 0,
-  right: 0,
-  bottom: 0,
-  width: 4,
-  cursor: "col-resize",
-  backgroundColor: "transparent",
-  transition: "background-color 0.15s",
-  zIndex: 10,
-};

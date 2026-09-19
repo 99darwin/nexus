@@ -1,164 +1,162 @@
 import { useEffect, useRef, useState } from "react";
-import type { ForceNode } from "../graph/types";
+import type { FeedItem } from "../data/feed-types";
 import { useSearch } from "../hooks/useSearch";
-import { nodeColor } from "../graph/visual-encoding";
-import { theme } from "../theme";
+import { relativeTime } from "../data/time";
+import { nodeColor, verticalLabel } from "../theme/vertical-colors";
 
 interface SearchPaletteProps {
-  nodes: ForceNode[];
-  onSelect: (nodeId: string) => void;
+  /** items currently loaded into the feed — search is client-side only */
+  items: FeedItem[];
+  onSelect: (itemId: string) => void;
   onClose: () => void;
-  fullscreen?: boolean;
 }
 
-export function SearchPalette({ nodes, onSelect, onClose, fullscreen }: SearchPaletteProps) {
-  const { query, results, search, clear } = useSearch(nodes);
+const LISTBOX_ID = "palette-listbox";
+const optionId = (index: number) => `palette-option-${index}`;
+
+export function SearchPalette({ items, onSelect, onClose }: SearchPaletteProps) {
+  const { query, results, search, clear } = useSearch(items);
   const inputRef = useRef<HTMLInputElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  /* modal focus handling: take focus on open, hand it back on close. without the
+   * restore, dismissing the palette drops keyboard users at the top of the page. */
   useEffect(() => {
+    const opener = document.activeElement;
     inputRef.current?.focus();
+    return () => {
+      if (opener instanceof HTMLElement && opener.isConnected)
+        opener.focus({ preventScroll: true });
+    };
   }, []);
 
   useEffect(() => {
     setSelectedIndex(0);
   }, [results]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
+  /* dom focus stays in the input under the activedescendant model, so the browser
+   * no longer scrolls the active row into view for free — arrowing past the fold
+   * would otherwise select, and enter would open, a row nobody can see. */
+  useEffect(() => {
+    document.getElementById(optionId(selectedIndex))?.scrollIntoView({ block: "nearest" });
+  }, [selectedIndex]);
+
+  const choose = (itemId: string) => {
+    onSelect(itemId);
+    clear();
+    onClose();
+  };
+
+  /* the dialog holds exactly two tab stops (input, close) — wrapping between them
+   * keeps tab from walking into the inert page behind the overlay. */
+  const trapTab = (event: React.KeyboardEvent) => {
+    if (event.key !== "Tab") return;
+    event.preventDefault();
+    const target =
+      document.activeElement === inputRef.current ? closeRef.current : inputRef.current;
+    target?.focus();
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Escape") {
       onClose();
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
+      return;
+    }
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
       setSelectedIndex((i) => Math.min(i + 1, results.length - 1));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
+      return;
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
       setSelectedIndex((i) => Math.max(i - 1, 0));
-    } else if (e.key === "Enter" && results[selectedIndex]) {
-      onSelect(results[selectedIndex].item.id);
-      clear();
-      onClose();
+      return;
+    }
+    if (event.key === "Enter") {
+      const selected = results[selectedIndex];
+      if (selected) {
+        event.preventDefault();
+        choose(selected.item.id);
+      }
     }
   };
 
+  const activeOption = results[selectedIndex] ? optionId(selectedIndex) : undefined;
+
+  /* click-outside dismisses, but a text selection dragged out of the input and
+   * released on the overlay also fires click here — only the press that *started*
+   * on the overlay counts as "outside". */
+  const pressedOutside = useRef(false);
+
   return (
-    <div style={overlayStyle} onClick={onClose}>
+    <div
+      className="palette-overlay"
+      role="presentation"
+      onMouseDown={(event) => {
+        pressedOutside.current = event.target === event.currentTarget;
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget && pressedOutside.current) onClose();
+      }}
+    >
       <div
-        style={fullscreen ? fullscreenPaletteStyle : paletteStyle}
-        onClick={(e) => e.stopPropagation()}
+        className="palette"
+        role="dialog"
+        aria-modal="true"
+        aria-label="search the feed"
+        onKeyDown={trapTab}
       >
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => search(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Search nodes..."
-          style={inputStyle}
-        />
-        <div style={resultsStyle}>
-          {results.map((result, i) => (
-            <div
+        <div className="palette-head">
+          <input
+            ref={inputRef}
+            className="palette-input"
+            type="text"
+            value={query}
+            onChange={(event) => search(event.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="search loaded items"
+            aria-label="search loaded items"
+            role="combobox"
+            aria-expanded={results.length > 0}
+            aria-controls={LISTBOX_ID}
+            aria-activedescendant={activeOption}
+            aria-autocomplete="list"
+            autoComplete="off"
+          />
+          <button ref={closeRef} type="button" className="palette-close" onClick={onClose}>
+            close
+          </button>
+        </div>
+        <ul className="palette-results" id={LISTBOX_ID} role="listbox" aria-label="results">
+          {results.map((result, index) => (
+            <li
               key={result.item.id}
-              style={{
-                ...resultItemStyle,
-                backgroundColor: i === selectedIndex ? theme.bg.surfaceActive : "transparent",
-              }}
-              onClick={() => {
-                onSelect(result.item.id);
-                clear();
-                onClose();
-              }}
-              onMouseEnter={() => setSelectedIndex(i)}
+              id={optionId(index)}
+              role="option"
+              aria-selected={index === selectedIndex}
+              className={
+                index === selectedIndex ? "palette-result palette-result-active" : "palette-result"
+              }
+              onClick={() => choose(result.item.id)}
+              onMouseEnter={() => setSelectedIndex(index)}
             >
               <span
-                style={{
-                  ...dotStyle,
-                  backgroundColor: nodeColor(result.item.vertical),
-                }}
+                className="chip-swatch"
+                style={{ background: nodeColor(result.item.vertical) }}
+                aria-hidden="true"
               />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600 }}>{result.item.name}</div>
-                <div style={{ fontSize: 12, opacity: 0.6 }}>
-                  {result.item.type} &middot; {result.item.vertical.replace(/_/g, " ")}
-                </div>
-              </div>
-              <div style={{ fontSize: 12, opacity: 0.4 }}>
-                {(result.item.significance * 100).toFixed(0)}%
-              </div>
-            </div>
+              <span className="palette-result-title">{result.item.title}</span>
+              <span className="feed-item-meta">
+                {verticalLabel(result.item.vertical)} · {relativeTime(result.item.published_at)}
+              </span>
+            </li>
           ))}
-          {query && results.length === 0 && (
-            <div style={{ padding: 16, textAlign: "center", opacity: 0.5 }}>No results found</div>
-          )}
-        </div>
+        </ul>
+        {query.trim() !== "" && results.length === 0 && (
+          <p className="palette-empty">no matches in loaded items</p>
+        )}
       </div>
     </div>
   );
 }
-
-const overlayStyle: React.CSSProperties = {
-  position: "fixed",
-  inset: 0,
-  backgroundColor: "rgba(0,0,0,0.7)",
-  display: "flex",
-  justifyContent: "center",
-  paddingTop: "15vh",
-  zIndex: 1000,
-};
-
-const paletteStyle: React.CSSProperties = {
-  width: 500,
-  maxHeight: "60vh",
-  backgroundColor: theme.bg.panel,
-  backdropFilter: theme.glass.blur,
-  WebkitBackdropFilter: theme.glass.blur,
-  borderRadius: 12,
-  border: `1px solid ${theme.border.subtle}`,
-  overflow: "hidden",
-  display: "flex",
-  flexDirection: "column",
-};
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "14px 16px",
-  fontSize: 16,
-  backgroundColor: "transparent",
-  border: "none",
-  borderBottom: `1px solid ${theme.border.subtle}`,
-  color: theme.text.primary,
-  outline: "none",
-  fontFamily: theme.font.mono,
-};
-
-const resultsStyle: React.CSSProperties = {
-  overflowY: "auto",
-  maxHeight: "50vh",
-};
-
-const resultItemStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  padding: "10px 16px",
-  cursor: "pointer",
-  transition: "background 0.1s",
-};
-
-const dotStyle: React.CSSProperties = {
-  width: 8,
-  height: 8,
-  borderRadius: "50%",
-  flexShrink: 0,
-};
-
-const fullscreenPaletteStyle: React.CSSProperties = {
-  width: "100%",
-  height: "100%",
-  backgroundColor: theme.bg.panel,
-  backdropFilter: theme.glass.blur,
-  WebkitBackdropFilter: theme.glass.blur,
-  overflow: "hidden",
-  display: "flex",
-  flexDirection: "column",
-};

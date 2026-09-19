@@ -73,36 +73,24 @@ export interface GraphNode {
   metadata: Record<string, unknown>;
 }
 
-export type RelationshipType =
-  | "built_on"
-  | "competes_with"
-  | "forked_from"
-  | "integrates_with"
-  | "acquired_by"
-  | "funded_by"
-  | "authored_by"
-  | "benchmarked_on"
-  | "succeeded_by"
-  | "part_of"
-  | "inspired_by"
-  | "partners_with";
-
-export interface GraphEdge {
-  source_id: string;
-  target_id: string;
-  relationship: RelationshipType;
-  discovered_at: string;
-  confidence: number;
-  evidence: string;
+export interface FeedItem {
+  id: string;
+  title: string;
+  url: string;
+  source: string;
+  published_at: string;
+  excerpt: string | null;
+  vertical: Vertical | null;
+  event_type: EventType | null;
+  significance: number | null;
 }
 
-export type MutationOp =
-  | { op: "upsert_node"; node: GraphNode }
-  | { op: "upsert_edge"; edge: GraphEdge }
-  | { op: "update_status"; id: string; status: NodeStatus; event: NodeEvent }
-  | { op: "update_significance"; id: string; significance: number };
-
-export interface AgentOutput {
-  mutations: MutationOp[];
-  analysis: string;
+export interface RawItem {
+  source: string;
+  source_url: string;
+  title: string;
+  content: string;
+  published_at: string;
+  raw_metadata: Record<string, unknown>;
+  skip_triage?: boolean;
 }

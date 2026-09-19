@@ -1,22 +1,24 @@
 /**
  * Admin dashboard endpoint.
  *
- * Provides a data freshness and system health overview including
- * last mutation timestamp, processing counts, queue depth, and
- * graph statistics. Requires API key authentication.
+ * Data-freshness and ingestion-health overview: newest indexed item, total
+ * feed size, 24h processing count, review queue depth, and per-adapter run
+ * stats. Requires API key authentication.
+ *
+ * The audit_log and moderation_queue tables are legacy from the graph
+ * pipeline and are being retired, so their sub-queries degrade to 0 rather
+ * than failing the whole response.
  */
 
 import type { FastifyInstance } from "fastify";
-import { getSession } from "../../db/neo4j.js";
 import { getPool } from "../../db/postgres.js";
 import { requireApiKey } from "../../middleware/auth.js";
 
 export interface DashboardResponse {
-  lastMutationAt: string | null;
+  lastItemAt: string | null;
+  feedItemCount: number;
   itemsProcessed24h: number;
   queueDepth: number;
-  nodeCount: number;
-  edgeCount: number;
   adapterStats: Record<
     string,
     {
@@ -27,47 +29,24 @@ export interface DashboardResponse {
   >;
 }
 
-async function getLastMutationAt(
-  neo4jSession: ReturnType<typeof getSession>,
-): Promise<string | null> {
-  const result = await neo4jSession.run(
-    `MATCH (n:Entity)
-     WHERE n.updated_at IS NOT NULL
-     RETURN n.updated_at AS updated_at
-     ORDER BY n.updated_at DESC
-     LIMIT 1`,
+type Pool = ReturnType<typeof getPool>;
+
+async function getFeedFreshness(pool: Pool): Promise<{ lastItemAt: string | null; count: number }> {
+  const result = await pool.query<{ last_item_at: Date | null; count: string }>(
+    `SELECT MAX(published_at) AS last_item_at, COUNT(*) AS count FROM feed_items`,
   );
 
-  if (result.records.length === 0) return null;
+  const row = result.rows[0];
+  const lastItemAt = row?.last_item_at ?? null;
 
-  const value = result.records[0].get("updated_at");
-  if (!value) return null;
-
-  // Neo4j may return a DateTime object or a string/number depending on how it was stored
-  if (typeof value === "string") return value;
-  if (typeof value === "number") return new Date(value).toISOString();
-  if (typeof value.toStandardDate === "function") return value.toStandardDate().toISOString();
-
-  return String(value);
+  return {
+    lastItemAt: lastItemAt instanceof Date ? lastItemAt.toISOString() : (lastItemAt ?? null),
+    count: parseInt(row?.count ?? "0", 10),
+  };
 }
 
-async function getGraphCounts(neo4jSession: ReturnType<typeof getSession>): Promise<{
-  nodeCount: number;
-  edgeCount: number;
-}> {
-  const [nodeResult, edgeResult] = await Promise.all([
-    neo4jSession.run("MATCH (n:Entity) RETURN count(n) AS count"),
-    neo4jSession.run("MATCH ()-[r:RELATES_TO]->() RETURN count(r) AS count"),
-  ]);
-
-  const nodeCount = nodeResult.records[0]?.get("count")?.toNumber?.() ?? 0;
-  const edgeCount = edgeResult.records[0]?.get("count")?.toNumber?.() ?? 0;
-
-  return { nodeCount, edgeCount };
-}
-
-async function getItemsProcessed24h(pgPool: ReturnType<typeof getPool>): Promise<number> {
-  const result = await pgPool.query(
+async function getItemsProcessed24h(pool: Pool): Promise<number> {
+  const result = await pool.query<{ count: string }>(
     `SELECT COUNT(*) AS count
      FROM audit_log
      WHERE created_at >= NOW() - INTERVAL '24 hours'`,
@@ -76,8 +55,8 @@ async function getItemsProcessed24h(pgPool: ReturnType<typeof getPool>): Promise
   return parseInt(result.rows[0]?.count ?? "0", 10);
 }
 
-async function getQueueDepth(pgPool: ReturnType<typeof getPool>): Promise<number> {
-  const result = await pgPool.query(
+async function getQueueDepth(pool: Pool): Promise<number> {
+  const result = await pool.query<{ count: string }>(
     `SELECT COUNT(*) AS count
      FROM moderation_queue
      WHERE status = 'pending' OR status IS NULL`,
@@ -87,9 +66,9 @@ async function getQueueDepth(pgPool: ReturnType<typeof getPool>): Promise<number
 }
 
 async function getAdapterStatsFromDb(
-  pgPool: ReturnType<typeof getPool>,
+  pool: Pool,
 ): Promise<Record<string, { successRate: number; totalItems: number; avgDurationMs: number }>> {
-  const result = await pgPool.query(
+  const result = await pool.query(
     `SELECT
        adapter_name,
        COUNT(*) FILTER (WHERE success = true) AS success_count,
@@ -119,34 +98,38 @@ async function getAdapterStatsFromDb(
 }
 
 export async function dashboardRoutes(app: FastifyInstance): Promise<void> {
+  // Authenticated operational data — never store it in a browser or an
+  // intermediary cache.
+  app.addHook("onSend", async (_request, reply) => {
+    reply.header("Cache-Control", "private, no-store");
+  });
+
   app.get<{ Reply: DashboardResponse }>(
     "/api/admin/dashboard",
     { onRequest: requireApiKey },
-    async () => {
-      const neo4jSession = getSession();
-      const pgPool = getPool();
+    async (request) => {
+      const pool = getPool();
 
-      try {
-        const [lastMutationAt, graphCounts, itemsProcessed24h, queueDepth, adapterStats] =
-          await Promise.all([
-            getLastMutationAt(neo4jSession),
-            getGraphCounts(neo4jSession),
-            getItemsProcessed24h(pgPool),
-            getQueueDepth(pgPool),
-            getAdapterStatsFromDb(pgPool),
-          ]);
+      const [freshness, itemsProcessed24h, queueDepth, adapterStats] = await Promise.allSettled([
+        getFeedFreshness(pool),
+        getItemsProcessed24h(pool),
+        getQueueDepth(pool),
+        getAdapterStatsFromDb(pool),
+      ]);
 
-        return {
-          lastMutationAt,
-          itemsProcessed24h,
-          queueDepth,
-          nodeCount: graphCounts.nodeCount,
-          edgeCount: graphCounts.edgeCount,
-          adapterStats,
-        };
-      } finally {
-        await neo4jSession.close();
+      for (const outcome of [freshness, itemsProcessed24h, queueDepth, adapterStats]) {
+        if (outcome.status === "rejected") {
+          request.log.error({ err: outcome.reason }, "dashboard sub-query failed");
+        }
       }
+
+      return {
+        lastItemAt: freshness.status === "fulfilled" ? freshness.value.lastItemAt : null,
+        feedItemCount: freshness.status === "fulfilled" ? freshness.value.count : 0,
+        itemsProcessed24h: itemsProcessed24h.status === "fulfilled" ? itemsProcessed24h.value : 0,
+        queueDepth: queueDepth.status === "fulfilled" ? queueDepth.value : 0,
+        adapterStats: adapterStats.status === "fulfilled" ? adapterStats.value : {},
+      };
     },
   );
 }

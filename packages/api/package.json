@@ -17,10 +17,8 @@
   "dependencies": {
     "@fastify/cors": "^11.0.0",
     "@fastify/rate-limit": "^10.2.0",
-    "@fastify/websocket": "^11.0.0",
     "@nexus/shared": "workspace:*",
     "fastify": "^5.2.0",
-    "neo4j-driver": "^5.27.0",
     "pg": "^8.13.0"
   },
   "devDependencies": {

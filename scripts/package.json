@@ -5,6 +5,10 @@
   "private": true,
   "dependencies": {
     "@nexus/shared": "workspace:*",
-    "neo4j-driver": "^5.27.0"
+    "neo4j-driver": "^5.27.0",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.0"
   }
 }
