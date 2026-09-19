@@ -265,20 +265,25 @@ export async function searchFeedItems(pool: pg.Pool, search: FeedSearch): Promis
     return `$${fallbackParams.length}`;
   };
 
-  const fallbackConditions: string[] = [];
-  if (search.vertical) fallbackConditions.push(`vertical = ${bindFallback(search.vertical)}`);
-  if (search.eventType) fallbackConditions.push(`event_type = ${bindFallback(search.eventType)}`);
+  const facetConditions: string[] = [];
+  if (search.vertical) facetConditions.push(`vertical = ${bindFallback(search.vertical)}`);
+  if (search.eventType) facetConditions.push(`event_type = ${bindFallback(search.eventType)}`);
+
+  // Facets OR, timeframe AND: this pass is the last resort for vocabulary
+  // mismatch, and the extracted facets are alternative readings of the same
+  // query — "funding rounds" is vertical=finance OR event_type=funding, and
+  // the rows it wants are tagged robotics+funding. The timeframe is explicit
+  // user intent, so it stays a hard filter.
+  let whereClause = facetConditions.join(" OR ");
   if (search.withinDays !== undefined) {
-    fallbackConditions.push(
-      `published_at >= now() - (${bindFallback(search.withinDays)}::int * interval '1 day')`,
-    );
+    whereClause = `(${whereClause}) AND published_at >= now() - (${bindFallback(search.withinDays)}::int * interval '1 day')`;
   }
 
   const fallbackRows = (
     await pool.query<FeedRow>(
       `SELECT ${FEED_COLUMNS}
        FROM feed_items
-       WHERE ${fallbackConditions.join(" AND ")}
+       WHERE ${whereClause}
        ORDER BY coalesce(significance, 0) * 0.6 + ${RECENCY_EXPR} * 0.4 DESC, published_at DESC, id DESC
        LIMIT ${bindFallback(search.limit)}`,
       fallbackParams,
