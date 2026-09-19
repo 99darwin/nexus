@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 
 # pnpm version comes from the root package.json packageManager field
 RUN corepack enable
@@ -24,7 +24,7 @@ RUN pnpm --filter @nexus/shared build && \
     pnpm --filter @nexus/api build
 
 # Stage 2: Production
-FROM node:20-slim AS production
+FROM node:22-slim AS production
 
 RUN corepack enable
 
