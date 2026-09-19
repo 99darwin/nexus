@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 
 # pnpm version comes from the root package.json packageManager field
 RUN corepack enable
