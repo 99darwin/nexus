@@ -2,6 +2,7 @@ import Fastify, { type FastifyInstance, type FastifyError } from "fastify";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import { edgeProxyHook } from "./edge-proxy.js";
+import { denylistHook } from "./denylist.js";
 import { healthRoutes } from "./routes/health.js";
 import { feedRoutes } from "./routes/feed.js";
 import { chatRoutes } from "./routes/chat.js";
@@ -93,6 +94,8 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   // limiter, which keys on the request.clientKey this resolves.
   server.decorateRequest("clientKey", "");
   server.addHook("onRequest", edgeProxyHook(proxySecret));
+  // Banned clients are refused here, before cors, rate limiting, or any query.
+  server.addHook("onRequest", denylistHook);
 
   await server.register(cors, { origin: corsOrigin });
 

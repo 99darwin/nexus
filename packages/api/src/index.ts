@@ -1,9 +1,12 @@
 import { buildApp } from "./app.js";
-import { closePool } from "./db/postgres.js";
+import { closePool, getPool } from "./db/postgres.js";
+import { startMaintenance } from "./maintenance.js";
 
 const server = await buildApp();
+const stopMaintenance = startMaintenance(getPool(), server.log);
 
 const shutdown = async (): Promise<void> => {
+  stopMaintenance();
   await server.close();
   await closePool();
 };

@@ -80,6 +80,23 @@ railway ssh -s Postgres -- sh -c "'echo $B64 | base64 -d | psql -U postgres -d r
 (The generated `*.up.railway.app` domains are HTTP-only — no TCP access to
 Postgres from outside; `railway ssh` is the way in.)
 
+## Banning a client
+
+`client_bans` (migration 005) is refused at the door on every route except
+`/api/health`. The API writes 24h bans there itself when a client escalates
+on `/mcp`; add others by hand. Each instance reloads the table every minute.
+
+```sql
+-- client_key: IPv4 as-is; IPv6 as its /64, e.g. '2001:db8:0:1::/64'
+INSERT INTO client_bans (client_key, reason, banned_until)
+VALUES ('203.0.113.7', 'scraping', NULL);  -- NULL = permanent
+DELETE FROM client_bans WHERE client_key = '203.0.113.7';  -- lift
+```
+
+Limits on `/mcp`: 30/min, 300/hour, 2,000/day per client. Three breaches in
+an hour → 1h ban; another three within a week → 24h, persisted. `mcp_calls`
+rows and lapsed bans older than 90 days are pruned daily.
+
 ## Optional: Agent service (source polling + Jev enrichment)
 
 1. New service from the same repo, Dockerfile `packages/agent/Dockerfile`

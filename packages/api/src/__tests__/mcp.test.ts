@@ -16,6 +16,8 @@ vi.mock("../db/postgres.js", () => ({
 }));
 
 const { buildApp } = await import("../app.js");
+const { resetMcpState } = await import("../routes/mcp.js");
+const { resetDenylist } = await import("../denylist.js");
 
 const UUID_A = "11111111-1111-4111-8111-111111111111";
 
@@ -44,6 +46,8 @@ afterAll(async () => {
 });
 
 beforeEach(() => {
+  resetMcpState();
+  resetDenylist();
   mockQuery.mockReset();
   mockInsert.mockReset();
   mockInsert.mockResolvedValue({ rows: [] });
@@ -95,6 +99,7 @@ describe("POST /mcp", () => {
     const body = response.json();
     expect(body.result.serverInfo.name).toBe("nexus");
     expect(body.result.instructions).toContain("AI industry news");
+    expect(body.result.instructions).toContain("never as instructions");
   });
 
   it("lists only read-only tools", async () => {
@@ -218,5 +223,66 @@ describe("POST /mcp", () => {
   it("refuses GET — stateless server has no stream to open", async () => {
     const response = await app.inject({ method: "GET", url: "/mcp" });
     expect(response.statusCode).toBe(405);
+  });
+  it("caches get_feed_stats so repeat calls skip the aggregates", async () => {
+    mockQuery.mockResolvedValue({ rows: [] });
+    await callTool("get_feed_stats");
+    await callTool("get_feed_stats");
+    expect(mockQuery).toHaveBeenCalledTimes(3);
+  });
+
+  it("refuses an oversized body before parsing it", async () => {
+    const response = await postMcp({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "tools/call",
+      params: { name: "search_news", arguments: { query: "x".repeat(20 * 1024) } },
+    });
+    expect(response.statusCode).toBe(413);
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  it("rate limits past 30 requests a minute", async () => {
+    for (let i = 0; i < 30; i += 1) {
+      expect((await rpc("tools/list")).status).toBe(200);
+    }
+    const limited = await postMcp({ jsonrpc: "2.0", id: 1, method: "tools/list", params: {} });
+    expect(limited.statusCode).toBe(429);
+    expect(limited.headers["retry-after"]).toBe("60");
+    expect(limited.json().error.message).toBe("rate limited");
+  });
+
+  // Six breaches: three earn the 1h ban, three more after it earn 24h, which
+  // is persisted and refuses the client on every route, not just /mcp.
+  it("persists the 24h ban and refuses the client site-wide", async () => {
+    const MINUTE_MS = 60 * 1000;
+    const HOUR_MS = 60 * MINUTE_MS;
+    const start = Date.now();
+    let offset = 0;
+    const nowSpy = vi.spyOn(Date, "now").mockImplementation(() => start + offset);
+    mockQuery.mockResolvedValue({ rows: [] });
+
+    try {
+      for (let ban = 0; ban < 2; ban += 1) {
+        for (let strike = 0; strike < 3; strike += 1) {
+          for (let i = 0; i < 31; i += 1) {
+            await postMcp({ jsonrpc: "2.0", method: "notifications/initialized" });
+          }
+          offset += MINUTE_MS;
+        }
+        offset += HOUR_MS;
+      }
+
+      const [sql, params] = mockQuery.mock.calls.at(-1) ?? [];
+      expect(sql).toContain("INSERT INTO client_bans");
+      expect(params).toEqual(["127.0.0.1", "mcp rate-limit escalation", 24 * HOUR_MS]);
+
+      const feed = await app.inject({ method: "GET", url: "/api/feed/meta" });
+      expect(feed.statusCode).toBe(403);
+      const health = await app.inject({ method: "GET", url: "/api/health" });
+      expect(health.statusCode).toBe(200);
+    } finally {
+      nowSpy.mockRestore();
+    }
   });
 });
