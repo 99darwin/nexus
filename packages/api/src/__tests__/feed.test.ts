@@ -161,7 +161,12 @@ describe("GET /api/feed", () => {
 
   // Losing pagination is recoverable; silently skipping rows is not.
   it("withholds the cursor rather than emitting a truncated one", async () => {
-    const { cursor_key: _omitted, ...withoutKey } = row(UUID_A, "2026-09-18T10:00:00.000Z", "one");
+    const withoutKey: Partial<ReturnType<typeof row>> = row(
+      UUID_A,
+      "2026-09-18T10:00:00.000Z",
+      "one",
+    );
+    delete withoutKey.cursor_key;
     mockQuery.mockResolvedValue({ rows: [withoutKey] });
 
     const response = await app.inject({ method: "GET", url: "/api/feed?limit=1" });
@@ -223,7 +228,7 @@ describe("GET /api/feed", () => {
     expect(second.statusCode).toBe(200);
     expect(second.json()).toEqual({ items: [], next_cursor: null });
 
-    const [sql, params] = callWith("(published_at, id) <");
+    const [, params] = callWith("(published_at, id) <");
     expect(params).toContain("2026-09-17T10:00:00.000Z");
     expect(params).toContain(UUID_B);
   });
