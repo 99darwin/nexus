@@ -1,7 +1,7 @@
 import Fastify, { type FastifyInstance, type FastifyError } from "fastify";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
-import { clientKey } from "./client-key.js";
+import { edgeProxyHook } from "./edge-proxy.js";
 import { healthRoutes } from "./routes/health.js";
 import { feedRoutes } from "./routes/feed.js";
 import { chatRoutes } from "./routes/chat.js";
@@ -12,6 +12,8 @@ export interface BuildAppOptions {
   logger?: boolean;
   /** Overrides TRUST_PROXY. See `resolveTrustProxy`. */
   trustProxy?: boolean | string | number;
+  /** Overrides PROXY_SECRET. See edge-proxy.ts. */
+  proxySecret?: string;
 }
 
 /**
@@ -81,15 +83,26 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
     }
   });
 
+  const proxySecret = options.proxySecret ?? process.env.PROXY_SECRET;
+  if (!proxySecret && process.env.NODE_ENV === "production") {
+    // Not fatal so the secret can be rolled out after this code ships, but
+    // without it every client behind one CDN node shares a rate-limit bucket.
+    console.warn("[api] PROXY_SECRET unset; rate limits key on the CDN node, not the client");
+  }
+  // Before cors (so a direct preflight is refused too) and before the rate
+  // limiter, which keys on the request.clientKey this resolves.
+  server.decorateRequest("clientKey", "");
+  server.addHook("onRequest", edgeProxyHook(proxySecret));
+
   await server.register(cors, { origin: corsOrigin });
 
-  // Outer net. /api/chat adds a tighter per-IP window of its own, keyed the
-  // same way — if this one keyed on the full address it would be the cheap
-  // way around the strict one for any IPv6 client.
+  // Outer net. /api/chat adds a tighter per-client window of its own, keyed
+  // the same way — if this one keyed differently it would be the cheap way
+  // around the strict one.
   await server.register(rateLimit, {
     max: 100,
     timeWindow: "1 minute",
-    keyGenerator: (request) => clientKey(request.ip),
+    keyGenerator: (request) => request.clientKey,
   });
 
   // Fastify's default handler echoes `error.message` on a 500, which for an

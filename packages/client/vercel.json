@@ -1,14 +1,33 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "https://api-production-b056d.up.railway.app/api/:path*"
+      "src": "^/api/(.*)$",
+      "dest": "https://api-production-b056d.up.railway.app/api/$1",
+      "transforms": [
+        {
+          "type": "request.headers",
+          "op": "set",
+          "target": { "key": "x-proxy-secret" },
+          "args": "$PROXY_SECRET",
+          "env": ["PROXY_SECRET"]
+        }
+      ]
     },
     {
-      "source": "/mcp",
-      "destination": "https://api-production-b056d.up.railway.app/mcp"
+      "src": "^/mcp$",
+      "dest": "https://api-production-b056d.up.railway.app/mcp",
+      "transforms": [
+        {
+          "type": "request.headers",
+          "op": "set",
+          "target": { "key": "x-proxy-secret" },
+          "args": "$PROXY_SECRET",
+          "env": ["PROXY_SECRET"]
+        }
+      ]
     },
-    { "source": "/((?!api/|mcp$).*)", "destination": "/index.html" }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

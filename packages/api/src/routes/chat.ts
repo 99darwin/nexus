@@ -18,7 +18,7 @@
  * env: TYPESAFE_API_KEY (required — a missing key surfaces as an opaque 502)
  */
 
-import type { FastifyInstance, FastifyRequest } from "fastify";
+import type { FastifyInstance } from "fastify";
 import {
   VERTICALS,
   EVENT_TYPES,
@@ -29,7 +29,6 @@ import {
 import { getPool } from "../db/postgres.js";
 import { searchFeedItems } from "../db/feed-queries.js";
 import { systemOne, isNoulAnswer, isChoiceAnswer, type JevQuestion } from "../jev.js";
-import { clientKey } from "../client-key.js";
 
 const MAX_MESSAGE_LENGTH = 500;
 const RESULT_LIMIT = 5;
@@ -96,23 +95,6 @@ const STRIKE_DECAY_MS = 60 * 60 * 1000;
  * deployment ever runs more than a couple of instances.
  */
 const ipStates = new Map<string, IpState>();
-
-/**
- * Rate-limit identity.
- *
- * `request.ip` — NOT the raw X-Forwarded-For header. A raw first hop is
- * client-controlled: an attacker rotates it to evade the window, or pins it
- * to a victim's address to get that victim banned. Fastify only derives
- * `request.ip` from forwarded headers when `trustProxy` is configured (see
- * buildApp / the TRUST_PROXY env var), so behind a correctly-declared proxy
- * this is the real client and on a direct-to-origin deployment it is the
- * socket peer. Either way it is not attacker-chosen.
- */
-function clientIp(request: FastifyRequest): string {
-  // Collapsed to a /64 for IPv6 — a single allocation is otherwise an endless
-  // supply of fresh identities. See client-key.ts.
-  return clientKey(request.ip);
-}
 
 /** An entry with no live ban, no live limit and a stale window carries no information. */
 function isExpired(state: IpState, now: number): boolean {
@@ -323,7 +305,7 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
 
   app.post("/api/chat", async (request, reply) => {
     // 1. rate limit
-    const bannedFor = throttle(clientIp(request));
+    const bannedFor = throttle(request.clientKey);
     if (bannedFor > 0) {
       reply.code(429).send({ error: "rate limited", retryAfterMs: bannedFor });
       return;
