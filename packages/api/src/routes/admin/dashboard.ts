@@ -3,7 +3,7 @@
  *
  * Data-freshness and ingestion-health overview: newest indexed item, total
  * feed size, 24h processing count, review queue depth, and per-adapter run
- * stats. Requires API key authentication.
+ * stats, plus 7-day agent usage of /mcp. Requires API key authentication.
  *
  * The audit_log and moderation_queue tables are legacy from the graph
  * pipeline and are being retired, so their sub-queries degrade to 0 rather
@@ -13,6 +13,11 @@
 import type { FastifyInstance } from "fastify";
 import { getPool } from "../../db/postgres.js";
 import { requireApiKey } from "../../middleware/auth.js";
+import { queryMcpUsage, type McpUsage } from "../../db/mcp-calls.js";
+
+const MCP_USAGE_WINDOW_DAYS = 7;
+
+const EMPTY_MCP_USAGE: McpUsage = { totalCalls: 0, byTool: {}, byClient: {} };
 
 export interface DashboardResponse {
   lastItemAt: string | null;
@@ -27,6 +32,8 @@ export interface DashboardResponse {
       avgDurationMs: number;
     }
   >;
+  /** Agent traffic over the last 7 days. Human traffic lives in Vercel Analytics. */
+  mcpUsage: McpUsage;
 }
 
 type Pool = ReturnType<typeof getPool>;
@@ -110,14 +117,16 @@ export async function dashboardRoutes(app: FastifyInstance): Promise<void> {
     async (request) => {
       const pool = getPool();
 
-      const [freshness, itemsProcessed24h, queueDepth, adapterStats] = await Promise.allSettled([
-        getFeedFreshness(pool),
-        getItemsProcessed24h(pool),
-        getQueueDepth(pool),
-        getAdapterStatsFromDb(pool),
-      ]);
+      const [freshness, itemsProcessed24h, queueDepth, adapterStats, mcpUsage] =
+        await Promise.allSettled([
+          getFeedFreshness(pool),
+          getItemsProcessed24h(pool),
+          getQueueDepth(pool),
+          getAdapterStatsFromDb(pool),
+          queryMcpUsage(pool, MCP_USAGE_WINDOW_DAYS),
+        ]);
 
-      for (const outcome of [freshness, itemsProcessed24h, queueDepth, adapterStats]) {
+      for (const outcome of [freshness, itemsProcessed24h, queueDepth, adapterStats, mcpUsage]) {
         if (outcome.status === "rejected") {
           request.log.error({ err: outcome.reason }, "dashboard sub-query failed");
         }
@@ -129,6 +138,7 @@ export async function dashboardRoutes(app: FastifyInstance): Promise<void> {
         itemsProcessed24h: itemsProcessed24h.status === "fulfilled" ? itemsProcessed24h.value : 0,
         queueDepth: queueDepth.status === "fulfilled" ? queueDepth.value : 0,
         adapterStats: adapterStats.status === "fulfilled" ? adapterStats.value : {},
+        mcpUsage: mcpUsage.status === "fulfilled" ? mcpUsage.value : EMPTY_MCP_USAGE,
       };
     },
   );

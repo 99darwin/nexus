@@ -27,8 +27,18 @@ CREATE TABLE IF NOT EXISTS moderation_queue (
   reviewed_at TIMESTAMPTZ
 );
 
+CREATE TABLE IF NOT EXISTS mcp_calls (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  method TEXT NOT NULL,
+  tool TEXT,
+  client_name TEXT,
+  client_version TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE INDEX IF NOT EXISTS idx_raw_items_source_url ON raw_items(source_url);
 CREATE INDEX IF NOT EXISTS idx_raw_items_ingested_at ON raw_items(ingested_at);
 CREATE INDEX IF NOT EXISTS idx_raw_items_arxiv_id ON raw_items((raw_metadata->>'arxiv_id'));
 CREATE INDEX IF NOT EXISTS idx_audit_log_applied_at ON audit_log(applied_at);
 CREATE INDEX IF NOT EXISTS idx_moderation_queue_status ON moderation_queue(status);
+CREATE INDEX IF NOT EXISTS idx_mcp_calls_created_at ON mcp_calls(created_at);

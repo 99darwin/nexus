@@ -5,6 +5,7 @@ import { clientKey } from "./client-key.js";
 import { healthRoutes } from "./routes/health.js";
 import { feedRoutes } from "./routes/feed.js";
 import { chatRoutes } from "./routes/chat.js";
+import { mcpRoutes } from "./routes/mcp.js";
 import { dashboardRoutes } from "./routes/admin/dashboard.js";
 
 export interface BuildAppOptions {
@@ -108,6 +109,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   await server.register(healthRoutes);
   await server.register(feedRoutes);
   await server.register(chatRoutes);
+  await server.register(mcpRoutes);
   await server.register(dashboardRoutes);
 
   return server;
