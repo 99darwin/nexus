@@ -51,11 +51,18 @@ needs `TYPESAFE_API_KEY` and `DATABASE_URL`.
 
 - The API reads `DATABASE_URL` first (falls back to `POSTGRES_*` locally).
 - `PORT=3001` pins the listen port to match the container `EXPOSE`.
-- `TRUST_PROXY=1` — Railway's edge is a single proxy hop; Fastify derives the
-  real client IP (rate-limit identity) from `X-Forwarded-For` without trusting
-  client-supplied entries. The Vercel rewrite adds a second hop, but Vercel
-  terminates at Railway's edge, which is still the single hop the container
-  sees.
+- `PROXY_SECRET` — shared by the Railway `api` service and the Vercel
+  `nexus-client` project (same value; generate with `openssl rand -hex 32`).
+  The `vercel.json` routes stamp it on every `/api/*` and `/mcp` request as
+  `x-proxy-secret`; the API refuses anything without it (403) except
+  `/api/health`, and keys rate limits on Vercel's `x-vercel-proxied-for`.
+  Railway's edge is a CDN whose forwarded headers can't identify the client
+  (every visitor appears as one of a few CDN nodes), so this is the only
+  trustworthy client address. See `packages/api/src/edge-proxy.ts`. To
+  rotate: set the new value on Vercel and redeploy the client, then on
+  Railway — expect a minute of 403s between the two.
+- `TRUST_PROXY=1` — only matters while `PROXY_SECRET` is unset (local dev,
+  or before rollout); behind Railway it resolves to a CDN node.
 - `CLIENT_ORIGIN` is required — `buildApp()` fails closed without it.
 - pnpm version is pinned by the root `package.json` `packageManager` field;
   `pnpm-workspace.yaml` `allowBuilds` whitelists `esbuild`/`msgpackr-extract`
@@ -101,11 +108,13 @@ curl -X POST https://nexus.carapace.bot/api/chat \
 | `PORT` | api | Yes | ✅ `3001` |
 | `NODE_ENV` | api | Yes | ✅ `production` |
 | `TRUST_PROXY` | api | Yes (Railway) | ✅ `1` |
+| `PROXY_SECRET` | api + Vercel client | Yes | ⬜ shared secret |
 | `CLIENT_ORIGIN` | api | Yes | ✅ `https://nexus.carapace.bot` |
 | `TYPESAFE_API_KEY` | api, agent | Yes | ⬜ user secret |
 | `API_KEY` | api | Yes (admin) | ⬜ user secret |
 | `X_BEARER_TOKEN` | agent | Optional | ⬜ user secret |
 
-The client needs no env vars in production — `/api/` is same-origin via the
-vercel.json rewrite. `VITE_API_URL` is only for local dev against a
-non-default API port.
+The client bundle needs no API env vars — `/api/` is same-origin via the
+vercel.json routes. The Vercel project does need `PROXY_SECRET`, which the
+routes inject at the edge (never into the bundle). `VITE_API_URL` is only for
+local dev against a non-default API port.
