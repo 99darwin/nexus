@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.99darwin/nexus",
+  "title": "Nexus AI News",
+  "description": "Deduplicated, classified AI industry news: search, browse, and filter by vertical and event type.",
+  "repository": {
+    "url": "https://github.com/99darwin/nexus",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "websiteUrl": "https://nexus.carapace.bot",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://nexus.carapace.bot/mcp"
+    }
+  ]
+}

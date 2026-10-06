@@ -12,7 +12,7 @@
 import type { FastifyInstance } from "fastify";
 import { VERTICALS, EVENT_TYPES, type Vertical, type EventType } from "@nexus/shared";
 import { getPool } from "../db/postgres.js";
-import { queryFeed, queryFeedMeta, type FeedCursor } from "../db/feed-queries.js";
+import { queryFeed, queryFeedMeta, type FeedQuery } from "../db/feed-queries.js";
 
 const DEFAULT_LIMIT = 50;
 const MIN_LIMIT = 1;
@@ -81,7 +81,7 @@ export interface FeedQuerystring {
   q?: string;
 }
 
-class BadRequestError extends Error {}
+export class BadRequestError extends Error {}
 
 /**
  * Fastify hands back an array when a parameter is repeated (`?q=a&q=b`), even
@@ -156,7 +156,7 @@ function parseLimit(raw: string | undefined): number {
 }
 
 /** Cursor wire format: `<published_at ISO>,<uuid>` — the last row of the previous page. */
-function parseCursor(raw: string | undefined): FeedCursor | undefined {
+function parseCursor(raw: string | undefined): FeedQuery["cursor"] {
   if (raw === undefined) return undefined;
 
   const separator = raw.lastIndexOf(",");
@@ -207,30 +207,35 @@ function parseSearchTerm(raw: string | undefined): string | undefined {
   return q;
 }
 
+/**
+ * Validates a raw querystring into a FeedQuery. Throws BadRequestError on any
+ * malformed field. Shared by GET /api/feed and the MCP tools, so both
+ * surfaces reject exactly the same inputs.
+ */
+export function parseFeedQuery(raw: FeedQuerystring): FeedQuery {
+  const query: FeedQuery = {
+    limit: parseLimit(single(raw.limit, "limit")),
+    cursor: parseCursor(single(raw.cursor, "cursor")),
+    vertical: parseVertical(single(raw.vertical, "vertical")),
+    eventType: parseEventType(single(raw.event_type, "event_type")),
+    source: parseSource(single(raw.source, "source")),
+    since: parseTimestamp(single(raw.since, "since"), "since"),
+    q: parseSearchTerm(single(raw.q, "q")),
+  };
+
+  if (query.q && query.cursor) {
+    // Relevance ordering has no stable keyset — refuse rather than
+    // silently returning a page the caller didn't ask for.
+    throw new BadRequestError("cursor pagination is not supported together with q");
+  }
+  return query;
+}
+
 export async function feedRoutes(app: FastifyInstance): Promise<void> {
   app.get<{ Querystring: FeedQuerystring }>("/api/feed", async (request, reply) => {
-    let limit: number;
-    let cursor: FeedCursor | undefined;
-    let vertical: Vertical | undefined;
-    let eventType: EventType | undefined;
-    let source: string | undefined;
-    let since: string | undefined;
-    let q: string | undefined;
-
+    let query: FeedQuery;
     try {
-      limit = parseLimit(single(request.query.limit, "limit"));
-      cursor = parseCursor(single(request.query.cursor, "cursor"));
-      vertical = parseVertical(single(request.query.vertical, "vertical"));
-      eventType = parseEventType(single(request.query.event_type, "event_type"));
-      source = parseSource(single(request.query.source, "source"));
-      since = parseTimestamp(single(request.query.since, "since"), "since");
-      q = parseSearchTerm(single(request.query.q, "q"));
-
-      if (q && cursor) {
-        // Relevance ordering has no stable keyset — refuse rather than
-        // silently returning a page the caller didn't ask for.
-        throw new BadRequestError("cursor pagination is not supported together with q");
-      }
+      query = parseFeedQuery(request.query);
     } catch (error) {
       if (error instanceof BadRequestError) {
         reply.code(400).send({ error: error.message });
@@ -239,16 +244,7 @@ export async function feedRoutes(app: FastifyInstance): Promise<void> {
       throw error;
     }
 
-    const { items, nextCursor } = await queryFeed(getPool(), {
-      limit,
-      cursor,
-      vertical,
-      eventType,
-      source,
-      since,
-      q,
-    });
-
+    const { items, nextCursor } = await queryFeed(getPool(), query);
     return { items, next_cursor: nextCursor };
   });
 

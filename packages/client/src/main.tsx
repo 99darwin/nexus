@@ -1,5 +1,6 @@
 import { Component, StrictMode, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
+import { loadAnalytics } from "./analytics";
 import { App } from "./App";
 import "./styles/theme.css";
 import "./styles/base.css";
@@ -35,6 +36,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean
     );
   }
 }
+
+loadAnalytics();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

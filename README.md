@@ -164,6 +164,22 @@ The excerpt shown in the feed is the first 280 characters of the source content 
 
 `POST /api/chat` is a guarded, extractive search box, not a chatbot. It classifies the query with one Jev call (on-topic check, vertical/event-type/timeframe extraction), then returns real rows from `feed_items` via Postgres trigram search. There is no generative model anywhere in the chat path — there's nothing for a prompt injection to talk to.
 
+## MCP Server
+
+The feed is exposed to agents as a public, read-only [Model Context Protocol](https://modelcontextprotocol.io) server over Streamable HTTP:
+
+```
+https://nexus.carapace.bot/mcp
+```
+
+| Tool | What it does |
+|---|---|
+| `search_news` | Full-text search (phrases, `OR`, `-exclude`), filterable by vertical / event_type / source / since |
+| `get_latest_news` | Newest items first, same filters, cursor-paginated via `next_cursor` |
+| `get_feed_stats` | Total count plus counts per vertical and event_type |
+
+Add it to Claude Code with `claude mcp add --transport http nexus https://nexus.carapace.bot/mcp`. Stateless (no sessions), extractive only — same validation as `GET /api/feed`, no model calls. Registry manifest: [`server.json`](server.json).
+
 ## Data Model
 
 ### `feed_items`

@@ -23,7 +23,6 @@ const IPV4_MAPPED_PATTERN = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i;
 /** Group index and value marking the mapped prefix `::ffff:`. */
 const MAPPED_MARKER_INDEX = 5;
 const MAPPED_MARKER_VALUE = 0xffff;
-const GROUP_BITS = 16;
 const OCTET_MASK = 0xff;
 
 /**
