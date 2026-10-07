@@ -26,6 +26,7 @@ import {
   type Vertical,
   type EventType,
 } from "@nexus/shared";
+import { createClientLimiter } from "../client-limiter.js";
 import { getPool } from "../db/postgres.js";
 import { searchFeedItems } from "../db/feed-queries.js";
 import { systemOne, isNoulAnswer, isChoiceAnswer, type JevQuestion } from "../jev.js";
@@ -40,16 +41,22 @@ const RATE_MAX_STRIKES = 3;
 const BAN_DURATION_MS = 60 * 60 * 1000;
 
 /**
- * Cap on tracked IPs. Without it, a client rotating source addresses grows
- * the map without bound — a cheap memory-exhaustion vector.
+ * Clean interval after which accumulated strikes are forgiven.
+ *
+ * Strikes escalate to an hour-long ban, so without decay two breaches months
+ * apart would still leave a normal user one mistake away from a ban that they
+ * did nothing recent to earn. Escalation should track sustained abuse, not a
+ * lifetime total.
  */
-const MAX_TRACKED_IPS = 10_000;
+const STRIKE_DECAY_MS = 60 * 60 * 1000;
 
-/** Floor between full sweeps, so a flood of new identities can't force an O(n) scan per request. */
-const PRUNE_INTERVAL_MS = 1_000;
-
-/** Upper bound on entries examined looking for an evictable victim. */
-const EVICTION_SCAN_LIMIT = 64;
+const limiter = createClientLimiter({
+  windows: [{ windowMs: RATE_WINDOW_MS, maxRequests: RATE_MAX_REQUESTS }],
+  maxStrikes: RATE_MAX_STRIKES,
+  banDurationsMs: [BAN_DURATION_MS],
+  strikeDecayMs: STRIKE_DECAY_MS,
+  escalationDecayMs: STRIKE_DECAY_MS,
+});
 
 export const REFUSAL =
   "i only search indexed ai news — try 'funding rounds this week' or 'new model releases'";
@@ -65,143 +72,9 @@ const TIMEFRAME_DAYS: Record<Timeframe, number | undefined> = {
   all_time: undefined,
 };
 
-/* --- rate limiting + bans ------------------------------------------- */
-
-interface IpState {
-  windowStart: number;
-  count: number;
-  strikes: number;
-  bannedUntil: number;
-  /** Set when a window is exhausted. Enforces the retryAfterMs we advertise. */
-  limitedUntil: number;
-  /** When the last window was exhausted, for strike decay. */
-  lastBreachAt: number;
-}
-
-/**
- * Clean interval after which accumulated strikes are forgiven.
- *
- * Strikes escalate to an hour-long ban, so without decay two breaches months
- * apart would still leave a normal user one mistake away from a ban that they
- * did nothing recent to earn. Escalation should track sustained abuse, not a
- * lifetime total.
- */
-const STRIKE_DECAY_MS = 60 * 60 * 1000;
-
-/**
- * In-memory and therefore per-instance: two API replicas mean two windows.
- * That is fine at this scale — the global @fastify/rate-limit plugin is the
- * outer net and this is the targeted inner one. Swap for Redis/KV if the
- * deployment ever runs more than a couple of instances.
- */
-const ipStates = new Map<string, IpState>();
-
-/** An entry with no live ban, no live limit and a stale window carries no information. */
-function isExpired(state: IpState, now: number): boolean {
-  return (
-    state.bannedUntil <= now &&
-    state.limitedUntil <= now &&
-    now - state.windowStart > RATE_WINDOW_MS
-  );
-}
-
-let lastPruneAt = 0;
-
-/**
- * Makes room for one new identity. Returns false when every tracked entry is
- * still live, in which case the caller is turned away rather than letting the
- * map grow or evicting someone's active ban.
- */
-function ensureCapacity(now: number): boolean {
-  if (ipStates.size < MAX_TRACKED_IPS) return true;
-
-  // Full sweep, rate-limited so a flood of new identities can't force one per request.
-  if (now - lastPruneAt >= PRUNE_INTERVAL_MS) {
-    lastPruneAt = now;
-    for (const [ip, state] of ipStates) {
-      if (isExpired(state, now)) ipStates.delete(ip);
-    }
-    if (ipStates.size < MAX_TRACKED_IPS) return true;
-  }
-
-  // Bounded scan for a victim that is not serving a ban or a limit. Insertion
-  // order means we look at the oldest entries first. Snapshot the keys so we
-  // are not mutating the map under its own iterator.
-  const candidates: string[] = [];
-  for (const ip of ipStates.keys()) {
-    candidates.push(ip);
-    if (candidates.length >= EVICTION_SCAN_LIMIT) break;
-  }
-
-  for (const ip of candidates) {
-    const state = ipStates.get(ip);
-    if (!state) continue;
-    if (state.bannedUntil <= now && state.limitedUntil <= now) {
-      ipStates.delete(ip);
-      return true;
-    }
-    // Live entry. Rotate it to the tail, keeping its state intact, so the next
-    // scan starts past it. Without this a band of banned entries parked at the
-    // head would permanently block admission for everyone else.
-    ipStates.delete(ip);
-    ipStates.set(ip, state);
-  }
-  return false;
-}
-
-/** Returns ms remaining before the caller may retry, or 0 if it may proceed. */
-function throttle(ip: string): number {
-  const now = Date.now();
-  let state = ipStates.get(ip);
-  if (!state) {
-    if (!ensureCapacity(now)) return RATE_WINDOW_MS;
-    state = {
-      windowStart: now,
-      count: 0,
-      strikes: 0,
-      bannedUntil: 0,
-      limitedUntil: 0,
-      lastBreachAt: 0,
-    };
-    ipStates.set(ip, state);
-  }
-
-  if (state.bannedUntil > now) return state.bannedUntil - now;
-  // The window we already told this caller to wait out. Without this the
-  // advertised retryAfterMs is a lie and the limit is trivially outrun.
-  if (state.limitedUntil > now) return state.limitedUntil - now;
-
-  // Forgive stale strikes before this request can add to them.
-  if (state.strikes > 0 && now - state.lastBreachAt > STRIKE_DECAY_MS) {
-    state.strikes = 0;
-  }
-
-  if (now - state.windowStart > RATE_WINDOW_MS) {
-    state.windowStart = now;
-    state.count = 0;
-  }
-  state.count += 1;
-
-  if (state.count > RATE_MAX_REQUESTS) {
-    state.strikes += 1;
-    state.lastBreachAt = now;
-    state.count = 0;
-    state.windowStart = now;
-    if (state.strikes >= RATE_MAX_STRIKES) {
-      state.bannedUntil = now + BAN_DURATION_MS;
-      state.strikes = 0;
-      return BAN_DURATION_MS;
-    }
-    state.limitedUntil = now + RATE_WINDOW_MS;
-    return RATE_WINDOW_MS;
-  }
-  return 0;
-}
-
 /** Test-only: drop all rate-limit state. */
 export function resetRateLimitState(): void {
-  ipStates.clear();
-  lastPruneAt = 0;
+  limiter.reset();
 }
 
 /* --- input screening ------------------------------------------------ */
@@ -305,7 +178,7 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
 
   app.post("/api/chat", async (request, reply) => {
     // 1. rate limit
-    const bannedFor = throttle(request.clientKey);
+    const bannedFor = limiter.check(request.clientKey);
     if (bannedFor > 0) {
       reply.code(429).send({ error: "rate limited", retryAfterMs: bannedFor });
       return;

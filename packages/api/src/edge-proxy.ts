@@ -52,6 +52,11 @@ function proxiedFor(request: FastifyRequest): string | undefined {
   return typeof value === "string" && isIP(value) !== 0 ? value : undefined;
 }
 
+/** Railway's healthcheck carries no secret and has no client behind it. */
+export function isHealthCheck(request: FastifyRequest): boolean {
+  return request.url.split("?", 1)[0] === HEALTH_PATH;
+}
+
 function refuse(reply: FastifyReply): FastifyReply {
   return reply.code(403).send({ error: "forbidden" });
 }
@@ -64,7 +69,7 @@ function refuse(reply: FastifyReply): FastifyReply {
  */
 export function edgeProxyHook(secret: string | undefined): onRequestAsyncHookHandler {
   return async (request, reply) => {
-    if (!secret || request.url.split("?", 1)[0] === HEALTH_PATH) {
+    if (!secret || isHealthCheck(request)) {
       request.clientKey = clientKey(request.ip);
       return;
     }
