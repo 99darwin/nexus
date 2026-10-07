@@ -17,6 +17,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { z } from "zod";
 import { VERTICALS, EVENT_TYPES, type FeedItem } from "@nexus/shared";
 import { createClientLimiter } from "../client-limiter.js";
+import { GATEWAY_LIMIT_MULTIPLIER } from "../gateway.js";
 import { denyClient } from "../denylist.js";
 import { getPool } from "../db/postgres.js";
 import { queryFeed, queryFeedMeta, type FeedMeta } from "../db/feed-queries.js";
@@ -50,18 +51,19 @@ const PERSISTED_BAN_MS = DAY_MS;
 /** The limiter is module-scoped, so its ban callback logs through the app logger set at registration. */
 let banLog: FastifyBaseLogger;
 
+/** Per-client windows. Agents loop, so a burst cap sits under hourly and daily budgets. */
+const MCP_WINDOWS = [
+  { windowMs: MINUTE_MS, maxRequests: 30 },
+  { windowMs: HOUR_MS, maxRequests: 300 },
+  { windowMs: DAY_MS, maxRequests: 2_000 },
+] as const;
+
 /**
- * Agents loop, so the windows are layered: a burst cap, then hourly and
- * daily budgets well above any interactive session's needs. Three breaches
- * within an hour is a 1h ban; reoffending within a week of the last breach
- * is a 24h ban, persisted and enforced across the whole API.
+ * Three breaches within an hour is a 1h ban; reoffending within a week of the
+ * last breach is a 24h ban, persisted and enforced across the whole API.
  */
 const limiter = createClientLimiter({
-  windows: [
-    { windowMs: MINUTE_MS, maxRequests: 30 },
-    { windowMs: HOUR_MS, maxRequests: 300 },
-    { windowMs: DAY_MS, maxRequests: 2_000 },
-  ],
+  windows: MCP_WINDOWS,
   maxStrikes: 3,
   banDurationsMs: [HOUR_MS, DAY_MS],
   strikeDecayMs: HOUR_MS,
@@ -70,6 +72,21 @@ const limiter = createClientLimiter({
     if (durationMs < PERSISTED_BAN_MS) return;
     denyClient(getPool(), banLog, { clientKey, durationMs, reason: "mcp rate-limit escalation" });
   },
+});
+
+/**
+ * Listed gateways (see gateway.ts): scaled windows, and never banned — a ban
+ * would cut off every agent behind the gateway for one agent's behavior.
+ */
+const gatewayLimiter = createClientLimiter({
+  windows: MCP_WINDOWS.map((window) => ({
+    ...window,
+    maxRequests: window.maxRequests * GATEWAY_LIMIT_MULTIPLIER,
+  })),
+  maxStrikes: Infinity,
+  banDurationsMs: [0],
+  strikeDecayMs: HOUR_MS,
+  escalationDecayMs: HOUR_MS,
 });
 
 const READ_ONLY = {
@@ -184,6 +201,7 @@ function cachedFeedMeta(): Promise<FeedMeta> {
 /** Test-only: drop rate-limit state and the stats cache. */
 export function resetMcpState(): void {
   limiter.reset();
+  gatewayLimiter.reset();
   feedStatsCache = undefined;
 }
 
@@ -288,7 +306,10 @@ function recordMcpCall(request: FastifyRequest): void {
       method === "initialize" ? truncate(body?.params?.clientInfo?.version) : undefined,
   };
 
-  request.log.info({ mcp: call }, "mcp request");
+  // The client key only on initialize: one line per agent session is enough
+  // to spot a gateway or pick a denylist entry, without logging every call.
+  const client = method === "initialize" ? request.clientKey : undefined;
+  request.log.info({ mcp: call, client, gateway: request.isGateway }, "mcp request");
   insertMcpCall(getPool(), call).catch((error: unknown) => {
     request.log.warn({ err: error }, "mcp_calls insert failed");
   });
@@ -298,8 +319,9 @@ export async function mcpRoutes(app: FastifyInstance): Promise<void> {
   banLog = app.log;
 
   app.post("/mcp", { bodyLimit: MCP_BODY_LIMIT_BYTES }, async (request, reply) => {
-    const retryAfterMs = limiter.check(request.clientKey);
+    const retryAfterMs = (request.isGateway ? gatewayLimiter : limiter).check(request.clientKey);
     if (retryAfterMs > 0) {
+      request.log.warn({ client: request.clientKey, retryAfterMs }, "mcp rate limited");
       return reply
         .code(429)
         .header("Retry-After", String(Math.ceil(retryAfterMs / 1000)))

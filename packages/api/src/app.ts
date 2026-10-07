@@ -3,11 +3,15 @@ import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import { edgeProxyHook } from "./edge-proxy.js";
 import { denylistHook } from "./denylist.js";
+import { GATEWAY_LIMIT_MULTIPLIER, gatewayHook, parseGatewayKeys } from "./gateway.js";
 import { healthRoutes } from "./routes/health.js";
 import { feedRoutes } from "./routes/feed.js";
 import { chatRoutes } from "./routes/chat.js";
 import { mcpRoutes } from "./routes/mcp.js";
 import { dashboardRoutes } from "./routes/admin/dashboard.js";
+
+/** Requests per minute per client across the whole API. */
+const GLOBAL_RATE_MAX = 100;
 
 export interface BuildAppOptions {
   logger?: boolean;
@@ -15,6 +19,8 @@ export interface BuildAppOptions {
   trustProxy?: boolean | string | number;
   /** Overrides PROXY_SECRET. See edge-proxy.ts. */
   proxySecret?: string;
+  /** Overrides MCP_GATEWAY_KEYS (comma-separated). See gateway.ts. */
+  gatewayKeys?: string;
 }
 
 /**
@@ -96,6 +102,11 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   server.addHook("onRequest", edgeProxyHook(proxySecret));
   // Banned clients are refused here, before cors, rate limiting, or any query.
   server.addHook("onRequest", denylistHook);
+  server.decorateRequest("isGateway", false);
+  server.addHook(
+    "onRequest",
+    gatewayHook(parseGatewayKeys(options.gatewayKeys ?? process.env.MCP_GATEWAY_KEYS)),
+  );
 
   await server.register(cors, { origin: corsOrigin });
 
@@ -103,7 +114,8 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   // the same way — if this one keyed differently it would be the cheap way
   // around the strict one.
   await server.register(rateLimit, {
-    max: 100,
+    max: (request) =>
+      request.isGateway ? GLOBAL_RATE_MAX * GATEWAY_LIMIT_MULTIPLIER : GLOBAL_RATE_MAX,
     timeWindow: "1 minute",
     keyGenerator: (request) => request.clientKey,
   });
